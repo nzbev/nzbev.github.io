@@ -1,0 +1,135 @@
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name = "viewport" content = "width = device-width">
+    <title>Maibaum Getr&auml;nke</title>
+    <script type="text/javascript" src=../js.js >    </script>
+    
+    
+    <style type="text/css">
+.rot, .green, .grau {
+        width: 100%;
+        height: 100%;
+        text-align:center;
+        font-family:Arial;
+	font-weight:bold;
+	font-size:220%;
+}
+		   
+.rot { background-color:red; }	   
+.green { background-color:lightgreen; }	   
+.grau { background-color:gray; }	   
+	
+.small, .big {
+	text-align:right;
+	font-family:Arial;
+	font-weight:bold; 
+	font-size:300%;
+}
+
+.small { width:100%; height:100%; }
+.big { width:100%; height:100%; }
+
+
+.font	{ font-size:220%; font-weight:bold; }
+.fontSmall{ font-size:220%; font-weight:bold; }
+
+.table{ 
+	width:100%;
+	height:100%
+ }
+
+td.erste {
+	width:40%;
+}
+td.zweite {
+	width:20%;
+}
+td.dritte {
+}
+
+
+
+
+    </style>
+  </head>
+
+<body bgcolor="#FFFFE0">
+
+<form name="Rechner" action="" onsubmit="return false;">
+<table border="0" cellpadding="0" cellspacing="0" class="table">
+<tr>
+	<td class="erste"><button type="button" name="B0" class="green" value="Bier" onclick="dazu(3.50, this.name, 'glas')">Bier</button></td>
+	<td class="zweite"><input type="text" name="A0" class="small" readonly></td>
+	<td class="dritte"><input type="text" name="S0" class="big" readonly></td>
+	<td class="font"> &euro;</td>
+</tr>
+<tr>
+	<td class="erste"><button type="button" name="B1" class="green" value="Most / Wein Sch." onclick="dazu(4.00, this.name, 'glas')">Most / Wein Sch.</button></td>
+	<td class="zweite"><input type="text" name="A1" class="small" readonly></td>
+	<td class="dritte"><input type="text" name="S1" class="big" readonly></td>
+	<td class="font"> &euro;</td>
+</tr>
+<tr>
+	<td class="erste"><button type="button" name="B2" class="green" value="Most / Wein Pur" onclick="dazu(4.00, this.name, 'glas')">Most / Wein Pur</button></td>
+	<td class="zweite"><input type="text" name="A2" class="small" readonly></td>
+	<td class="dritte"><input type="text" name="S2" class="big" readonly></td>
+	<td class="font"> &euro;</td>
+</tr>
+<tr>
+	<td class="erste"><button type="button" name="B3" class="green" value="Limo / Wasser" onclick="dazu(2.00, this.name, 'flasche')">Limo / Wasser</button></td>
+	<td class="zweite"><input type="text" name="A3" class="small" readonly></td>
+	<td class="dritte"><input type="text" name="S3" class="big" readonly></td>
+	<td class="font"> &euro;</td>
+</tr>
+<tr>
+	<td><button type="button" name="B9" class="green" value="Kurzer" onclick="dazu(1.50, this.name, 'nixx')">Kurzer</button></td>
+	<td><input type="text" name="A9" class="small" readonly></td>
+	<td><input type="text" name="S9" class="big" readonly></td>
+	<td class="font"> &euro;</td>
+</tr>
+<tr>
+	<td><button type="button" name="B5" class="grau" value="Glas Pfand" id="glas">Pfand Glas</button></td>
+	<td><input type="text" name="A5" class="small" disabled></td>
+	<td><input type="text" name="S5" class="big" disabled ></td>
+  <td class="font" > &euro;</td>
+</tr>
+
+<tr>
+	<td><button type="button" name="B6" class="grau" value="Pfand" id="flasche">Pfand Flasche</button></td>
+	<td><input type="text" name="A6" class="small" disabled></td>
+	<td><input type="text" name="S6" class="big" disabled></td>
+  <td class="font"> &euro;</td>
+</tr>
+
+<tr>
+	<td><button type="button" name="B7" class="green" value="Glas Zur&uuml;ck" onclick="dazu(-2.00, this.name)">Glas zur&uuml;ck</button></td>
+	<td><input type="text" name="A7" class="small" readonly></td>
+	<td><input type="text" name="S7" class="big" readonly></td>
+  <td class="font"> &euro;</td>
+</tr>
+
+<tr>
+	<td><button type="button" name="B8" class="green" value="Flasche Zur&uuml;ck" onclick="dazu(-1.00, this.name)">Pfand zur&uuml;ck</button></td>
+	<td><input type="text" name="A8" class="small" readonly></td>
+	<td><input type="text" name="S8" class="big" readonly></td>
+  <td class="font"> &euro;</td>
+</tr>
+
+<tr>
+	<td><button type="reset" class="rot" value="L&ouml;schen">L&ouml;schen</button></td>
+  <td class="font" align="center">Sum</td>
+	<td><input type="text" name="Summe" class="big" readonly></td>
+  <td class="font"> &euro;</td>
+</tr>
+
+</table>
+
+
+
+</form>
+
+</body>
+</html>
+
+
