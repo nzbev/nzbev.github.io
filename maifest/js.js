@@ -56,7 +56,7 @@ window.document.Rechner.elements["A"+feld].value = window.document.Rechner.eleme
                 
         // wenn Getraenk in einem Glas ausgegeben wird
         if(pfand == "glas"){
-          pfand = "3.00";
+          pfand = "2.00";
           var element = document.getElementById('glas');
         }
         // wenn Getraenk in einer Flasche ausgegeben wird
