@@ -1,0 +1,87 @@
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name = "viewport" content = "width = device-width">
+    <title>NZ Bürgermoos</title>
+    <script type="text/javascript" src=js.js >    </script>
+    <link rel="stylesheet" href="../style_t.css">
+  </head>
+
+<body bgcolor="#FFFFE0">
+
+<form name="Rechner" action="" onsubmit="return false;">
+<table border="0" cellpadding="0" cellspacing="0" class="table">
+	<tr>
+		<td class="erste"><button type="button" name="B0" class="green" value="Bier / Most / Sekt" onclick="dazu(3.50, this.name, 'flasche')">Bier / Radler</button></td>
+		<td class="zweite"><input type="text" name="A0" class="small" readonly></td>
+		<td class="dritte"><input type="text" name="S0" class="big" readonly></td>
+		<td class="font"> &euro;</td>
+	</tr>
+	<tr>
+		<td class="erste"><button type="button" name="B1" class="green" value="Longdrink" onclick="dazu(4.5, this.name, 'flasche')">Longdrink</button></td>
+		<td class="zweite"><input type="text" name="A1" class="small" readonly></td>
+		<td class="dritte"><input type="text" name="S1" class="big" readonly></td>
+		<td class="font"> &euro;</td>
+	</tr>
+	<tr>
+		<td class="erste"><button type="button" name="B2" class="green" value="Cocktail" onclick="dazu(5.5, this.name, 'flasche')">Cocktail</button></td>
+		<td class="zweite"><input type="text" name="A2" class="small" readonly></td>
+		<td class="dritte"><input type="text" name="S2" class="big" readonly></td>
+		<td class="font"> &euro;</td>
+	</tr>
+	<tr>
+		<td class="erste"><button type="button" name="B3" class="green" value="Flasche Sekt" onclick="dazu(14.00, this.name, 'flasche')">Flasche Sekt</button></td>
+		<td class="zweite"><input type="text" name="A3" class="small" readonly></td>
+		<td class="dritte"><input type="text" name="S3" class="big" readonly></td>
+		<td class="font"> &euro;</td>
+	</tr>
+	<tr>
+		<td class="erste"><button type="button" name="B4" class="green" value="Flasche Saft" onclick="dazu(5.0, this.name, 'flasche')">Flasche Saft</button></td>
+		<td class="zweite"><input type="text" name="A4" class="small" readonly></td>
+		<td class="dritte"><input type="text" name="S4" class="big" readonly></td>
+		<td class="font"> &euro;</td>
+	</tr>
+	<tr>
+		<td class="erste"><button type="button" name="B5" class="green" value="Alkfrei" onclick="dazu(2.5, this.name, 'flasche')">Alkfrei</button></td>
+		<td class="zweite"><input type="text" name="A5" class="small" readonly></td>
+		<td class="dritte"><input type="text" name="S5" class="big" readonly></td>
+		<td class="font"> &euro;</td>
+	</tr>
+	<tr>
+		<td class="erste"><button type="button" name="B7" class="green" value="Weinschorle" onclick="dazu(4.0, this.name, 'flasche')">Weinschorle</button></td>
+		<td class="zweite"><input type="text" name="A7" class="small" readonly></td>
+		<td class="dritte"><input type="text" name="S7" class="big" readonly></td>
+		<td class="font"> &euro;</td>
+	</tr>
+	<tr>
+		<td><button type="button" name="B6" class="grau" value="Pfand" id="flasche">Pfand</button></td>
+		<td><input type="text" name="A6" class="small" disabled></td>
+		<td><input type="text" name="S6" class="big" disabled></td>
+	  <td class="font"> &euro;</td>
+	</tr>
+	
+	<tr>
+		<td><button type="button" name="B8" class="green" value="Pfand Zur&uuml;ck" onclick="dazu(-2.00, this.name)">Flasche zur&uuml;ck</button></td>
+		<td><input type="text" name="A8" class="small" readonly></td>
+		<td><input type="text" name="S8" class="big" readonly></td>
+	  <td class="font"> &euro;</td>
+	</tr>
+	
+	<tr>
+		<td><button type="reset" class="rot" value="L&ouml;schen">L&ouml;schen</button></td>
+	  <td class="font" align="center">Sum</td>
+		<td><input type="text" name="Summe" class="big" readonly></td>
+	  <td class="font"> &euro;</td>
+	</tr>
+
+
+</table>
+
+
+
+</form>
+
+</body>
+</html>
+
+
