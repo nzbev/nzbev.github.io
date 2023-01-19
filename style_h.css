@@ -8,9 +8,18 @@
     color: black;
 }
 		   
-.rot { background-color:red; }	   
-.green { background-color:lightgreen; }	   
-.grau { background-color:gray; }	   
+.rot { 
+	background-color:red; 
+	touch-action: manipulation;
+}	   
+.green { 
+	background-color:lightgreen; 
+	touch-action: manipulation;
+}	   
+.grau { 
+	background-color:gray; 
+	touch-action: manipulation;
+}	   
 	
 .small, .big {
 	text-align:right;
