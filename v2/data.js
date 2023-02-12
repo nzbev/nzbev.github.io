@@ -13,8 +13,8 @@ const config = {
 
     },
     "depo": {
-      "glas"   : { "name": "Pf.Becher" , "price": 2.00 },
-      "flasche": { "name": "Pf.Flasche", "price": 1.00 },
+      "glas"   : { "name": "Becher" , "price": 2.00 },
+      "flasche": { "name": "Flasche", "price": 1.00 },
     },
     "locations": {
       "aussenbar": {
