@@ -3,7 +3,7 @@ const config = {
     "realname": "Dorffasnet",
     "articles": {
       "bier":        { "name": "Bier/Most",    "price": 3.00, "depo": "flasche" },
-      "weinschorle": { "name": "Weinschorle",  "price": 4.00, "depo": "flasche" },
+      "weinschorle": { "name": "Weinsch",  "price": 4.00, "depo": "flasche" },
       "sekt":        { "name": "Sekt",         "price": 3.50, "depo": "glas"    },
       "softdrink":   { "name": "Softdrink",    "price": 2.50, "depo": "flasche" },
       "longdrink":   { "name": "Longdrink",    "price": 4.00, "depo": "glas"    },
