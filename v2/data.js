@@ -3,18 +3,19 @@ const config = {
     "realname": "Dorffasnet",
     "articles": {
       "bier":        { "name": "Bier/Most",    "price": 3.00, "depo": "flasche" },
-      "weinschorle": { "name": "Weinsch",  "price": 4.00, "depo": "flasche" },
-      "sekt":        { "name": "Sekt",         "price": 3.50, "depo": "glas"    },
+      "weinschorle": { "name": "Weinsch.",     "price": 4.00, "depo": "flasche" },
+      "sekt":        { "name": "Sekt",         "price": 3.50, "depo": "flasche" },
+      "sektflasche": { "name": "Sektfla.",     "price": 13.00,"depo": "flasche" },
+      "saftflasche": { "name": "Saftfla.",     "price": 5.00, "depo": "flasche" },
       "softdrink":   { "name": "Softdrink",    "price": 2.50, "depo": "flasche" },
-      "longdrink":   { "name": "Longdrink",    "price": 4.00, "depo": "glas"    },
+      "longdrink":   { "name": "Longdrink",    "price": 4.00, "depo": "flasche" },
       "kurzer":      { "name": "Kurzer",       "price": 1.50, "depo": "kein"    },
-      "gluehwein":   { "name": "Gl&uuml;hwein","price": 2.50, "depo": "glas"    },
-      "kinderpunsch":{ "name": "Kinderp.",     "price": 2.00, "depo": "glas"    }
+      "gluehwein":   { "name": "Gl&uuml;hwein","price": 2.50, "depo": "flasche" },
+      "kinderpunsch":{ "name": "Kinderp.",     "price": 2.00, "depo": "flasche" }
 
     },
     "depo": {
-      "glas"   : { "name": "Becher" , "price": 2.00 },
-      "flasche": { "name": "Flasche", "price": 1.00 },
+      "flasche": { "name": "Pfand", "price": 1.00 },
     },
     "locations": {
       "aussenbar": {
@@ -36,7 +37,9 @@ const config = {
           "softdrink",
           "kurzer",
           "longdrink",
-          "sekt"
+          "sekt",
+          "sektflasche",
+          "saftflasche"
         ]
       }
     }
