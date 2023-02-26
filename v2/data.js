@@ -50,8 +50,8 @@ const config = {
       "bier":        { name: "Bier/Most",     price: 3.00, depo: "flasche" },
       "softdrink":   { name: "Softdrink",     price: 2.50, depo: "flasche" },
       "kurzer":      { name: "Kurzer",        price: 1.50, depo: "kein"    },
-      "gluehwein":   { name: "Gl&uuml;hwein", price: 2.50, depo: "flasche" },
-      "kinderpunsch":{ name: "Kinderp.",      price: 2.00, depo: "flasche" },
+      "gluehwein":   { name: "Gl&uuml;hwein", price: 2.50, depo: "kein" },
+      "kinderpunsch":{ name: "Kinderp.",      price: 2.00, depo: "kein" },
       "funkenring":  { name: "Funkenring",    price: 3.00, depo: "kein"    }
     },
     depo: {
