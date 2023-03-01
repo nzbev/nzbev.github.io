@@ -2,7 +2,7 @@ const config = {
   dorffasnet: {
     realname: "Dorffasnet",
     articles: {
-      "bier":        { name: "Bier/Most",    price: 3.00, depo: "flasche" },
+      "bier":        { name: "Bier/Most",    price: 99.00, depo: "flasche" },
       "weinschorle": { name: "Weinsch.",     price: 4.00, depo: "flasche" },
       "sekt":        { name: "Sekt",         price: 3.50, depo: "flasche" },
       "sektflasche": { name: "Sektfla.",     price: 13.00,depo: "flasche" },
