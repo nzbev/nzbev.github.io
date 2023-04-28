@@ -87,7 +87,7 @@ const config = {
       "softdrink":   { name: "Softdrink",    price: 2.50, depo: "flasche" },
       "wasser":      { name: "Wasser",       price: 2.00, depo: "flasche" },
       "kaffee":      { name: "Kaffee",       price: 1.50, depo: "flasche" },
-      "kuchen":      { name: "Kuchen",       price: 2.00, depo: "falsche" },
+      "kuchen":      { name: "Kuchen",       price: 2.00, depo: "flasche" },
       "torte":       { name: "Torte",        price: 2.50, depo: "flasche" },
       "waffel":      { name: "Waffel",       price: 1.00, depo: "kein"    },
     },
