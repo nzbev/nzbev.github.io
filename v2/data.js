@@ -2,7 +2,7 @@ const config = {
   dorffasnet: {
     realname: "Dorffasnet",
     articles: {
-      "bier":        { name: "Bier/Most",    price: 99.00, depo: "flasche" },
+      "bier":        { name: "Bier/Most",    price: 3.50, depo: "flasche" },
       "weinschorle": { name: "Weinsch.",     price: 4.00, depo: "flasche" },
       "sekt":        { name: "Sekt",         price: 3.50, depo: "flasche" },
       "sektflasche": { name: "Sektfla.",     price: 13.00,depo: "flasche" },
@@ -77,5 +77,43 @@ const config = {
         ]
       }
     }
-  }
+  },
+  "maibaum": {
+    realname: "1.Mai",
+    articles: {
+      "bier":        { name: "Bier/Most",    price: 3.50, depo: "flasche" },
+      "mostp":       { name: "Most Pur",     price: 4.00, depo: "flasche" },
+      "weinschorle": { name: "Weinsch.",     price: 4.00, depo: "flasche" },
+      "softdrink":   { name: "Softdrink",    price: 2.50, depo: "flasche" },
+      "wasser":      { name: "Wasser",       price: 2.00, depo: "flasche" },
+      "kaffee":      { name: "Kaffee",       price: 1.50, depo: "flasche" },
+      "kuchen":      { name: "Kuchen",       price: 2.00, depo: "falsche" },
+      "torte":       { name: "Torte",        price: 2.50, depo: "flasche" },
+      "waffel":      { name: "Waffel",       price: 1.00, depo: "kein"    },
+    },
+    depo: {
+      "flasche": { name: "Pfand", price: 2.00 },
+    },
+    "locations": {
+      "kuchenstand": {
+        realname: "Kuchenstand",
+        "articles": [
+          "kaffee",
+          "kuchen",
+          "torte",
+          "waffel"
+        ]
+      },
+      "ausschank": {
+        realname: "Ausschank",
+        "articles": [
+          "bier",
+          "mostp",
+          "weinschorle",
+          "softdrink",
+          "wasser"    
+        ]
+      }
+    }
+  },
 }
