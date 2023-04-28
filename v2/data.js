@@ -113,6 +113,20 @@ const config = {
           "softdrink",
           "wasser"    
         ]
+      },
+      "bedienung": {
+        realname: "Bedienung",
+        "articles": [
+          "bier",
+          "mostp",
+          "weinschorle",
+          "softdrink",
+          "wasser",
+          "kaffee",
+          "kuchen",
+          "torte",
+          "waffel"    
+        ]
       }
     }
   },
