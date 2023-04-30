@@ -81,18 +81,18 @@ const config = {
   "maibaum": {
     realname: "1.Mai",
     articles: {
-      "bier":        { name: "Bier/Most",    price: 3.50, depo: "flasche" },
-      "mostp":       { name: "Most Pur",     price: 4.00, depo: "flasche" },
-      "weinschorle": { name: "Weinsch.",     price: 4.00, depo: "flasche" },
-      "softdrink":   { name: "Softdrink",    price: 2.50, depo: "flasche" },
-      "wasser":      { name: "Wasser",       price: 2.00, depo: "flasche" },
-      "kaffee":      { name: "Kaffee",       price: 1.50, depo: "flasche" },
-      "kuchen":      { name: "Kuchen",       price: 2.00, depo: "flasche" },
-      "torte":       { name: "Torte",        price: 2.50, depo: "flasche" },
-      "waffel":      { name: "Waffel",       price: 1.00, depo: "kein"    },
+      "bier":        { name: "Bier/Most",    price: 3.50, depo: "glas" },
+      "mostp":       { name: "Most Pur",     price: 4.00, depo: "glas" },
+      "weinschorle": { name: "Weinsch.",     price: 4.00, depo: "glas" },
+      "softdrink":   { name: "Softdrink",    price: 2.50, depo: "glas" },
+      "wasser":      { name: "Wasser",       price: 2.00, depo: "glas" },
+      "kaffee":      { name: "Kaffee",       price: 1.50, depo: "kein" },
+      "kuchen":      { name: "Kuchen",       price: 2.00, depo: "kein" },
+      "torte":       { name: "Torte",        price: 2.50, depo: "kein" },
+      "waffel":      { name: "Waffel",       price: 1.00, depo: "kein" },
     },
     depo: {
-      "flasche": { name: "Pfand", price: 2.00 },
+      "glas": { name: "Pfand", price: 2.00 },
     },
     "locations": {
       "kuchenstand": {
