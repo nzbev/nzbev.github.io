@@ -1,5 +1,4 @@
 {
-  "version": 1,
   "dorffasnet": {
     "realname": "Dorffasnet",
     "articles": {
@@ -130,5 +129,10 @@
         ]
       }
     }
+  },
+  "version": {
+    "realname": "Version 1",
+    "version": 1,
+    "locations": {}
   }
 }
