@@ -1,4 +1,5 @@
-const config = {
+config = {
+  version: 1,
   dorffasnet: {
     realname: "Dorffasnet",
     articles: {
