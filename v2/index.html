@@ -6,6 +6,27 @@
   <meta name="viewport" content="width = device-width">
   <title>NZB Kasse</title>
   <script type="text/javascript" src="data.js"></script>
+  <script type="text/javascript">
+    function setConfig(){
+      local_version  = local;
+      remote_version = JSON.parse(localStorage.getItem("nzb_online_storage"));
+
+      config=local_version
+      try{
+        if(remote_version.version.version >= local_version.version.version){
+          config=remote_version;
+        }else{
+          config=local_version;
+        }
+      }finally {
+        console.log("Local: ", local_version.version.version, " Remote: ", remote_version.version.version)
+        //console.log(config)
+      }
+    }
+  </script>
+  
+  <script type="text/javascript" src="update.js"></script>
+
   <link rel="stylesheet" href="./style.css">
 </head>
 
@@ -13,14 +34,19 @@
 
   <table border="0" cellpadding="0" cellspacing="0" class="table">
     <script type="text/javascript">
+      var config = {};
+      setConfig();
+      document.write
       for (const [event, eventvalue] of Object.entries(config)) {
         document.write("<tr><td colspan=3><h1>" + eventvalue.realname + "</h1></td></tr>")
         for (const [location, locationvalue] of Object.entries(eventvalue.locations)) {
-          document.write("<td class=index><button type=button class=menu value="+locationvalue.realname+" onclick=\"window.location.href = './calc.html?event="+event+"&loc="+location+"';\">"+locationvalue.realname+"</button></td>")
+          document.write("<tr><td class=index><button type=button class=menu value="+locationvalue.realname+" onclick=\"window.location.href = './calc.html?event="+event+"&loc="+location+"';\">"+locationvalue.realname+"</button></td></tr>")
         }
       }
       
     </script>
+    <tr><td colspan=3><h1>Maintenance</h1></td></tr>
+    <tr><td colspan="3"><button type=button class=menu value="Update Data" onclick="updateData();setConfig();">Update Data</button></td></tr>
   </table>
 </body>
 

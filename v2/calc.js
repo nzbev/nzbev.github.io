@@ -7,8 +7,6 @@ var loc = url.searchParams.get('loc');
 
 
 
-
-
 function leer(feld) {
     var feld = feld.substr(1, 1);
 
