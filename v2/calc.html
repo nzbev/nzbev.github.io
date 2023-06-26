@@ -26,7 +26,7 @@
           document.write(
             '<tr>'+
             '<td class="erste"><button type="button" name="B'+ artcnt +'" class="green" value="'+ artvalue +'"' +
-            'onclick="dazu('+art[artvalue].price+', this.name, \''+art[artvalue].depo+'\')">'+art[artvalue].name+'</button></td>'+
+            'onclick="dazu('+art[artvalue].price+', this.name, \''+art[artvalue].depo+'\','+config[event].depo[art[artvalue].depo].price+')">'+art[artvalue].name+'</button></td>'+
             '<td class="zweite"><input type="text" name="A'+ artcnt +'" class="small" readonly></td>',
             '<td class="dritte"><input type="text" name="S'+ artcnt +'" class="big" readonly></td>',
             '</tr>'
