@@ -156,4 +156,32 @@ config = {
       }
     }
   },
+  "scbfootpong": {
+    realname: "Footpong",
+    articles: {
+      bier: { name: "Bier/Mostsch.", price: 3.50, depo: "glas" },
+      most: { name: "Most pur", price: 4.00, depo: "glas" },
+      wasser: { name: "Wasser", price: 2.50, depo: "flasche" },
+      softdrink: { name: "Softdrink", price: 3.00, depo: "flasche" },
+      peng: { name: "Peng", price: 4.50, depo: "glas" },
+      kurzer: { name: "Kurzer", price: 1.50, depo: "nix"}
+    },
+    depo: {
+      "glas": { name: "Glas", price: 3.00 },
+      "flasche": { name: "Flasche", price: 1.00 },
+    },
+    locations: {
+      ausschank: {
+        realname: "Ausschank",
+        articles: [
+          "bier",
+          "most",
+          "wasser",
+          "softdrink",
+          "peng",
+          "kurzer"
+        ]
+      }
+    }
+  }
 }
