@@ -23,10 +23,18 @@
         var artcnt=0
         for (const [artkey, artvalue] of Object.entries(config[event].locations[loc].articles)) {
           var art = config[event].articles
+          var depoprice = 0
+          if (art[artvalue].depo =="nix"){
+            depoprice = 0
+          }else{
+            depoprice = config[event].depo[art[artvalue].depo].price
+          }
+          
+          
           document.write(
             '<tr>'+
             '<td class="erste"><button type="button" name="B'+ artcnt +'" class="green" value="'+ artvalue +'"' +
-            'onclick="dazu('+art[artvalue].price+', this.name, \''+art[artvalue].depo+'\','+config[event].depo[art[artvalue].depo].price+')">'+art[artvalue].name+'</button></td>'+
+            'onclick="dazu('+art[artvalue].price+', this.name, \''+art[artvalue].depo+'\','+depoprice+')">'+art[artvalue].name+'</button></td>'+
             '<td class="zweite"><input type="text" name="A'+ artcnt +'" class="small" readonly></td>',
             '<td class="dritte"><input type="text" name="S'+ artcnt +'" class="big" readonly></td>',
             '</tr>'
@@ -42,13 +50,14 @@
             '<tr>'
           )
           artcnt+=1;
+            
         }
         for (const [depokey, depovalue] of Object.entries(config[event].depo)) {
           document.write(
             '<tr>',
               '<td class="erste"><button type="button" name="B'+ artcnt +'" class="green" value="'+depovalue.name+' ret" onclick="dazu('+depovalue.price*-1+', this.name)">'+depovalue.name+' zur</button></td>',
               '<td class="zweite"><input type="text" name="A'+ artcnt +'" class="small" readonly></td>',
-	            '<td class="dritte"><input type="text" name="S'+ artcnt +'" class="big" readonly></td>',
+              '<td class="dritte"><input type="text" name="S'+ artcnt +'" class="big" readonly></td>',
             '<tr>'
           )
           artcnt+=1;
