@@ -188,6 +188,7 @@ config = {
     realname: "B&uml;hnlesfest",
     articles: {
       bier: { name: "Bier/Most", price: 3.50, depo: "glas" },
+      bieranti: { name: "Alkfrei. Bier", price: 3.50, depo: "flasche" },
       spezi: { name: "Spezi", price: 2.50, depo: "flasche" },
       wasser: { name: "Wasser", price: 2.00, depo: "flasche"}
     },
@@ -200,6 +201,7 @@ config = {
         realname: "Ausschank",
         articles: [
           "bier",
+          "bieranti",
           "spezi",
           "wasser"
         ]
