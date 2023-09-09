@@ -183,5 +183,27 @@ config = {
         ]
       }
     }
+  },
+  "scbbaehnlesfest": {
+    realname: "B&uml;hnlesfest",
+    articles: {
+      bier: { name: "Bier/Most", price: 3.50, depo: "glas" },
+      spezi: { name: "Spezi", price: 2.50, depo: "flasche" },
+      wasser: { name: "Wasser", price: 2.00, depo: "flasche"}
+    },
+    depo: {
+      "glas": { name: "Glas", price: 3.00 },
+      "flasche": { name: "Flasche", price: 2.00 },
+    },
+    locations: {
+      ausschank: {
+        realname: "Ausschank",
+        articles: [
+          "bier",
+          "spezi",
+          "wasser"
+        ]
+      }
+    }
   }
 }
