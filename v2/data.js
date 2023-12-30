@@ -1,18 +1,73 @@
 config = {
-  "dorffasnet": {
-    realname: "Dorffasnet",
+  "kinderumzug": {
+    realname: "Kinderumzug",
     articles: {
-      "bier": { name: "Bier/Most", price: 3.50, depo: "flasche" },
+      "gluehwein": { name: "Gl&uuml;hwein", price: 2.50, depo: "nix" },
+      "kinderpunsch": { name: "Kinderp.", price: 2.00, depo: "nix" },
+    },
+    depo: {
+    },
+    locations: {
+      getraenke: {
+        realname: "Getr&auml;nke",
+        articles: [
+          "gluehwein",
+          "kinderpunsch",
+        ]
+      },
+    }
+  },
+  "narrentaufe": {
+    realname: "Narrentaufe",
+    articles: {
+      "bier": { name: "Bier/Most", price: 3.00, depo: "flasche" },
       "weinschorle": { name: "Weinsch.", price: 4.00, depo: "flasche" },
       "sekt": { name: "Sekt", price: 3.50, depo: "flasche" },
       "sektflasche": { name: "Sektfla.", price: 13.00, depo: "flasche" },
-      "saftflasche": { name: "Saftfla.", price: 5.00, depo: "flasche" },
+      "saftflasche": { name: "SAFTfla.", price: 5.00, depo: "flasche" },
       "softdrink": { name: "Softdrink", price: 2.50, depo: "flasche" },
       "longdrink": { name: "Longdrink", price: 4.00, depo: "flasche" },
-      "kurzer": { name: "Kurzer", price: 1.50, depo: "kein" },
-      "gluehwein": { name: "Gl&uuml;hwein", price: 2.50, depo: "flasche" },
-      "kinderpunsch": { name: "Kinderp.", price: 2.00, depo: "flasche" }
-
+      "kurzer": { name: "Kurzer", price: 1.50, depo: "nix" },
+    },
+    depo: {
+      "flasche": { name: "Pfand", price: 1.00 }
+    },
+    "locations": {
+      "wagen": {
+        realname: "Narrenwagen",
+        "articles": [
+          "bier",
+          "weinschorle",
+          "softdrink",
+          "kurzer",
+        ]
+      },
+      "zelt": {
+        realname: "Zelt",
+        "articles": [
+          "bier",
+          "weinschorle",
+          "softdrink",
+          "kurzer",
+          "longdrink",
+          "sekt",
+          "sektflasche",
+          "saftflasche"
+        ]
+      }
+    }
+  },
+  "dorffasnet": {
+    realname: "Dorffasnet",
+    articles: {
+      "bier": { name: "Bier/Most", price: 3.00, depo: "flasche" },
+      "weinschorle": { name: "Weinsch.", price: 4.00, depo: "flasche" },
+      "sekt": { name: "Sekt", price: 3.50, depo: "flasche" },
+      "sektflasche": { name: "Sektfla.", price: 13.00, depo: "flasche" },
+      "saftflasche": { name: "SAFTfla.", price: 5.00, depo: "flasche" },
+      "softdrink": { name: "Softdrink", price: 2.50, depo: "flasche" },
+      "longdrink": { name: "Longdrink", price: 4.00, depo: "flasche" },
+      "kurzer": { name: "Kurzer", price: 1.50, depo: "nix" },
     },
     depo: {
       "flasche": { name: "Pfand", price: 1.00 },
@@ -25,8 +80,6 @@ config = {
           "weinschorle",
           "softdrink",
           "kurzer",
-          "gluehwein",
-          "kinderpunsch"
         ]
       },
       "zelt": {
@@ -49,10 +102,10 @@ config = {
     articles: {
       "bier": { name: "Bier/Most", price: 3.00, depo: "flasche" },
       "softdrink": { name: "Softdrink", price: 2.50, depo: "flasche" },
-      "kurzer": { name: "Kurzer", price: 1.50, depo: "kein" },
-      "gluehwein": { name: "Gl&uuml;hwein", price: 2.50, depo: "kein" },
-      "kinderpunsch": { name: "Kinderp.", price: 2.00, depo: "kein" },
-      "funkenring": { name: "Funkenring", price: 3.00, depo: "kein" }
+      "kurzer": { name: "Kurzer", price: 1.50, depo: "nix" },
+      "gluehwein": { name: "Gl&uuml;hwein", price: 2.50, depo: "nix" },
+      "kinderpunsch": { name: "Kinderp.", price: 2.00, depo: "nix" },
+      "funkenring": { name: "Funkenring", price: 3.50, depo: "nix" }
     },
     depo: {
       "flasche": { name: "Pfand", price: 1.00 },
@@ -86,10 +139,10 @@ config = {
       "weinschorle": { name: "Weinsch.", price: 4.00, depo: "glas" },
       "softdrink": { name: "Softdrink", price: 2.50, depo: "glas" },
       "wasser": { name: "Wasser", price: 2.00, depo: "glas" },
-      "kaffee": { name: "Kaffee", price: 1.50, depo: "kein" },
-      "kuchen": { name: "Kuchen", price: 2.00, depo: "kein" },
-      "torte": { name: "Torte", price: 2.50, depo: "kein" },
-      "waffel": { name: "Waffel", price: 1.00, depo: "kein" },
+      "kaffee": { name: "Kaffee", price: 1.50, depo: "nix" },
+      "kuchen": { name: "Kuchen", price: 2.00, depo: "nix" },
+      "torte": { name: "Torte", price: 2.50, depo: "nix" },
+      "waffel": { name: "Waffel", price: 1.00, depo: "nix" },
     },
     depo: {
       "glas": { name: "Pfand", price: 2.00 },
