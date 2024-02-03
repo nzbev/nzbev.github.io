@@ -273,7 +273,7 @@ config = {
 
     },
     depo: {
-      "flasche": { name: "Flasche", price: 2.00 },
+      "flasche": { name: "Pfand", price: 2.00 },
     },
     locations: {
       ausschank: {
