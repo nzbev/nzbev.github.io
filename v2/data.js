@@ -100,7 +100,7 @@ config = {
   "funken": {
     realname: "Funken",
     articles: {
-      "bier": { name: "Bier/Most", price: 3.00, depo: "flasche" },
+      "bier": { name: "Bier/Most", price: 3.50, depo: "flasche" },
       "softdrink": { name: "Softdrink", price: 2.50, depo: "flasche" },
       "kurzer": { name: "Kurzer", price: 1.50, depo: "nix" },
       "gluehwein": { name: "Gl&uuml;hwein", price: 2.50, depo: "nix" },
@@ -116,7 +116,6 @@ config = {
         articles: [
           "bier",
           "softdrink",
-          "kurzer",
           "gluehwein",
           "kinderpunsch",
           "funkenring"
