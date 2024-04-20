@@ -137,7 +137,7 @@ config = {
       "weinschorle": { name: "Weinsch.", price: 4.50, depo: "flasche" },
       "wasser": { name: "Wasser/Apfel.", price: 2.50, depo: "flasche" },
       "cola": { name: "Col/Fan/Spe.", price: 3.00, depo: "flasche" },
-      "longdrink": { name: "Longdrink", price: 4.50, depo: "flasche" },
+      "longdrink": { name: "Longdri/Sekt", price: 4.50, depo: "flasche" },
       "sektflasche": { name: "Sektfla.", price: 14.00, depo: "flasche" },
       "saftflasche": { name: "SAFTfla.", price: 5.00, depo: "flasche" },
       "kaffee": { name: "Kaffee", price: 1.50, depo: "nix" },
