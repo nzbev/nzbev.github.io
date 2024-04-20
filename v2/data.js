@@ -133,18 +133,18 @@ config = {
   "maibaum": {
     realname: "1.Mai",
     articles: {
-      "bier": { name: "Bier/Most", price: 3.50, depo: "glas" },
-      "mostp": { name: "Most Pur", price: 4.00, depo: "glas" },
-      "weinschorle": { name: "Weinsch.", price: 4.00, depo: "glas" },
-      "softdrink": { name: "Softdrink", price: 2.50, depo: "glas" },
-      "wasser": { name: "Wasser", price: 2.00, depo: "glas" },
+      "bier": { name: "Bier/Most", price: 3.50, depo: "flasche" },
+      "weinschorle": { name: "Weinsch.", price: 4.50, depo: "flasche" },
+      "wasser": { name: "Wasser/Apfel.", price: 2.50, depo: "flasche" },
+      "cola": { name: "Col/Fan/Spe.", price: 3.00, depo: "flasche" },
+      "longdrink": { name: "Longdrink", price: 4.50, depo: "flasche" },
       "kaffee": { name: "Kaffee", price: 1.50, depo: "nix" },
       "kuchen": { name: "Kuchen", price: 2.00, depo: "nix" },
       "torte": { name: "Torte", price: 2.50, depo: "nix" },
       "waffel": { name: "Waffel", price: 1.00, depo: "nix" },
     },
     depo: {
-      "glas": { name: "Pfand", price: 2.00 },
+      "flasche": { name: "Pfand", price: 1.00 },
     },
     "locations": {
       "kuchenstand": {
@@ -160,20 +160,20 @@ config = {
         realname: "Ausschank",
         "articles": [
           "bier",
-          "mostp",
           "weinschorle",
-          "softdrink",
-          "wasser"
+          "wasser",
+          "cola",
+          "longdrink"
         ]
       },
       "bedienung": {
         realname: "Bedienung",
         "articles": [
           "bier",
-          "mostp",
           "weinschorle",
-          "softdrink",
           "wasser",
+          "cola",
+          "longdrink",
           "kaffee",
           "kuchen",
           "torte",
