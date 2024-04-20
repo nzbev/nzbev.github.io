@@ -138,6 +138,8 @@ config = {
       "wasser": { name: "Wasser/Apfel.", price: 2.50, depo: "flasche" },
       "cola": { name: "Col/Fan/Spe.", price: 3.00, depo: "flasche" },
       "longdrink": { name: "Longdrink", price: 4.50, depo: "flasche" },
+      "sektflasche": { name: "Sektfla.", price: 14.00, depo: "flasche" },
+      "saftflasche": { name: "SAFTfla.", price: 5.00, depo: "flasche" },
       "kaffee": { name: "Kaffee", price: 1.50, depo: "nix" },
       "kuchen": { name: "Kuchen", price: 2.00, depo: "nix" },
       "torte": { name: "Torte", price: 2.50, depo: "nix" },
@@ -156,14 +158,25 @@ config = {
           "waffel"
         ]
       },
-      "ausschank": {
-        realname: "Ausschank",
+      "ausschank_abend": {
+        realname: "Ausschank Abend",
         "articles": [
           "bier",
           "weinschorle",
           "wasser",
           "cola",
-          "longdrink"
+          "longdrink",
+          "sektflasche",
+          "saftflasche"
+        ]
+      },
+      "ausschank_tag": {
+        realname: "Ausschank Tag",
+        "articles": [
+          "bier",
+          "weinschorle",
+          "wasser",
+          "cola",
         ]
       },
       "bedienung": {
