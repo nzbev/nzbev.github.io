@@ -314,8 +314,8 @@ config = {
       curry: { name: "Curryw.", price: 4.00, depo: "nix" },
       pommes: { name: "Pommes", price: 3.00, depo: "nix" },
       steak: { name: "Steak", price: 3.00, depo: "nix" },
-      mitmsal: { name: "Mitt MIT Sal", price: 12.00, depo: "nix" },
-      mitosal: { name: "Mitt OHNE Sal", price: 9.00, depo: "nix" },
+      mitmsal: { name: "Mi.Ess M Sal", price: 12.00, depo: "nix" },
+      mitosal: { name: "Mi.Ess O Sal", price: 9.00, depo: "nix" },
       salat: { name: "Salat", price: 4.00, depo: "nix" }
     },
     depo: { },
