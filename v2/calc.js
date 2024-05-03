@@ -46,7 +46,7 @@ function dazu(preis, feld, pfand, pfandpreis) {
     // pfand --> was wird ausgegeben (glas, flasche
 
     // aus der Button-Bezeichnung die Ziffer extrahieren
-    feld = feld.substr(1, 1);
+    feld = feld.substr(1, feld.length);
 
     // das entsprechende Anzahl-Feld erhöhen
     window.document.Rechner.elements["A" + feld].value++;
