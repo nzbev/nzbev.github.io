@@ -301,5 +301,42 @@ config = {
         ]
       }
     }
+  },
+  "ffwfloriansfest": {
+    realname: "FFW Floriansfest",
+    articles: {
+      bier: { name: "Bier/Most", price: 3.50, depo: "nix" },
+      alkfrei: { name: "Alkfrei. Bier", price: 3.00, depo: "nix" },
+      cola: { name: "Cola/Fanta/Wass", price: 2.50, depo: "nix" },
+      softdrink: { name: "Softdrink", price: 3.00, depo: "nix" },
+      weins: { name: "Weinsch.", price: 4.00, depo: "nix" },
+      rote: { name: "Rote", price: 3.50, depo: "nix" },
+      curry: { name: "Curryw.", price: 4.00, depo: "nix" },
+      pommes: { name: "Pommes", price: 3.00, depo: "nix" },
+      steak: { name: "Steak", price: 3.00, depo: "nix" },
+      mitess12: { name: "Mittag MIT Salat", price: 12.00, depo: "nix" },
+      mitess9: { name: "Mittag OHNE Salat", price: 9.00, depo: "nix" },
+      salat: { name: "Mittag OHNE Salat", price: 4.00, depo: "nix" }
+    },
+    depo: { },
+    locations: {
+      floriansfest: {
+        realname: "Alles",
+        articles: [
+          "bier",
+          "alkfrei",
+          "cola",
+          "softdrink",
+          "weins",
+          "rote",
+          "curry",
+          "pommes",
+          "steak",
+          "mitess12",
+          "mitess9",
+          "salat"
+        ]
+      }
+    }
   }
 }
