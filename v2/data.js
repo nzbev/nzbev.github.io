@@ -332,8 +332,8 @@ config = {
           "curry",
           "pommes",
           "steak",
-          "mitess12",
-          "mitess9",
+          "mitmsal",
+          "mitosal",
           "salat"
         ]
       }
