@@ -267,6 +267,7 @@ config = {
         realname: "Ausschank",
         articles: [
           "bier",
+          "most",
           "bieranti",
           "spezi",
           "wasser"
