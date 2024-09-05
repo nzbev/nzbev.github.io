@@ -252,13 +252,14 @@ config = {
   "scbbaehnlesfest": {
     realname: "B&uml;hnlesfest",
     articles: {
-      bier: { name: "Bier/Most", price: 3.50, depo: "glas" },
-      bieranti: { name: "Alkfrei. Bier", price: 3.50, depo: "flasche" },
-      spezi: { name: "Spezi", price: 2.50, depo: "flasche" },
-      wasser: { name: "Wasser", price: 2.00, depo: "flasche"}
+      bier: { name: "Bier", price: 4.00, depo: "glas" },
+      most: { name: "Most", price: 3.50, depo: "glas" },
+      bieranti: { name: "Alkfrei. Bier", price: 4.00, depo: "flasche" },
+      spezi: { name: "Spezi/ACE", price: 3.00, depo: "flasche" },
+      wasser: { name: "Wasser", price: 2.50, depo: "flasche"}
     },
     depo: {
-      "glas": { name: "Glas", price: 3.00 },
+      "glas": { name: "Glas", price: 4.00 },
       "flasche": { name: "Flasche", price: 2.00 },
     },
     locations: {
