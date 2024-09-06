@@ -254,7 +254,7 @@ config = {
     articles: {
       bier: { name: "Bier", price: 4.00, depo: "glas" },
       most: { name: "Most", price: 3.50, depo: "glas" },
-      bieranti: { name: "Alkfrei. Bier", price: 4.00, depo: "flasche" },
+      bieranti: { name: "Alkfrei. Bier", price: 3.00, depo: "flasche" },
       spezi: { name: "Spezi/ACE", price: 3.00, depo: "flasche" },
       wasser: { name: "Wasser", price: 2.50, depo: "flasche"}
     },
