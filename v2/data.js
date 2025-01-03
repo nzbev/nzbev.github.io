@@ -2,17 +2,26 @@ config = {
   "kinderumzug": {
     realname: "Kinderumzug",
     articles: {
-      "gluehwein": { name: "Gl&uuml;hwein", price: 2.50, depo: "nix" },
-      "kinderpunsch": { name: "Kinderp.", price: 2.00, depo: "nix" },
+      "gluehmost": { name: "Gl&uuml;hmost", price: 3.00, depo: "flasche" },
+      "kinderpunsch": { name: "Kinderp.", price: 2.50, depo: "flasche" },
+      "bier": { name: "Bier / Most", price: 3.50, depo: "flasche" },
+      "kuchen": { name: "Kuchen / Kaffee", price: 2.00, depo: "nix" },
+      "suess": { name: "S&uuml;&szlig;t&uuml;te", price: 1.50, depo: "nix" },
+      "alkfrei": { name: "Wasser/Limo", price: 2.00, depo: "flasche" }
     },
     depo: {
+      "flasche": { name: "Pfand", price: 1.00 }
     },
     locations: {
       getraenke: {
         realname: "Getr&auml;nke",
         articles: [
-          "gluehwein",
+          "alkfrei",
+          "gluehmost",
           "kinderpunsch",
+          "bier",
+          "kuchen",
+          "suess"
         ]
       },
     }
