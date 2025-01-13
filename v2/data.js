@@ -81,6 +81,8 @@ config = {
       "softdrink": { name: "Softdrink", price: 2.50, depo: "flasche" },
       "longdrink": { name: "Longdrink", price: 4.50, depo: "flasche" },
       "kurzer": { name: "Kurzer", price: 1.50, depo: "nix" },
+      "gluehmost": { name: "Gl&uuml;hmost", price: 3.00, depo: "flasche" },
+      "kinderpunsch": { name: "Kinderp.", price: 2.50, depo: "flasche" },
     },
     depo: {
       "flasche": { name: "Pfand", price: 1.00 },
@@ -93,6 +95,8 @@ config = {
           "weinschorle",
           "softdrink",
           "kurzer",
+          "gluehmost",
+          "kinderpunsch"
         ]
       },
       "zelt": {
