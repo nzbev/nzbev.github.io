@@ -29,14 +29,16 @@ config = {
   "narrentaufe": {
     realname: "Narrentaufe",
     articles: {
-      "bier": { name: "Bier/Most", price: 3.00, depo: "flasche" },
-      "weinschorle": { name: "Weinsch.", price: 4.00, depo: "flasche" },
-      "sekt": { name: "Sekt", price: 3.50, depo: "flasche" },
-      "sektflasche": { name: "Sektfla.", price: 13.00, depo: "flasche" },
+      "bier": { name: "Bier/Most", price: 3.50, depo: "flasche" },
+      "weinschorle": { name: "Weinsch.", price: 4.50, depo: "flasche" },
+      "sekt": { name: "Sekt", price: 4.00, depo: "flasche" },
+      "sektflasche": { name: "Sektfla.", price: 14.00, depo: "flasche" },
       "saftflasche": { name: "SAFTfla.", price: 5.00, depo: "flasche" },
       "softdrink": { name: "Softdrink", price: 2.50, depo: "flasche" },
-      "longdrink": { name: "Longdrink", price: 4.00, depo: "flasche" },
+      "longdrink": { name: "Longdrink", price: 4.50, depo: "flasche" },
       "kurzer": { name: "Kurzer", price: 1.50, depo: "nix" },
+      "gluehmost": { name: "Gl&uuml;hmost", price: 3.00, depo: "flasche" },
+      "kinderpunsch": { name: "Kinderp.", price: 2.50, depo: "flasche" },
     },
     depo: {
       "flasche": { name: "Pfand", price: 1.00 }
@@ -49,6 +51,8 @@ config = {
           "weinschorle",
           "softdrink",
           "kurzer",
+          "gluehmost",
+          "kinderpunsch"
         ]
       },
       "zelt": {
