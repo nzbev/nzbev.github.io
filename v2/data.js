@@ -242,10 +242,10 @@ config = {
     "realname": "Langenargen 2025",
     articles: {
       "bier": { name: "Bier/Most", price: 3.50, depo: "flasche" },
-      "weinschorle": { name: "Weinsch.", price: 4.50, depo: "flasche" },
+      "weinschorle": { name: "Weinsch", price: 4.50, depo: "flasche" },
       "sekt": { name: "Sekt", price: 2.50, depo: "becher" },
-      "sektflasche": { name: "Sektfla.", price: 14.00, depo: "flasche" },
-      "saftflasche": { name: "SAFTfla.", price: 5.00, depo: "flasche" },
+      "sektflasche": { name: "Sektfla", price: 14.00, depo: "flasche" },
+      "saftflasche": { name: "SAFTfla", price: 5.00, depo: "flasche" },
       "softdrink": { name: "Softdrink", price: 3.00, depo: "flasche" },
       "wasser": { name: "Wasser", price: 2.50, depo: "flasche" },
       "longdrink": { name: "Longdrink", price: 4.50, depo: "becher" },
