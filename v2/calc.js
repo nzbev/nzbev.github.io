@@ -24,7 +24,7 @@ function leer(feld) {
 
 function plus(menge, feld, preis) {
 
-    feld = feld.substr(1, 1);
+    feld = feld.substr(1, 2);
 
     window.document.Rechner.elements["A" + feld].value = window.document.Rechner.elements["A" + feld].value + menge;
 
@@ -78,7 +78,7 @@ function dazu(preis, feld, pfand, pfandpreis) {
         var element = document.getElementById(pfand);
 
         // die Ziffer aus dem ButtonNamen extrahieren
-        element = element.name.substr(1, 1);
+        element = element.name.substr(1, 2);
         // das entsprechende AnzahlFeld erhoehen
         window.document.Rechner.elements["A" + element].value++;
 
