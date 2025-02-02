@@ -15,8 +15,8 @@
     <script type="text/javascript">
       for (const [event, eventvalue] of Object.entries(config)) {
         document.write("<tr><td colspan=3><h1>" + eventvalue.realname + "</h1></td></tr>")
-        for (const [location, locationvalue] of Object.entries(eventvalue.locations)) {
-          document.write("<td class=index><button type=button class=menu value="+locationvalue.realname+" onclick=\"window.location.href = './calc.html?event="+event+"&loc="+location+"';\">"+locationvalue.realname+"</button></td>")
+        for (const [location, locationvalue] of Object.entries(eventvalue.tv_slides)) {
+          document.write("<td class=index><button type=button class=menu value="+locationvalue.header+" onclick=\"window.location.href = './pricelist_tv.html?event="+event+"&loc="+location+"';\">"+locationvalue.header+"</button></td>")
         }
       }
       

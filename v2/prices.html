@@ -16,7 +16,7 @@
       for (const [event, eventvalue] of Object.entries(config)) {
         document.write("<tr><td colspan=3><h1>" + eventvalue.realname + "</h1></td></tr>")
         for (const [location, locationvalue] of Object.entries(eventvalue.locations)) {
-          document.write("<td class=index><button type=button class=menu value="+locationvalue.realname+" onclick=\"window.location.href = './calc.html?event="+event+"&loc="+location+"';\">"+locationvalue.realname+"</button></td>")
+          document.write("<td class=index><button type=button class=menu value="+locationvalue.realname+" onclick=\"window.location.href = './pricelist.html?event="+event+"&loc="+location+"';\">"+locationvalue.realname+"</button></td>")
         }
       }
       

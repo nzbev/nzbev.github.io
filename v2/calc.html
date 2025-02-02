@@ -22,7 +22,7 @@
       <script type = "text/javascript">
         var artcnt=0
         for (const [artkey, artvalue] of Object.entries(config[event].locations[loc].articles)) {
-          var art = config[event].articles
+          var art = Object.assign(defaultArticles, config[event].articles)
           var depoprice = 0
           if (art[artvalue].depo =="nix"){
             depoprice = 0

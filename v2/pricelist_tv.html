@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width = device-width">
+  <title>NZB Kasse</title>
+  <script type="text/javascript" src="data.js"></script>
+  <script type="text/javascript" src="calc.js"></script>
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body class=pricelist_tv >
+  <!--<p>Location:
+    <script type="text/javascript">
+      document.write(config[event].realname + " / " + config[event].locations[loc].realname)
+    </script>
+  </p>-->
+    <h1 class="pricelist_tv">
+      <script type = "text/javascript">
+        document.write(config[event].tv_slides[loc].header)
+      </script>
+    </h1>
+    <table border=0 cellpadding="0" cellspacing="0" class="pricelist_tv">
+      <script type = "text/javascript">
+        var artcnt=0
+        for (const [artkey, artvalue] of Object.entries(config[event].tv_slides[loc].pricelist)) {
+          //var art = config[event].articles
+          var art = Object.assign(defaultArticles, config[event].articles)
+
+          desc = ""
+          if (art[artvalue].pdesc) {
+            desc = "<p style='font-size: 50px'>" + art[artvalue].pdesc + "</p>"
+          }
+          
+          extra = ""
+          if (art[artvalue].extra) {
+            extra = "<p style='font-size: 50px'>" + art[artvalue].extra + "</p>"
+          }
+
+          price = ""
+          if (art[artvalue].price) {
+            price = art[artvalue].price.toFixed(2) + "€"
+          }
+
+
+          document.write(
+            '<tr>'+
+            '<td class="name_tv">' + 
+              art[artvalue].pname +
+              desc +
+              extra +
+            '</td>'+
+            '<td class="vol_tv">'  + art[artvalue].vol +'</td>'+
+            '<td class="price_tv">'+ price + '</td>' +
+            '</tr>'
+          )
+          artcnt+=1;
+        }
+      </script>
+    </table>
+</body>
+
+</html>

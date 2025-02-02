@@ -1,50 +1,126 @@
+defaultPrice = {
+  "bier":         3.50,
+  "most":         3.50,
+  "weinschorle":  4.50,
+  "sekt":         4.00,
+  "sektflasche": 14.00,
+  "saftflasche":  5.00,
+  "softdrink":    2.50,
+  "longdrink":    4.50,
+  "kurzer":       1.50,
+  "gluehmost":    3.00,
+  "kinderpunsch": 2.50,
+  "pfandFlasche": 1.00,
+  "pfandGlas":    2.00,
+  "pfandBecher":  2.00,
+  "kuchen":       2.00,
+  "muffin":       1.50,
+  "torte":        2.50,
+  "waffel":       1.00,
+  "kaffee":       1.50,
+}
+defaultArticles = {
+  "bier":        { name: "Bier/Most",     price: defaultPrice["bier"],          depo: "flasche", vol: "0,33l", pname:"Leibinger Edel" },
+  "bierAlkfrei": { name: "Bier alkfrei.", price: defaultPrice["bier"],          depo: "flasche", vol: "0,33l", pname:"Leibinger Alkoholfrei" },
+  "most":        { name: "Most",          price: defaultPrice["most"],          depo: "flasche", vol: "0,33l", pname:"Seemost Schorle Rot" },
+  "weinschorle": { name: "Weinsch.",      price: defaultPrice["weinschorle"],   depo: "flasche", vol: "0,33l", pname:"Weinschorle", pdesc: "Weiss oder Rosé" },
+  "sekt":        { name: "Sekt",          price: defaultPrice["sekt"],          depo: "becher",  vol: "0,20l", pname:"Sekt" },
+  "sektflasche": { name: "Sektfla.",      price: defaultPrice["sektflasche"],   depo: "flasche", vol: "0,75l", pname:"Flasche Sekt" },
+  "saftflasche": { name: "SAFTfla.",      price: defaultPrice["saftflasche"],   depo: "flasche", vol: "1,00l", pname:"Flasche Saft" },
+  "softdrink":   { name: "Softdrink",     price: defaultPrice["softdrink"],     depo: "flasche", vol: "0,50l", pname:"FEHLER" },
+  "wasser":      { name: "Wasser",        price: defaultPrice["softdrink"],     depo: "flasche", vol: "0,50l", pname:"Krumbach Wasser" },
+  "spezi":       { name: "Spezi",         price: defaultPrice["softdrink"],     depo: "flasche", vol: "0,50l", pname:"Krumbach ColaMix" },
+  "orange":      { name: "Orange",        price: defaultPrice["softdrink"],     depo: "flasche", vol: "0,50l", pname:"Krumbach Orangenlimo" },
+  "aschorle":    { name: "aschorle",      price: defaultPrice["softdrink"],     depo: "flasche", vol: "0,50l", pname:"Krumbach Apfelschorle" },
+  "longdrink":   { name: "Longdrink",     price: defaultPrice["longdrink"],     depo: "becher",  vol: "0,20l", pname:"Longdrink", pdesc: "Gin, Wodka, Asbach oder Bacardi", extra: "Energy, Lemon, Kirsch, Orange, Maracuja, Cola"},
+  "kurzer":      { name: "Kurzer",        price: defaultPrice["kurzer"],        depo: "nix",     vol: "0,02l", pname:"Ficken, Gletscher, Klopfer" },
+  "gluehmost":   { name: "Gl&uuml;hmost", price: defaultPrice["gluehmost"],     depo: "becher",  vol: "0,20l", pname:"Glühmost" },
+  "kinderpunsch":{ name: "Kinderp.",      price: defaultPrice["kinderpunsch"],  depo: "becher",  vol: "0,20l", pname:"Fruchtpunsch" },
+  "kuchen":      { name: "Kuchen",        price: defaultPrice["kuchen"],        depo: "nix",     vol: "1 Stk", pname: "Kuchen" },
+  "muffin":      { name: "Muffin",        price: defaultPrice["muffin"],        depo: "nix",     vol: "1 Stk", pname: "Muffin" },
+  "torte":       { name: "Torte",         price: defaultPrice["torte"],         depo: "nix",     vol: "1 Stk", pname: "Torte" },
+  "waffel":      { name: "Waffel",        price: defaultPrice["waffel"],        depo: "nix",     vol: "1 Stk", pname: "Waffel" },
+  "kaffee":      { name: "Kaffee",        price: defaultPrice["kaffee"],        depo: "nix",     vol: "1 Tasse", pname: "Kaffee" },
+
+  "pfandGlas":   { name: "Glas",    price: defaultPrice["pfandGlas"],     vol: "", pname:"Pfand Glas"},
+  "pfandBecher": { name: "Becher",  price: defaultPrice["pfandBecher"],   vol: "", pname:"Pfand Becher"},
+  "pfandFlasche":{ name: "Flasche", price: defaultPrice["pfandFlasche"],  vol: "", pname:"Pfand Flasche"},
+
+  "leerzeile":   { name: "", vol: "", pname: "", price: 0 },
+
+}
+
+
 config = {
   "kinderumzug": {
     realname: "Kinderumzug",
     articles: {
-      "gluehmost": { name: "Gl&uuml;hmost", price: 3.00, depo: "flasche" },
-      "kinderpunsch": { name: "Kinderp.", price: 2.50, depo: "flasche" },
-      "bier": { name: "Bier / Most", price: 3.50, depo: "flasche" },
-      "kuchen": { name: "Kuchen / Kaffee", price: 2.00, depo: "nix" },
-      "suess": { name: "S&uuml;&szlig;t&uuml;te", price: 1.50, depo: "nix" },
-      "alkfrei": { name: "Wasser/Limo", price: 2.00, depo: "flasche" }
+      "suess": { name: "S&uuml;&szlig;t&uuml;te", price: 1.50, depo: "nix", vol: "1 Stk", pname: "Süßigkeitentüte" },
     },
     depo: {
-      "flasche": { name: "Pfand", price: 1.00 }
+      "flasche": { name: "Flasche", price: defaultPrice["pfandFlasche"] },
+      "becher":  { name: "Becher",  price: defaultPrice["pfandBecher"]  }
+    },
+    tv_slides: {
+      beer: {
+        articles: [
+          "bier",
+          "bierAlkfrei"
+        ]
+      }
     },
     locations: {
       getraenke: {
         realname: "Getr&auml;nke",
         articles: [
-          "alkfrei",
+          "softdrink",
           "gluehmost",
           "kinderpunsch",
           "bier",
           "kuchen",
           "suess"
+        ],
+        pricelist: [
+          "bier",
+          "bierAlkfrei",
+          "most",
+          "leerzeile",
+          "spezi",
+          "aschorle",
+          "orange",
+          "wasser",
+          "leerzeile",
+          "gluehmost",
+          "kinderpunsch",
+          "leerzeile",
+          "kuchen",
+          "suess",
+          "leerzeile",
+          "pfandBecher",
+          "pfandFlasche"
         ]
       },
-    }
+    },
+    tv_slides: {
+      beer: {
+        header: "BIER / MOST",
+        pricelist: [
+          "bier",
+          "bierAlkfrei",
+          "most"
+        ]
+      }
+    },
   },
   "narrentaufe": {
     realname: "Narrentaufe",
-    articles: {
-      "bier": { name: "Bier/Most", price: 3.50, depo: "flasche" },
-      "weinschorle": { name: "Weinsch.", price: 4.50, depo: "flasche" },
-      "sekt": { name: "Sekt", price: 4.00, depo: "flasche" },
-      "sektflasche": { name: "Sektfla.", price: 14.00, depo: "flasche" },
-      "saftflasche": { name: "SAFTfla.", price: 5.00, depo: "flasche" },
-      "softdrink": { name: "Softdrink", price: 2.50, depo: "flasche" },
-      "longdrink": { name: "Longdrink", price: 4.50, depo: "flasche" },
-      "kurzer": { name: "Kurzer", price: 1.50, depo: "nix" },
-      "gluehmost": { name: "Gl&uuml;hmost", price: 3.00, depo: "flasche" },
-      "kinderpunsch": { name: "Kinderp.", price: 2.50, depo: "flasche" },
-    },
+    articles: {},
     depo: {
-      "flasche": { name: "Pfand", price: 1.00 }
+      "flasche": { name: "Flasche", price: defaultPrice["pfandFlasche"], },
+      "becher":  { name: "Becher",  price: defaultPrice["pfandBecher"],  }
     },
     "locations": {
-      "wagen": {
+      "aussenbar": {
         realname: "Narrenwagen",
         "articles": [
           "bier",
@@ -53,6 +129,22 @@ config = {
           "kurzer",
           "gluehmost",
           "kinderpunsch"
+        ],
+        "pricelist": [
+          "bier",
+          "bierAlkfrei",
+          "most",
+          "weinschorle",
+          "leerzeile",
+          "spezi",
+          "aschorle",
+          "orange",
+          "wasser",
+          "leerzeile",
+          "kurzer",
+          "leerzeile",
+          "pfandBecher",
+          "pfandFlasche"
         ]
       },
       "zelt": {
@@ -66,26 +158,71 @@ config = {
           "sekt",
           "sektflasche",
           "saftflasche"
+        ],
+        "pricelist" : [
+          "bier",
+          "bierAlkfrei",
+          "most",
+          "weinschorle",
+          "leerzeile",
+          "spezi",
+          "aschorle",
+          "orange",
+          "wasser",
+          "leerzeile",
+          "sekt",
+          "sektflasche",
+          "saftflasche",
+          "longdrink",
+          "kurzer",
+          "leerzeile",
+          "pfandBecher",
+          "pfandFlasche"
         ]
       }
-    }
+    },
+    tv_slides: {
+      beer: {
+        header: "BIER / MOST",
+        pricelist: [
+          "bier",
+          "bierAlkfrei",
+          "most"
+        ]
+      },
+      wine: {
+        header: "WEIN / SEKT",
+        pricelist: [
+          "weinschorle",
+          "sekt",
+          "sektflasche",
+          "saftflasche"
+        ]
+      },
+      softdrinks: {
+        header: "SOFTDRINKS",
+        pricelist: [
+          "spezi",
+          "aschorle",
+          "orange",
+          "wasser",
+        ]
+      },
+      longdrinks: {
+        header: "LONGDRINKS",
+        pricelist: [
+          "longdrink",
+          "kurzer",
+        ]
+      },
+    },
   },
   "dorffasnet": {
     realname: "Dorffasnet",
-    articles: {
-      "bier": { name: "Bier/Most", price: 3.50, depo: "flasche" },
-      "weinschorle": { name: "Weinsch.", price: 4.50, depo: "flasche" },
-      "sekt": { name: "Sekt", price: 4.00, depo: "flasche" },
-      "sektflasche": { name: "Sektfla.", price: 14.00, depo: "flasche" },
-      "saftflasche": { name: "SAFTfla.", price: 5.00, depo: "flasche" },
-      "softdrink": { name: "Softdrink", price: 2.50, depo: "flasche" },
-      "longdrink": { name: "Longdrink", price: 4.50, depo: "flasche" },
-      "kurzer": { name: "Kurzer", price: 1.50, depo: "nix" },
-      "gluehmost": { name: "Gl&uuml;hmost", price: 3.00, depo: "flasche" },
-      "kinderpunsch": { name: "Kinderp.", price: 2.50, depo: "flasche" },
-    },
+    articles: {},
     depo: {
-      "flasche": { name: "Pfand", price: 1.00 },
+      "flasche": { name: "Flasche", price: defaultPrice["pfandFlasche"], },
+      "becher":  { name: "Becher",  price: defaultPrice["pfandBecher"],  }
     },
     "locations": {
       "aussenbar": {
@@ -97,6 +234,22 @@ config = {
           "kurzer",
           "gluehmost",
           "kinderpunsch"
+        ],
+        "pricelist": [
+          "bier",
+          "bierAlkfrei",
+          "most",
+          "weinschorle",
+          "leerzeile",
+          "spezi",
+          "aschorle",
+          "orange",
+          "wasser",
+          "leerzeile",
+          "kurzer",
+          "leerzeile",
+          "pfandBecher",
+          "pfandFlasche"
         ]
       },
       "zelt": {
@@ -110,22 +263,75 @@ config = {
           "sekt",
           "sektflasche",
           "saftflasche"
+        ],
+        "pricelist" : [
+          "bier",
+          "bierAlkfrei",
+          "most",
+          "weinschorle",
+          "leerzeile",
+          "spezi",
+          "aschorle",
+          "orange",
+          "wasser",
+          "leerzeile",
+          "sekt",
+          "sektflasche",
+          "saftflasche",
+          "longdrink",
+          "kurzer",
+          "leerzeile",
+          "pfandBecher",
+          "pfandFlasche"
         ]
       }
-    }
+    },
+    tv_slides: {
+      beer: {
+        header: "BIER / MOST",
+        pricelist: [
+          "bier",
+          "bierAlkfrei",
+          "most"
+        ]
+      },
+      wine: {
+        header: "WEIN / SEKT",
+        pricelist: [
+          "weinschorle",
+          "sekt",
+          "sektflasche",
+          "saftflasche"
+        ]
+      },
+      softdrinks: {
+        header: "SOFTDRINKS",
+        pricelist: [
+          "spezi",
+          "aschorle",
+          "orange",
+          "wasser",
+        ]
+      },
+      longdrinks: {
+        header: "LONGDRINKS",
+        pricelist: [
+          "longdrink",
+          "kurzer",
+        ]
+      },
+    },
   },
   "funken": {
     realname: "Funken",
     articles: {
-      "bier": { name: "Bier/Most", price: 3.50, depo: "flasche" },
-      "softdrink": { name: "Softdrink", price: 2.50, depo: "flasche" },
-      "kurzer": { name: "Kurzer", price: 1.50, depo: "nix" },
-      "gluehwein": { name: "Gl&uuml;hwein", price: 2.50, depo: "nix" },
-      "kinderpunsch": { name: "Kinderp.", price: 2.00, depo: "nix" },
-      "funkenring": { name: "Funkenring", price: 3.50, depo: "nix" }
+      "kurzer":     { name: "Kurzer",     price: defaultPrice["kurzer"], depo: "nix", vol: "0,02l", pname: "Klopfer" },
+      "funkenring": { name: "Funkenring", price: 3.50,                   depo: "nix", vol: "",      pname: "Funkenring" }
+
     },
     depo: {
-      "flasche": { name: "Pfand", price: 1.00 },
+      "flasche": { name: "Flasche", price: defaultPrice["pfandFlasche"], },
+      "becher":  { name: "Becher",  price: defaultPrice["pfandBecher"],  }
     },
     locations: {
       getraenke: {
@@ -133,15 +339,38 @@ config = {
         articles: [
           "bier",
           "softdrink",
-          "gluehwein",
+          "gluehmost",
           "kinderpunsch",
           "funkenring"
+        ],
+        pricelist: [
+          "bier",
+          "bierAlkfrei",
+          "most",
+          "leerzeile",
+          "spezi",
+          "aschorle",
+          "orange",
+          "wasser",
+          "leerzeile",
+          "kurzer",
+          "leerzeile",
+          "funkenring",
+          "leerzeile",
+          "pfandBecher",
+          "pfandFlasche"
         ]
       },
       kuchenverkauf: {
         realname: "Kuchenverkauf",
         articles: [
           "kuchen",
+          "torte",
+          "muffin"
+        ],
+        pricelist: [
+          "kuchen",
+          "torte",
           "muffin"
         ]
       }
@@ -149,21 +378,10 @@ config = {
   },
   "maibaum": {
     realname: "1.Mai",
-    articles: {
-      "bier": { name: "Bier/Most", price: 3.50, depo: "flasche" },
-      "weinschorle": { name: "Weinsch.", price: 4.50, depo: "flasche" },
-      "wasser": { name: "Wasser/Apfel.", price: 2.50, depo: "flasche" },
-      "cola": { name: "Col/Fan/Spe.", price: 3.00, depo: "flasche" },
-      "longdrink": { name: "Longdri/Sekt", price: 4.50, depo: "flasche" },
-      "sektflasche": { name: "Sektfla.", price: 14.00, depo: "flasche" },
-      "saftflasche": { name: "SAFTfla.", price: 5.00, depo: "flasche" },
-      "kaffee": { name: "Kaffee", price: 1.50, depo: "nix" },
-      "kuchen": { name: "Kuchen", price: 2.00, depo: "nix" },
-      "torte": { name: "Torte", price: 2.50, depo: "nix" },
-      "waffel": { name: "Waffel", price: 1.00, depo: "nix" },
-    },
+    articles: {},
     depo: {
-      "flasche": { name: "Pfand", price: 1.00 },
+      "flasche": { name: "Flasche", price: defaultPrice["pfandFlasche"], },
+      "becher":  { name: "Becher",  price: defaultPrice["pfandBecher"],  }
     },
     "locations": {
       "kuchenstand": {
@@ -234,169 +452,6 @@ config = {
           "cola",
           "spezi",
           "wasser"
-        ]
-      }
-    }
-  },
-  "jubila": {
-    "realname": "Langenargen 2025",
-    articles: {
-      "bier": { name: "Bier/Most", price: 3.50, depo: "flasche" },
-      "weinschorle": { name: "Weinsch", price: 4.50, depo: "flasche" },
-      "sekt": { name: "Sekt", price: 2.50, depo: "becher" },
-      "sektflasche": { name: "Sektfla", price: 14.00, depo: "flasche" },
-      "saftflasche": { name: "SAFTfla", price: 5.00, depo: "flasche" },
-      "softdrink": { name: "Softdrink", price: 3.00, depo: "flasche" },
-      "wasser": { name: "Wasser", price: 2.50, depo: "flasche" },
-      "longdrink": { name: "Longdrink", price: 4.50, depo: "becher" },
-      "kurzer": { name: "Kurzer", price: 1.50, depo: "nix" },
-    },
-    depo: {
-      "becher": { name: "Becher", price: 3.00 },
-      "flasche": { name: "Flasche", price: 1.00 }
-    },
-    "locations": {
-      "drinnen": {
-        realname: "Drinnen",
-        articles: [
-          "bier",
-          "weinschorle",
-          "softdrink",
-          "wasser",
-          "sekt",
-          "sektflasche",
-          "saftflasche",
-          "longdrink",
-          "kurzer"
-        ]
-      },
-      "draussen": {
-        realname: "Draussen",
-        articles: [
-          "bier",
-          "weinschorle",
-          "softdrink",
-          "wasser"
-        ]
-      }
-    }
-  },
-  "scbfootpong": {
-    realname: "Footpong",
-    articles: {
-      bier: { name: "Bier/Mostsch.", price: 3.50, depo: "glas" },
-      most: { name: "Most pur", price: 4.00, depo: "glas" },
-      wasser: { name: "Wasser", price: 2.50, depo: "flasche" },
-      softdrink: { name: "Softdrink", price: 3.00, depo: "flasche" },
-      peng: { name: "Peng", price: 4.50, depo: "glas" },
-      kurzer: { name: "Kurzer", price: 1.50, depo: "nix"}
-    },
-    depo: {
-      "glas": { name: "Glas", price: 3.00 },
-      "flasche": { name: "Flasche", price: 1.00 },
-    },
-    locations: {
-      ausschank: {
-        realname: "Ausschank",
-        articles: [
-          "bier",
-          "most",
-          "wasser",
-          "softdrink",
-          "peng",
-          "kurzer"
-        ]
-      }
-    }
-  },
-  "scbbaehnlesfest": {
-    realname: "B&uml;hnlesfest",
-    articles: {
-      bier: { name: "Bier", price: 4.00, depo: "glas" },
-      most: { name: "Most", price: 3.50, depo: "glas" },
-      bieranti: { name: "Alkfrei. Bier", price: 3.00, depo: "flasche" },
-      spezi: { name: "Spezi/ACE", price: 3.00, depo: "flasche" },
-      wasser: { name: "Wasser", price: 2.50, depo: "flasche"}
-    },
-    depo: {
-      "glas": { name: "Glas", price: 4.00 },
-      "flasche": { name: "Flasche", price: 2.00 },
-    },
-    locations: {
-      ausschank: {
-        realname: "Ausschank",
-        articles: [
-          "bier",
-          "most",
-          "bieranti",
-          "spezi",
-          "wasser"
-        ]
-      }
-    }
-  },
-  "nzttweiberball": {
-    realname: "Weiberball Tettnang",
-    articles: {
-      bier: { name: "Bier/Radler", price: 3.50, depo: "flasche" },
-      alkfrei: { name: "Alkfrei.", price: 2.50, depo: "flasche" },
-      sekt: { name: "Sekt Glas", price: 3.00, depo: "flasche" },
-      sektflasche: { name: "Sekt Flasche", price: 17.00, depo: "flasche" },
-      longdrink: { name: "Longdrink", price: 4.50, depo: "flasche"},
-      weins: { name: "Weinsch.", price: 4.50, depo: "flasche" }
-
-    },
-    depo: {
-      "flasche": { name: "Pfand", price: 2.00 },
-    },
-    locations: {
-      ausschank: {
-        realname: "Ausschank",
-        articles: [
-          "bier",
-          "alkfrei",
-          "sekt",
-          "sektflasche",
-          "longdrink",
-          "weins"
-
-        ]
-      }
-    }
-  },
-  "ffwfloriansfest": {
-    realname: "FFW Floriansfest",
-    articles: {
-      bier: { name: "Bier/Most", price: 3.50, depo: "nix" },
-      alkfrei: { name: "Alkfrei. Bier", price: 3.00, depo: "nix" },
-      cola: { name: "Col/Fan/Was", price: 2.50, depo: "nix" },
-      softdrink: { name: "Softdrink", price: 3.00, depo: "nix" },
-      weins: { name: "Weinsch.", price: 4.00, depo: "nix" },
-      rote: { name: "Rote", price: 3.50, depo: "nix" },
-      curry: { name: "Curryw.", price: 4.00, depo: "nix" },
-      pommes: { name: "Pommes", price: 3.00, depo: "nix" },
-      steak: { name: "Steak", price: 4.50, depo: "nix" },
-      mitmsal: { name: "Mi.Ess M Sal", price: 12.00, depo: "nix" },
-      mitosal: { name: "Mi.Ess O Sal", price: 9.00, depo: "nix" },
-      salat: { name: "Salat", price: 4.00, depo: "nix" }
-    },
-    depo: { },
-    locations: {
-      floriansfest: {
-        realname: "Alles",
-        articles: [
-          "bier",
-          "alkfrei",
-          "cola",
-          "softdrink",
-          "weins",
-          "rote",
-          "curry",
-          "pommes",
-          "steak",
-          "mitmsal",
-          "mitosal",
-          "salat"
         ]
       }
     }
