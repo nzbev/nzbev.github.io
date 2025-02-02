@@ -3,57 +3,10 @@
 <head>
     <title>NZB Kasse</title>
     <script type="text/javascript" src="data.js"></script>
-
-  
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tile Layout</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f4f4f4;
-            flex-direction: column;
-        }
-        .group {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            max-width: 500px;
-            margin: auto;
-        }
-        .headcontainer {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            max-width: 500px;
-            margin: auto;
-        }
-        .tile {
-            background: white;
-            padding: 20px;
-            text-align: center;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        h1, h2 {
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" href="./style_menu.css">
 </head>
-
-<!--
-
--->
-
 <body>
     
     <div class="group">
@@ -64,7 +17,12 @@
             <div class="tile"><a href="prices_tv.html">TV</a></div>
         </div>
       </div>
-    <h1>TV</h1>
+      <h1>TV
+        <script>
+          url=document.URL.split("/")
+          document.write(url[url.length-2].toUpperCase())
+        </script>
+      </h1>
     <script type="text/javascript">
       for (const [event, eventvalue] of Object.entries(config)) {
         document.write("<div class=group><h2>" + eventvalue.realname + "</h2><div class=container>")

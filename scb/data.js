@@ -1,9 +1,30 @@
 defaultPrice = {
-  "bier": 3.50,
-  "most": 3.50,
-  "weinschorle": 4.50,
+  "bier":         4.00,
+  "most":         4.00,
+  "softdrink":    3.00,
+  "longdrink":    4.50,
+
+  "pfandGlas":    3.00,
+  "pfandFlasche": 2.00,
+  "pfandBecher":  2.00  
 }
-defaultArticles = {}
+defaultArticles = {
+  "bier":        { name: "Bier",          price: defaultPrice["bier"],      depo: "glas",    vol: "0,50l", pname: "Meckatzer Weissgold" },
+  "most":        { name: "Most",          price: defaultPrice["most"],      depo: "glas",    vol: "0,50l", pname: "Seemost Schorle Rot" },
+  "bieranti":    { name: "Alkfrei. Bier", price: 3.00,                      depo: "flasche", vol: "0,33l", pname: "Meckatzer Alkoholfrei" },
+  "softdrink":   { name: "Softdrink",     price: defaultPrice["softdrink"], depo: "flasche" },
+  "wasser":      { name: "Wasser",        price: 2.50,                      depo: "flasche", vol: "0,50l", pname: "Krumbach Wasser"},
+  "spezi":       { name: "Spezi",         price: defaultPrice["softdrink"], depo: "flasche", vol: "0,50l", pname: "Krumbach ColaMix" },
+  "ace":         { name: "ACE",           price: defaultPrice["softdrink"], depo: "flasche", vol: "0,50l", pname: "Krumbach ACE" },
+  "peng":        { name: "Peng",          price: defaultPrice["longdrink"], depo: "glas",    vol: "0,20l", pname: "Peng" },
+  "kurzer":      { name: "Kurzer",        price: 1.50,                      depo: "nix",     vol: "0,02l", pname: "Klopfer" },
+
+  "pfandGlas":   { name: "Glas",          price: defaultPrice["pfandGlas"],     vol: "", pname:"Pfand Glas"},
+  "pfandBecher": { name: "Becher",        price: defaultPrice["pfandBecher"],   vol: "", pname:"Pfand Becher"},
+  "pfandFlasche":{ name: "Flasche",       price: defaultPrice["pfandFlasche"],  vol: "", pname:"Pfand Flasche"},
+
+  "leerzeile":   { name: "", vol: "", pname: "", price: 0 },
+}
 
 logo="https://scbuergermoos.de/bilder/vereinslogo.png"
 background_tv=""
@@ -11,17 +32,10 @@ background_tv=""
 config = {
   "scbfootpong": {
     realname: "Footpong",
-    articles: {
-      bier: { name: "Bier/Mostsch.", price: 3.50, depo: "glas" },
-      most: { name: "Most pur", price: 4.00, depo: "glas" },
-      wasser: { name: "Wasser", price: 2.50, depo: "flasche" },
-      softdrink: { name: "Softdrink", price: 3.00, depo: "flasche" },
-      peng: { name: "Peng", price: 4.50, depo: "glas" },
-      kurzer: { name: "Kurzer", price: 1.50, depo: "nix"}
-    },
+    articles: {},
     depo: {
-      "glas": { name: "Glas", price: 3.00 },
-      "flasche": { name: "Flasche", price: 1.00 },
+        "flasche": { name: "Flasche", price: defaultPrice["pfandFlasche"] },
+        "glas":    { name: "Glas",    price: defaultPrice["pfandGlas"]  }
     },
     locations: {
       ausschank: {
@@ -33,12 +47,27 @@ config = {
           "softdrink",
           "peng",
           "kurzer"
-        ]
+        ],
+        pricelist: [
+          "bier",
+          "most",
+          "bieranti",
+          "leerzeile",
+          "peng",
+          "kurzer",
+          "leerzeile",
+          "wasser",
+          "spezi",
+          "ace",
+          "leerzeile",
+          "pfandFlasche",
+          "pfandGlas"
+        ],
       }
     }
   },
   "scbbaehnlesfest": {
-    realname: "B&uml;hnlesfest",
+    realname: "Bähnlesfest",
     articles: {
       bier: { name: "Bier", price: 4.00, depo: "glas" },
       most: { name: "Most", price: 3.50, depo: "glas" },
