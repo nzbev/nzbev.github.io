@@ -63,12 +63,12 @@
           <div class="tile"><a href="prices_tv.html">TV</a></div>
       </div>
     </div>
-    <h1>TV</h1>
+    <h1>Papier</h1>
     <script type="text/javascript">
       for (const [event, eventvalue] of Object.entries(config)) {
         document.write("<div class=group><h2>" + eventvalue.realname + "</h2><div class=container>")
-        for (const [location, locationvalue] of Object.entries(eventvalue.tv_slides)) {
-          document.write("<div class=tile onclick=\"window.location.href = './pricelist_tv.html?event="+event+"&loc="+location+"';\">"+locationvalue.header+"</div>")
+        for (const [location, locationvalue] of Object.entries(eventvalue.locations)) {
+          document.write("<div class=tile onclick=\"window.location.href = './pricelist_paper.html?event="+event+"&loc="+location+"';\">"+locationvalue.realname+"</div>")
         }
         document.write("</div></div>")
       }

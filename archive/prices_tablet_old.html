@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width = device-width">
+  <title>NZB Kasse</title>
+  <script type="text/javascript" src="data.js"></script>
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <a href="index.html">Tablet</a> --- <a href="prices_tv.html">TV</a> --- <a href="prices.html">Listen</a>
+  <table border="0" cellpadding="0" cellspacing="0" class="table">
+    <script type="text/javascript">
+      for (const [event, eventvalue] of Object.entries(config)) {
+        document.write("<tr><td colspan=3><h1>" + eventvalue.realname + "</h1></td></tr>")
+        for (const [location, locationvalue] of Object.entries(eventvalue.locations)) {
+          document.write("<td class=index><button type=button class=menu value="+locationvalue.realname+" onclick=\"window.location.href = './calc.html?event="+event+"&loc="+location+"';\">"+locationvalue.realname+"</button></td>")
+        }
+      }
+      
+    </script>
+  </table>
+</body>
+
+</html>

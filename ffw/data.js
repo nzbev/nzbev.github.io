@@ -5,6 +5,9 @@ defaultPrice = {
 }
 defaultArticles = {}
 
+logo="https://feuerwehr-tettnang.de/images/logo_header.png"
+background_tv=""
+
 config = {
   "ffwfloriansfest": {
     realname: "FFW Floriansfest",

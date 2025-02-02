@@ -50,6 +50,9 @@ defaultArticles = {
 
 }
 
+logo          = "https://nzburgermooswebs-7wxx9kvh2v.live-website.com/wp-content/uploads/2025/02/Logo_Farbe_Freigestellt_kleiner1.png"
+background_tv = "https://nzburgermooswebs-7wxx9kvh2v.live-website.com/wp-content/uploads/2025/02/slides-background.jpg"
+
 
 config = {
   "kinderumzug": {
