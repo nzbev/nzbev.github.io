@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width = device-width">
+  <title>NZB Kasse</title>
+  <script type="text/javascript" src="data.js"></script>
+  <script type="text/javascript" src="calc.js"></script>
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <!--<p>Location:
+    <script type="text/javascript">
+      document.write(config[event].realname + " / " + config[event].locations[loc].realname)
+    </script>
+  </p>-->
+
+  <form name="Rechner" action="" onsubmit="return false;">
+    <table border="0" cellpadding="0" cellspacing="0" class="table">
+      <script type = "text/javascript">
+        var artcnt=0
+        for (const [artkey, artvalue] of Object.entries(config[event].locations[loc].articles)) {
+          var art = Object.assign(defaultArticles, config[event].articles)
+          var depoprice = 0
+          if (art[artvalue].depo =="nix"){
+            depoprice = 0
+          }else{
+            depoprice = config[event].depo[art[artvalue].depo].price
+          }
+          
+          
+          document.write(
+            '<tr>'+
+            '<td class="erste"><button type="button" name="B'+ artcnt +'" class="green" value="'+ artvalue +'"' +
+            'onclick="dazu('+art[artvalue].price+', this.name, \''+art[artvalue].depo+'\','+depoprice+')">'+art[artvalue].name+'</button></td>'+
+            '<td class="zweite"><input type="text" name="A'+ artcnt +'" class="small" readonly></td>',
+            '<td class="dritte"><input type="text" name="S'+ artcnt +'" class="big" readonly></td>',
+            '</tr>'
+          )
+          artcnt+=1;
+        }
+        for (const [depokey, depovalue] of Object.entries(config[event].depo)) {
+          document.write(
+            '<tr>',
+              '<td class="erste"><button type="button" name="B'+ artcnt +'" class="grau" value="'+depovalue.name+'" id="'+depokey+'">'+depovalue.name+'</button></td>',
+              '<td class="zweite"><input type="text" name="A'+ artcnt +'" class="small" disabled></td>',
+	            '<td class="dritte"><input type="text" name="S'+ artcnt +'" class="big" disabled></td>',
+            '<tr>'
+          )
+          artcnt+=1;
+            
+        }
+        for (const [depokey, depovalue] of Object.entries(config[event].depo)) {
+          document.write(
+            '<tr>',
+              '<td class="erste"><button type="button" name="B'+ artcnt +'" class="green" value="'+depovalue.name+' ret" onclick="dazu('+depovalue.price*-1+', this.name)">'+depovalue.name+' zur</button></td>',
+              '<td class="zweite"><input type="text" name="A'+ artcnt +'" class="small" readonly></td>',
+              '<td class="dritte"><input type="text" name="S'+ artcnt +'" class="big" readonly></td>',
+            '<tr>'
+          )
+          artcnt+=1;
+        }
+      </script>
+      <tr>
+        <td><button type="reset" class="rot" value="L&ouml;schen">L&ouml;schen</button></td>
+        <td class="font" align="center">Sum</td>
+        <td><input type="text" name="Summe" class="big" readonly></td>
+      </tr>
+    </table>
+  </form>
+</body>
+
+</html>
