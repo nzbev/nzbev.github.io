@@ -40,7 +40,8 @@
 <body>
     <h1>Kasse
       <script>
-        document.write(document.URL.split("/")[9].toUpperCase())
+        url=document.URL.split("/")
+        document.write(url[url.length-2].toUpperCase())
       </script>
     </h1>
     <div class="container">
