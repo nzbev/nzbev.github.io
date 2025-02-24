@@ -13,7 +13,7 @@ config = {
     realname: "Weiberball Tettnang",
     articles: {
       bier: { name: "Bier/Radler", price: 3.50, depo: "flasche" },
-      alkfrei: { name: "Alkfrei.", price: 2.50, depo: "flasche" },
+      alkfrei: { name: "Alkfrei.", price: 3.00, depo: "flasche" },
       sekt: { name: "Sekt Glas", price: 3.00, depo: "flasche" },
       sektflasche: { name: "Sekt Flasche", price: 17.00, depo: "flasche" },
       longdrink: { name: "Longdrink", price: 4.50, depo: "flasche"},
