@@ -9,6 +9,7 @@ defaultPrice = {
   "longdrink":    4.50,
   "kurzer":       1.50,
   "gluehmost":    3.00,
+  "gluehwein":    3.00,
   "kinderpunsch": 2.50,
   "pfandFlasche": 1.00,
   "pfandGlas":    2.00,
@@ -35,6 +36,7 @@ defaultArticles = {
   "longdrink":   { name: "Longdrink",     price: defaultPrice["longdrink"],     depo: "becher",  vol: "0,20l", pname:"Longdrink", pdesc: "Gin, Wodka, Asbach oder Bacardi", extra: "Energy, Lemon, Kirsch, Orange, Maracuja, Cola"},
   "kurzer":      { name: "Kurzer",        price: defaultPrice["kurzer"],        depo: "nix",     vol: "0,02l", pname:"Ficken, Gletscher, Klopfer" },
   "gluehmost":   { name: "Gl&uuml;hmost", price: defaultPrice["gluehmost"],     depo: "becher",  vol: "0,20l", pname:"Glühmost" },
+  "gluehwein":   { name: "Gl&uuml;hwein", price: defaultPrice["gluehwein"],     depo: "becher",  vol: "0,20l", pname:"Glühwein" },
   "kinderpunsch":{ name: "Kinderp.",      price: defaultPrice["kinderpunsch"],  depo: "becher",  vol: "0,20l", pname:"Fruchtpunsch" },
   "kuchen":      { name: "Kuchen",        price: defaultPrice["kuchen"],        depo: "nix",     vol: "1 Stk", pname: "Kuchen" },
   "muffin":      { name: "Muffin",        price: defaultPrice["muffin"],        depo: "nix",     vol: "1 Stk", pname: "Muffin" },
@@ -328,13 +330,12 @@ config = {
   "funken": {
     realname: "Funken",
     articles: {
-      "kurzer":     { name: "Kurzer",     price: defaultPrice["kurzer"], depo: "nix", vol: "0,02l", pname: "Klopfer" },
-      "funkenring": { name: "Funkenring", price: 3.50,                   depo: "nix", vol: "",      pname: "Funkenring" }
-
+      "funkenring":  { name: "Funkenring",    price: 3.50,                          depo: "nix", vol: "",      pname: "Funkenring" },
+      "gluehwein":   { name: "Gl&uuml;hwein", price: defaultPrice["gluehwein"],     depo: "nix", vol: "0,20l", pname:"Glühwein" },
+      "kinderpunsch":{ name: "Kinderp.",      price: defaultPrice["kinderpunsch"],  depo: "nix", vol: "0,20l", pname:"Fruchtpunsch" },           
     },
     depo: {
       "flasche": { name: "Flasche", price: defaultPrice["pfandFlasche"], },
-      "becher":  { name: "Becher",  price: defaultPrice["pfandBecher"],  }
     },
     locations: {
       getraenke: {
@@ -342,7 +343,7 @@ config = {
         articles: [
           "bier",
           "softdrink",
-          "gluehmost",
+          "gluehwein",
           "kinderpunsch",
           "funkenring"
         ],
@@ -356,12 +357,11 @@ config = {
           "orange",
           "wasser",
           "leerzeile",
-          "gluehmost",
+          "gluehwein",
           "kinderpunsch",
           "leerzeile",
           "funkenring",
           "leerzeile",
-          "pfandBecher",
           "pfandFlasche"
         ]
       },
