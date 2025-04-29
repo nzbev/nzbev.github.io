@@ -47,7 +47,7 @@ defaultArticles = {
   "pfandGlas":   { name: "Glas",    price: defaultPrice["pfandGlas"],     vol: "", pname:"Pfand Glas"},
   "pfandBecher": { name: "Becher",  price: defaultPrice["pfandBecher"],   vol: "", pname:"Pfand Becher"},
   "pfandFlasche":{ name: "Flasche", price: defaultPrice["pfandFlasche"],  vol: "", pname:"Pfand Flasche"},
-
+  "pfand":       { name: "Pfand",   price: defaultPrice["pfandFlasche"],  vol: "", pname:"Pfand"},
   "leerzeile":   { name: "", vol: "", pname: "", price: 0 },
 
 }
@@ -382,54 +382,102 @@ config = {
   },
   "maibaum": {
     realname: "1.Mai",
-    articles: {},
+    articles: {
+      "bier":        { name: "Bier/Most",     price: 4.00,                          depo: "flasche", vol: "0,50l", pname:"Meckatzer Weissgold" },
+      "bierAlkfrei": { name: "Bier alkfrei.", price: defaultPrice["bier"],          depo: "flasche", vol: "0,33l", pname:"Meckatzer Alkoholfrei" },
+      "most":        { name: "Most",          price: 4.00,                          depo: "flasche", vol: "0,50l", pname:"Seemost Rot", pdesc: "Schorle S&uuml;&szlig; oder Sauer" },
+      "weinschorle": { name: "Weinsch.",      price: defaultPrice["weinschorle"],   depo: "flasche", vol: "0,33l", pname:"Weinschorle", pdesc: "Weiss oder Rosé" },
+      "softdrink":   { name: "Softdrink",     price: defaultPrice["softdrink"],     depo: "flasche", vol: "0,50l", pname:"FEHLER" },
+      "wasser":      { name: "Wasser",        price: defaultPrice["softdrink"],     depo: "flasche", vol: "0,50l", pname:"Krumbach Wasser" },
+      "spezi":       { name: "Spezi/Cola",    price: 3.00,                          depo: "flasche", vol: "0,50l", pname:"Meckatzer MeckiMix" },
+      "orange":      { name: "Orange",        price: defaultPrice["softdrink"],     depo: "flasche", vol: "0,50l", pname:"Krumbach Orangenlimo" },
+      "aschorle":    { name: "aschorle",      price: defaultPrice["softdrink"],     depo: "flasche", vol: "0,50l", pname:"Krumbach Apfelschorle" },
+      "cola":        { name: "cola",          price: defaultPrice["softdrink"],     depo: "flasche", vol: "0,50l", pname:"Krumbach Cola" },
+      "kuchen":      { name: "Kuchen",        price: defaultPrice["kuchen"],        depo: "flasche", vol: "1 Stk", pname: "Kuchen" },
+      "muffin":      { name: "Muffin",        price: 1.00,                          depo: "nix",     vol: "1 Stk", pname: "Muffin" },
+      "torte":       { name: "Torte",         price: defaultPrice["torte"],         depo: "flasche", vol: "1 Stk", pname: "Torte" },
+      "waffel":      { name: "Waffel",        price: 1.00,                          depo: "nix",     vol: "1 Stk", pname: "Waffel" },
+      "kaffee":      { name: "Kaffee",        price: defaultPrice["kaffee"],        depo: "flasche", vol: "1 Tasse", pname: "Kaffee" },
+           
+    },
     depo: {
-      "flasche": { name: "Flasche", price: defaultPrice["pfandFlasche"], },
-      "becher":  { name: "Becher",  price: defaultPrice["pfandBecher"],  }
+      "flasche": { name: "Pfand", price: defaultPrice["pfandFlasche"], },
     },
     "locations": {
       "kuchenstand": {
         realname: "Kuchenstand",
         "articles": [
           "kaffee",
-          "kuchen",
           "torte",
+          "kuchen",
+          "muffin",
           "waffel"
+        ],
+        pricelist: [
+          "kaffee",
+          "torte",
+          "kuchen",
+          "muffin",
+          "waffel",
+          "leerzeile",
+          "pfand"
         ]
       },
-      "ausschank_abend": {
-        realname: "Ausschank Abend",
+      "ausschank": {
+        realname: "Ausschank",
         "articles": [
           "bier",
+          "bierAlkfrei",
           "weinschorle",
-          "wasser",
-          "cola",
-          "longdrink",
-          "sektflasche",
-          "saftflasche"
-        ]
-      },
-      "ausschank_tag": {
-        realname: "Ausschank Tag",
-        "articles": [
+          "spezi",
+          "softdrink"
+        ],
+        pricelist: [
           "bier",
+          "most",
+          "bierAlkfrei",
           "weinschorle",
-          "wasser",
+          "leerzeile",
+          "spezi",
           "cola",
+          "orange",
+          "aschorle",
+          "wasser",
+          "leerzeile",
+          "pfand"
         ]
       },
       "bedienung": {
         realname: "Bedienung",
         "articles": [
           "bier",
+          "bierAlkfrei",
           "weinschorle",
-          "wasser",
-          "cola",
-          "longdrink",
+          "spezi",
+          "softdrink",
           "kaffee",
-          "kuchen",
           "torte",
-          "waffel"
+          "kuchen",
+        ],
+        pricelist: [
+          "bier",
+          "most",
+          "bierAlkfrei",
+          "weinschorle",
+          "leerzeile",
+          "spezi",
+          "cola",
+          "orange",
+          "aschorle",
+          "wasser",
+          "leerzeile",
+          "kaffee",
+          "torte",
+          "kuchen",
+          "muffin",
+          "waffel",
+          "leerzeile",
+          "pfand"
         ]
       }
     }
