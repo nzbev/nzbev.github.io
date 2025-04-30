@@ -386,7 +386,7 @@ config = {
     articles: {
       "bier":        { name: "Bier/Most",     price: 4.00,                          depo: "flasche", vol: "0,50l", pname:"Meckatzer Weissgold" },
       "radler":      { name: "Radler",        price: 4.00,                          depo: "flasche", vol: "0,50l", pname:"Radler" },
-      "bierAlkfrei": { name: "Bier alkfrei.", price: defaultPrice["bier"],          depo: "flasche", vol: "0,33l", pname:"Meckatzer Alkoholfrei" },
+      "bierAlkfrei": { name: "Bier alkfrei.", price: 4.00,                          depo: "flasche", vol: "0,50l", pname:"Meckatzer Alkoholfrei" },
       "most":        { name: "Most",          price: 4.00,                          depo: "flasche", vol: "0,50l", pname:"Seemost Rot", pdesc: "Schorle S&uuml;&szlig; oder Sauer" },
       "weinschorle": { name: "Weinsch.",      price: defaultPrice["weinschorle"],   depo: "flasche", vol: "0,33l", pname:"Weinschorle", pdesc: "Weiss oder Rosé" },
       "softdrink":   { name: "Softdrink",     price: defaultPrice["softdrink"],     depo: "flasche", vol: "0,50l", pname:"FEHLER" },
@@ -428,7 +428,6 @@ config = {
         realname: "Ausschank",
         "articles": [
           "bier",
-          "bierAlkfrei",
           "weinschorle",
           "spezi",
           "softdrink"
@@ -452,7 +451,6 @@ config = {
         realname: "Bedienung",
         "articles": [
           "bier",
-          "bierAlkfrei",
           "weinschorle",
           "spezi",
           "softdrink",
