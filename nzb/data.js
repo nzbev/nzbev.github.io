@@ -493,7 +493,7 @@ config = {
       "p_bier":     { name: "Tettnanger Helles",     price: 4.50, depo: "glas",    vol: "0,50l", pname: "Tettnanger Helles" },
       "p_hefe":     { name: "Tettnanger Hefeweizen", price: 4.50, depo: "glas",    vol: "0,50l", pname: "Tettnanger Hefeweizen" },
       "p_kristall": { name: "Farny Kristallweizen",  price: 4.50, depo: "glas",    vol: "0,50l", pname: "Farny Kristallweizen" },
-      "p_most":     { name: "Seemost",               price: 4.50, depo: "glas",    vol: "0,50l", pname: "Seemost Rot", pdesc: "Schorle S&uuml;&szlig; oder Sauer" },
+      "p_most":     { name: "Most",                  price: 4.50, depo: "glas",    vol: "0,50l", pname: "Most Rot", pdesc: "Schorle S&uuml;&szlig; oder Sauer" },
       "p_hefe_alkf":{ name: "Hefeweizen Alkoholfrei",price: 4.50, depo: "glas",    vol: "0,50l", pname: "Hefeweizen Alkoholfrei" },
       "p_pils_alkf":{ name: "Bier Alkoholfrei",      price: 4.00, depo: "flasche", vol: "0,33l", pname: "Bier Alkoholfrei" },
       "pfand_f":    { name: "Pfand Flasche",         price: 1.00, vol:"", pname: "Pfand Flasche" },
