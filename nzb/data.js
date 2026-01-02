@@ -38,7 +38,7 @@ defaultArticles = {
   "kurzer":      { name: "Kurzer",        price: defaultPrice["kurzer"],        depo: "nix",     vol: "0,02l", pname:"Ficken, Gletscher, Klopfer" },
   "gluehmost":   { name: "Gl&uuml;hmost", price: defaultPrice["gluehmost"],     depo: "becher",  vol: "0,20l", pname:"Glühmost" },
   "gluehwein":   { name: "Gl&uuml;hwein", price: defaultPrice["gluehwein"],     depo: "becher",  vol: "0,20l", pname:"Glühwein" },
-  "kinderpunsch":{ name: "Kinderp.",      price: defaultPrice["kinderpunsch"],  depo: "becher",  vol: "0,20l", pname:"Fruchtpunsch" },
+  "kinderpunsch":{ name: "Punsch",        price: defaultPrice["kinderpunsch"],  depo: "becher",  vol: "0,20l", pname:"Fruchtpunsch" },
   "kuchen":      { name: "Kuchen",        price: defaultPrice["kuchen"],        depo: "nix",     vol: "1 Stk", pname: "Kuchen" },
   "muffin":      { name: "Muffin",        price: defaultPrice["muffin"],        depo: "nix",     vol: "1 Stk", pname: "Muffin" },
   "torte":       { name: "Torte",         price: defaultPrice["torte"],         depo: "nix",     vol: "1 Stk", pname: "Torte" },
@@ -63,7 +63,7 @@ config = {
     articles: {
       "suess":       { name: "S&uuml;&szlig;t&uuml;te", price: 1.50,                          depo: "nix", vol: "1 Stk",  pname: "Süßigkeitentüte" },
       "gluehmost":   { name: "Gl&uuml;hmost",           price: defaultPrice["gluehmost"],     depo: "nix",  vol: "0,20l", pname: "Glühmost" },
-      "kinderpunsch":{ name: "Kinderp.",                price: defaultPrice["kinderpunsch"],  depo: "nix",  vol: "0,20l", pname: "Fruchtpunsch" },
+      "kinderpunsch":{ name: "Punsch",                  price: defaultPrice["kinderpunsch"],  depo: "nix",  vol: "0,20l", pname: "Fruchtpunsch" },
 
     },
     depo: {
