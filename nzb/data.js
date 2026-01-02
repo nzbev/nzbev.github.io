@@ -61,11 +61,13 @@ config = {
   "kinderumzug": {
     realname: "Kinderumzug",
     articles: {
-      "suess": { name: "S&uuml;&szlig;t&uuml;te", price: 1.50, depo: "nix", vol: "1 Stk", pname: "Süßigkeitentüte" },
+      "suess":       { name: "S&uuml;&szlig;t&uuml;te", price: 1.50,                          depo: "nix", vol: "1 Stk",  pname: "Süßigkeitentüte" },
+      "gluehmost":   { name: "Gl&uuml;hmost",           price: defaultPrice["gluehmost"],     depo: "nix",  vol: "0,20l", pname: "Glühmost" },
+      "kinderpunsch":{ name: "Kinderp.",                price: defaultPrice["kinderpunsch"],  depo: "nix",  vol: "0,20l", pname: "Fruchtpunsch" },
+
     },
     depo: {
-      "flasche": { name: "Flasche", price: defaultPrice["pfandFlasche"] },
-      "becher":  { name: "Becher",  price: defaultPrice["pfandBecher"]  }
+      "flasche": { name: "Flasche", price: defaultPrice["pfandFlasche"] }
     },
     tv_slides: {
       beer: {
@@ -84,11 +86,12 @@ config = {
           "kinderpunsch",
           "bier",
           "kuchen",
-          "suess"
+          "waffel"
         ],
         pricelist: [
           "bier",
           "bierAlkfrei",
+          "radler",
           "most",
           "leerzeile",
           "spezi",
@@ -100,9 +103,8 @@ config = {
           "kinderpunsch",
           "leerzeile",
           "kuchen",
-          "suess",
+          "waffel",
           "leerzeile",
-          "pfandBecher",
           "pfandFlasche"
         ]
       },
