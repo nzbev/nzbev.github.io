@@ -89,11 +89,6 @@ config = {
           "waffel"
         ],
         pricelist: [
-          "bier",
-          "bierAlkfrei",
-          "radler",
-          "most",
-          "leerzeile",
           "spezi",
           "aschorle",
           "orange",
@@ -104,6 +99,11 @@ config = {
           "leerzeile",
           "kuchen",
           "waffel",
+          "leerzeile",
+          "bier",
+          "bierAlkfrei",
+          "radler",
+          "most",
           "leerzeile",
           "pfandFlasche"
         ]
