@@ -26,7 +26,7 @@ config = {
       sektflasche: { name: "Sekt Flasche", price: 17.00, depo: "flasche", pname: "Flasche Sekt", vol: "0,75l" },
       saftflasche: { name: "SAFT Flasche", price: 3.00, depo: "flasche", pname: "Flasche O-Saft", vol: "1,00l" },
       longdrink: { name: "Longdrink", price: 4.50, depo: "flasche", pname: "Longdrink", vol: "0,20l" },
-      weins: { name: "Weinscho.", price: 4.50, depo: "flasche", pname: "Weinschorle", vol: "0,33l" },
+      weins: { name: "Weinschorle", price: 4.50, depo: "flasche", pname: "Weinschorle", vol: "0,33l" },
       bachwasser: { name: "Bachwasser", price: 4.00, depo: "flasche", pname: "Bachwasser", vol: "0,20l" }
 
     },
