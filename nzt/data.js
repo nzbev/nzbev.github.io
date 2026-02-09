@@ -22,10 +22,12 @@ config = {
     articles: {
       bier: { name: "Bier/Radler", price: 3.50, depo: "flasche", pname: "Bier/Radler", vol: "0,33l" },
       alkfrei: { name: "Alkfrei.", price: 3.00, depo: "flasche", pname: "Alkoholfrei", vol: "0,50l" },
-      sekt: { name: "Sekt Glas", price: 3.00, depo: "flasche", pname: "Glas Sekt", vol: "0,10l" },
+      sekt: { name: "Sekt Glas", price: 5.00, depo: "flasche", pname: "Glas Sekt", vol: "0,10l" },
       sektflasche: { name: "Sekt Flasche", price: 17.00, depo: "flasche", pname: "Flasche Sekt", vol: "0,75l" },
+      saftflasche: { name: "SAFT Flasche", price: 3.00, depo: "flasche", pname: "Flasche O-Saft", vol: "1,00l" },
       longdrink: { name: "Longdrink", price: 4.50, depo: "flasche", pname: "Longdrink", vol: "0,20l" },
-      weins: { name: "Weinsch.", price: 4.50, depo: "flasche", pname: "Weinschorle", vol: "0,33l" }
+      weins: { name: "Weinscho.", price: 4.50, depo: "flasche", pname: "Weinschorle", vol: "0,33l" },
+      bachwa: { name: "Bachwasser", price: 4.00, depo: "flasche", pname: "Bachwasser", vol: "0,20l" }
 
     },
     depo: {
@@ -39,7 +41,9 @@ config = {
           "alkfrei",
           "sekt",
           "sektflasche",
+          "saftflasche",
           "longdrink",
+          "bachwasser",
           "weins"
         ],
         pricelist: [
@@ -47,7 +51,9 @@ config = {
           "alkfrei",
           "sekt",
           "sektflasche",
+          "saftflasche",
           "longdrink",
+          "bachwasser",
           "weins",
           "pfandFlasche"
         ]
