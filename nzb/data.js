@@ -25,7 +25,7 @@ defaultArticles = {
   "radler":      { name: "Radler",        price: defaultPrice["bier"],          depo: "flasche", vol: "0,33l", pname:"Leibinger Seeradler" },
   "bierAlkfrei": { name: "Bier alkfrei.", price: defaultPrice["bier"],          depo: "flasche", vol: "0,33l", pname:"Leibinger Alkoholfrei" },
   "most":        { name: "Most",          price: defaultPrice["most"],          depo: "flasche", vol: "0,33l", pname:"Seemost Schorle Rot" },
-  "weinschorle": { name: "Weinsch.",      price: defaultPrice["weinschorle"],   depo: "flasche", vol: "0,33l", pname:"Weinschorle", pdesc: "Weiss oder Rosé" },
+  "weinschorle": { name: "Weinsch.",      price: defaultPrice["weinschorle"],   depo: "flasche", vol: "0,275l", pname:"Weinschorle", pdesc: "Weiss oder Rosé" },
   "sekt":        { name: "Sekt",          price: defaultPrice["sekt"],          depo: "becher",  vol: "0,20l", pname:"Sekt" },
   "sektflasche": { name: "Sektfla.",      price: defaultPrice["sektflasche"],   depo: "flasche", vol: "0,75l", pname:"Flasche Sekt" },
   "saftflasche": { name: "SAFTfla.",      price: defaultPrice["saftflasche"],   depo: "flasche", vol: "1,00l", pname:"Flasche Saft" },
