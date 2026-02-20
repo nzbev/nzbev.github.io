@@ -350,6 +350,7 @@ config = {
         ],
         pricelist: [
           "bier",
+          "radler",
           "bierAlkfrei",
           "most",
           "leerzeile",
