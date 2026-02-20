@@ -333,7 +333,7 @@ config = {
   "funken": {
     realname: "Funken",
     articles: {
-      "funkenring":  { name: "Funkenring",    price: 3.50,                          depo: "nix", vol: "",      pname: "Funkenring" },
+      "funkenring":  { name: "Funkenring",    price: 3.50,                          depo: "nix", vol: "1 Stk", pname: "Funkenring" },
       "gluehwein":   { name: "Gl&uuml;hwein", price: defaultPrice["gluehwein"],     depo: "nix", vol: "0,20l", pname:"Glühwein" },
       "kinderpunsch":{ name: "Kinderp.",      price: defaultPrice["kinderpunsch"],  depo: "nix", vol: "0,20l", pname:"Fruchtpunsch" },           
     },
