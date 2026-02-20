@@ -346,8 +346,6 @@ config = {
         articles: [
           "bier",
           "softdrink",
-          "gluehwein",
-          "kinderpunsch",
           "funkenring"
         ],
         pricelist: [
@@ -359,11 +357,6 @@ config = {
           "aschorle",
           "orange",
           "wasser",
-          "leerzeile",
-          "gluehwein",
-          "kinderpunsch",
-          "leerzeile",
-          "funkenring",
           "leerzeile",
           "pfandFlasche"
         ]
