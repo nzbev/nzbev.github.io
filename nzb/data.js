@@ -366,12 +366,14 @@ config = {
         articles: [
           "kuchen",
           "torte",
-          "muffin"
+          "muffin",
+          "funkenring"
         ],
         pricelist: [
           "kuchen",
           "torte",
-          "muffin"
+          "muffin",
+          "funkenring"
         ]
       }
     }
