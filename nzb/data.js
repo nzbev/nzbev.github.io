@@ -397,7 +397,8 @@ config = {
       "torte":       { name: "Torte",         price: defaultPrice["torte"],         depo: "flasche", vol: "1 Stk", pname: "Torte" },
       "waffel":      { name: "Waffel",        price: 1.00,                          depo: "nix",     vol: "1 Stk", pname: "Waffel" },
       "kaffee":      { name: "Kaffee",        price: defaultPrice["kaffee"],        depo: "flasche", vol: "1 Tasse", pname: "Kaffee" },
-           
+      "spritz":      { name: "Spritz",        price: 6.00,                          depo: "flasche", vol: "0,20l",   pname: "Aperol Spritz" },
+
     },
     depo: {
       "flasche": { name: "Pfand", price: defaultPrice["pfandFlasche"], },
@@ -427,6 +428,7 @@ config = {
         "articles": [
           "bier",
           "weinschorle",
+          "spritz",
           "spezi",
           "softdrink"
         ],
@@ -436,6 +438,7 @@ config = {
           "radler",
           "most",
           "weinschorle",
+          "spritz",
           "leerzeile",
           "spezi",
           "orange",
@@ -450,6 +453,7 @@ config = {
         "articles": [
           "bier",
           "weinschorle",
+          "spritz",
           "spezi",
           "softdrink",
           "kaffee",
@@ -462,6 +466,7 @@ config = {
           "radler",
           "most",
           "weinschorle",
+          "spritz",
           "leerzeile",
           "spezi",
           "orange",
