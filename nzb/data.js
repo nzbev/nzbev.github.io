@@ -47,6 +47,8 @@ defaultArticles = {
 
   "pfandGlas": { name: "Glas", price: defaultPrice["pfandGlas"], vol: "", pname: "Pfand Glas" },
   "pfandBecher": { name: "Becher", price: defaultPrice["pfandBecher"], vol: "", pname: "Pfand Becher" },
+  "pfandGeschirr": { name: "Geschirr", price: defaultPrice["pfandBecher"], vol: "", pname: "Pfand Teller / Tasse" },
+
   "pfandFlasche": { name: "Flasche", price: defaultPrice["pfandFlasche"], vol: "", pname: "Pfand Flasche" },
   "pfand": { name: "Pfand", price: defaultPrice["pfandFlasche"], vol: "", pname: "Pfand" },
   "leerzeile": { name: "", vol: "", pname: "", price: 0 },
@@ -377,31 +379,34 @@ config = {
           "funkenring"
         ]
       }
-    }
+    },
+    tv_slides: {}
   },
   "maibaum": {
     realname: "1.Mai",
     articles: {
-      "bier": { name: "Bier/Most", price: 4.00, depo: "flasche", vol: "0,50l", pname: "Leibinger Edel" },
-      "radler": { name: "Radler", price: 4.00, depo: "flasche", vol: "0,50l", pname: "Radler" },
-      "bierAlkfrei": { name: "Bier alkfrei.", price: 4.00, depo: "flasche", vol: "0,50l", pname: "Leibinger Alkoholfrei" },
-      "most": { name: "Most", price: 4.00, depo: "flasche", vol: "0,50l", pname: "Seemost Rot", pdesc: "Schorle S&uuml;&szlig; oder Sauer" },
+      "bier": { name: "Bier/Most", price: 4.00, depo: "glas", vol: "0,50l", pname: "Leibinger Edel" },
+      "radler": { name: "Radler", price: 4.00, depo: "glas", vol: "0,50l", pname: "Radler" },
+      "bierAlkfrei": { name: "Bier alkfrei.", price: 4.00, depo: "glas", vol: "0,50l", pname: "Leibinger Alkoholfrei" },
+      "most": { name: "Most", price: 4.00, depo: "glas", vol: "0,50l", pname: "Seemost Rot", pdesc: "Schorle S&uuml;&szlig; oder Sauer" },
       "weinschorle": { name: "Weinsch.", price: defaultPrice["weinschorle"], depo: "flasche", vol: "0,33l", pname: "Weinschorle", pdesc: "Weiss oder Rosé" },
       "softdrink": { name: "Softdrink", price: defaultPrice["softdrink"], depo: "flasche", vol: "0,50l", pname: "FEHLER" },
       "wasser": { name: "Wasser", price: defaultPrice["softdrink"], depo: "flasche", vol: "0,50l", pname: "Krumbach Wasser" },
       "spezi": { name: "Spezi", price: 3.00, depo: "flasche", vol: "0,50l", pname: "Meckatzer MeckiMix" },
       "orange": { name: "Orange", price: defaultPrice["softdrink"], depo: "flasche", vol: "0,50l", pname: "Krumbach Orangenlimo" },
       "aschorle": { name: "aschorle", price: defaultPrice["softdrink"], depo: "flasche", vol: "0,50l", pname: "Krumbach Apfelschorle" },
-      "kuchen": { name: "Kuchen", price: defaultPrice["kuchen"], depo: "flasche", vol: "1 Stk", pname: "Kuchen" },
+      "kuchen": { name: "Kuchen", price: defaultPrice["kuchen"], depo: "nix", vol: "1 Stk", pname: "Kuchen" },
       "muffin": { name: "Muffin", price: 1.00, depo: "nix", vol: "1 Stk", pname: "Muffin" },
-      "torte": { name: "Torte", price: defaultPrice["torte"], depo: "flasche", vol: "1 Stk", pname: "Torte" },
+      "torte": { name: "Torte", price: defaultPrice["torte"], depo: "nix", vol: "1 Stk", pname: "Torte" },
       "waffel": { name: "Waffel", price: 1.00, depo: "nix", vol: "1 Stk", pname: "Waffel" },
-      "kaffee": { name: "Kaffee", price: defaultPrice["kaffee"], depo: "flasche", vol: "1 Tasse", pname: "Kaffee" },
-      "spritz": { name: "Spritz", price: 6.00, depo: "flasche", vol: "0,25l", pname: "Aperol Spritz" },
+      "kaffee": { name: "Kaffee", price: defaultPrice["kaffee"], depo: "nix", vol: "1 Tasse", pname: "Kaffee" },
+      "spritz": { name: "Spritz", price: 6.00, depo: "glas", vol: "0,25l", pname: "Aperol Spritz" },
 
     },
     depo: {
-      "flasche": { name: "Pfand", price: defaultPrice["pfandFlasche"], },
+      "flasche": { name: "Pfand Flasche", price: defaultPrice["pfandFlasche"], },
+      "glas": { name: "Pfand Glas", price: defaultPrice["pfandGlas"], }
+
     },
     "locations": {
       "kuchenstand": {
@@ -418,9 +423,7 @@ config = {
           "torte",
           "kuchen",
           "muffin",
-          "waffel",
-          "leerzeile",
-          "pfand"
+          "waffel"
         ]
       },
       "ausschank": {
@@ -445,7 +448,8 @@ config = {
           "aschorle",
           "wasser",
           "leerzeile",
-          "pfand"
+          "pfandGlas",
+          "pfandFlasche"
         ]
       },
       "bedienung": {
@@ -479,7 +483,34 @@ config = {
           "muffin",
           "waffel",
           "leerzeile",
-          "pfand"
+          "pfandGlas",
+          "pfandFlasche"
+        ]
+      }
+    },
+    tv_slides: {
+      beer: {
+        header: "BIER / MOST",
+        pricelist: [
+          "bier",
+          "bierAlkfrei",
+          "most"
+        ]
+      },
+      wine: {
+        header: "WEIN / SPRITZ",
+        pricelist: [
+          "weinschorle",
+          "spritz"
+        ]
+      },
+      softdrinks: {
+        header: "SOFTDRINKS",
+        pricelist: [
+          "spezi",
+          "aschorle",
+          "orange",
+          "wasser",
         ]
       }
     }
