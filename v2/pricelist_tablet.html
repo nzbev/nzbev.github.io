@@ -123,7 +123,7 @@
     }
 
     .kassiere-total {
-      font-size: 1.8em;
+      font-size: 2.6em;
       font-weight: bold;
       margin: 8px 0;
       text-align: right;
@@ -133,7 +133,7 @@
 
     .kassiere-quick {
       display: grid;
-      grid-template-columns: repeat(6, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: 6px;
       margin: 4px 0;
     }
@@ -159,7 +159,7 @@
 
     .kassiere-rueck-row {
       display: grid;
-      grid-template-columns: 1fr 2fr;
+      grid-template-columns: 2fr 1fr;
       gap: 16px;
       align-items: start;
     }
@@ -325,7 +325,6 @@
         <div class="kassiere-total">Total: <span id="kassiere-total">0,00 €</span></div>
 
         <div class="kassiere-quick">
-          <button type="button" onclick="kassierePassend()">Passend</button>
           <button type="button" onclick="kassiereSet('5')">5 €</button>
           <button type="button" onclick="kassiereSet('10')">10 €</button>
           <button type="button" onclick="kassiereSet('20')">20 €</button>
