@@ -6,26 +6,6 @@ var kassiereErhaltenStr = "";
 
 function kassiereOeffnen() {
   var form = document.Rechner;
-  var rows = document.getElementById("kassiere-rows");
-  rows.innerHTML = "";
-
-  for (var i = 0; i < window.artcnt; i++) {
-    var aEl = form.elements["A" + i];
-    var sEl = form.elements["S" + i];
-    if (!aEl || !sEl) continue;
-    var a = Number(aEl.value);
-    if (!a) continue;
-    var bEl = form.elements["B" + i];
-    var name = bEl ? bEl.textContent : "";
-    var s = Number(sEl.value);
-    var tr = document.createElement("tr");
-    tr.innerHTML =
-      '<td class="qty">' + a + "&times;</td>" +
-      "<td>" + name + "</td>" +
-      '<td class="amt">' + s.toFixed(2).replace(".", ",") + " &euro;</td>";
-    rows.appendChild(tr);
-  }
-
   var total = Number(form.Summe.value) || 0;
   document.getElementById("kassiere-total").textContent =
     total.toFixed(2).replace(".", ",") + " €";

@@ -209,17 +209,18 @@
     }
 
     .kassiere-pad button {
-      font-size: 1.8em;
+      font-size: 1.4em;
       font-weight: bold;
-      padding: 14px;
+      padding: 8px;
       border: 1px solid #ccc;
       background: #f4f4f4;
       border-radius: 4px;
       cursor: pointer;
     }
 
-    .kassiere-pad button.wide {
-      grid-column: 1 / -1;
+    .kassiere-footer .clear {
+      background: #FF5733;
+      color: white;
     }
 
     .kassiere-footer {
@@ -321,10 +322,6 @@
   <div id="kassiere-overlay" class="kassiere-overlay">
     <div class="kassiere-box">
       <div class="kassiere-left">
-        <h2>Bestellung</h2>
-        <table class="kassiere-summary">
-          <tbody id="kassiere-rows"></tbody>
-        </table>
         <div class="kassiere-total">Total: <span id="kassiere-total">0,00 €</span></div>
 
         <div class="kassiere-quick">
@@ -360,11 +357,11 @@
           <button type="button" onclick="padDigit('0')">0</button>
           <button type="button" onclick="padDigit(',')">,</button>
           <button type="button" onclick="padBack()">&#9003;</button>
-          <button type="button" class="wide" onclick="padClear()">L&ouml;schen</button>
         </div>
       </div>
 
       <div class="kassiere-footer">
+        <button type="button" class="clear" onclick="padClear()">L&ouml;schen</button>
         <button type="button" class="zurueck" onclick="kassiereSchliessen()">Zur&uuml;ck</button>
         <button type="button" class="fertig" onclick="kassiereFertig()">Fertig</button>
       </div>
