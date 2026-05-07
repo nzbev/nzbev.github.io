@@ -33,7 +33,7 @@
         var artcnt=0
         for (const [artkey, artvalue] of Object.entries(config[event].locations[loc].pricelist)) {
           //var art = config[event].articles
-          var art = Object.assign(defaultArticles, config[event].articles)
+          var art = Object.assign({}, defaultArticles, config[event].articles)
 
           desc = ""
           if (art[artvalue].pdesc) {
