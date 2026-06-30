@@ -4,17 +4,13 @@
     <title>NZB Kasse</title>
     <script type="text/javascript" src="data.js"></script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <link rel="stylesheet" href="./style_menu.css">
     <meta http-equiv="cache-control" content="no-cache" />
 </head>
 
-<!--
-
--->
-
 <body>
-    
+
     <div class="group">
         <div class="headcontainer">
             <div class="tile"><a href="../index.html">Start</a></div>
@@ -24,7 +20,7 @@
             <div class="tile"><a href="prices_tv.html">TV</a></div>
         </div>
       </div>
-      <h1>Tablet
+      <h1>iPhone
         <script>
           url=document.URL.split("/")
           document.write(url[url.length-2].toUpperCase())
@@ -34,7 +30,7 @@
       for (const [event, eventvalue] of Object.entries(config)) {
         document.write("<div class=group><h2>" + eventvalue.realname + "</h2><div class=container>")
         for (const [location, locationvalue] of Object.entries(eventvalue.locations)) {
-          document.write("<div class=tile onclick=\"window.location.href = './pricelist_tablet.html?event="+event+"&loc="+location+"';\">"+locationvalue.realname+"</div>")
+          document.write("<div class=tile onclick=\"window.location.href = './pricelist_iphone.html?event="+event+"&loc="+location+"';\">"+locationvalue.realname+"</div>")
         }
         document.write("</div></div>")
       }
