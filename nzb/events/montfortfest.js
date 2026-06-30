@@ -14,7 +14,7 @@ config["montfortfest"] = {
     "p_kristall": { name: "Farny Kristallweizen", price: 4.50, depo: "glas", vol: "0,50l", pname: "Farny Kristallweizen" },
     "p_most": { name: "Most", price: 4.50, depo: "glas", vol: "0,50l", pname: "Most Rot", pdesc: "Schorle Süß oder Sauer" },
     "p_hefe_alkf": { name: "Hefe Alkoholfrei", price: 4.50, depo: "glas", vol: "0,50l", pname: "Frany Kristall Alkoholfrei" },
-    "p_pils_alkf": { name: "Bier Alkoholfrei", price: 4.50, depo: "flasche", vol: "0,33l", pname: "Schimpf Höpfl Alkoholfrei" },
+    "p_pils_alkf": { name: "Bier Alkoholfrei", price: 4.00, depo: "flasche", vol: "0,33l", pname: "Schimpf Höpfl Alkoholfrei" },
     "pfand_f": { name: "Pfand Flasche", price: 1.00, vol: "", pname: "Pfand Flasche" },
     "pfand_g": { name: "Pfand Glas", price: 4.00, vol: "", pname: "Pfand Glas" },
   },
