@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <!-- iPhone-Variante: scrollbare Liste statt fester Viewport-Höhe,
+       viewport-fit=cover für Notch/Home-Indicator (safe-area-insets). -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>NZB Kasse</title>
+  <script type="text/javascript" src="data.js"></script>
+  <script type="text/javascript" src="calc.js"></script>
+  <script type="text/javascript" src="kassiere.js"></script>
+  <meta http-equiv="cache-control" content="no-cache" />
+  <style>
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      /* KEIN festes height/Zentrieren -> die Liste darf scrollen */
+      min-height: 100vh;
+      min-height: 100dvh;
+      width: 100%;
+      background-color: #f4f4f4;
+    }
+
+    .form-container {
+      display: grid;
+      /* Artikelname dehnbar, Anzahl & Summe feste, schmale Spalten,
+         damit Zahlen auch auf schmalem iPhone-Display passen. */
+      grid-template-columns: minmax(0, 1fr) 2.7em 4.6em;
+      gap: 6px;
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 8px;
+      /* unten Platz lassen, damit die letzte Zeile nicht unter der
+         klebenden Fußzeile verschwindet + Home-Indicator-Bereich */
+      padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px));
+      box-sizing: border-box;
+    }
+
+    .form-group {
+      display: contents;
+    }
+
+    .form-group button {
+      padding: 12px 6px;
+      min-height: 58px;
+      background: #AFE1AF;
+      color: black;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 1.15em;
+      font-weight: bold;
+      line-height: 1.12;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 6px 4px;
+      border: 1px solid #000;
+      border-radius: 6px;
+      box-sizing: border-box;
+      min-height: 58px;
+      font-size: 1.05em;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    /* --- Klebende Fußzeile: Löschen/Kassieren + Summe immer sichtbar --- */
+    .form-container > .form-group:last-child > div,
+    .form-container > .form-group:last-child > input {
+      position: sticky;
+      bottom: env(safe-area-inset-bottom, 0px);
+      z-index: 5;
+      background: #fff;
+      box-shadow: 0 -3px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Laufende Summe optisch hervorheben */
+    .form-container > .form-group:last-child > input[name="Summe"] {
+      border: 2px solid #2C7A4B;
+      color: #2C7A4B;
+      font-size: 1.2em;
+    }
+
+    /* Kassieren-Maske */
+    .kassiere-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .kassiere-overlay.show {
+      display: flex;
+    }
+
+    .kassiere-box {
+      background: white;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 12px;
+      padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+      padding-top: calc(12px + env(safe-area-inset-top, 0px));
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    .kassiere-left {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      min-height: 0;
+    }
+
+    .kassiere-box h2 {
+      margin: 0 0 6px 0;
+      font-size: 1.3em;
+    }
+
+    .kassiere-summary {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 1.1em;
+    }
+
+    .kassiere-summary td {
+      padding: 4px 8px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .kassiere-summary td.qty {
+      width: 12%;
+      text-align: right;
+    }
+
+    .kassiere-summary td.amt {
+      text-align: right;
+      width: 22%;
+      font-weight: bold;
+    }
+
+    .kassiere-total {
+      font-size: 2em;
+      font-weight: bold;
+      margin: 4px 0;
+      text-align: right;
+      border-top: 2px solid #333;
+      padding-top: 6px;
+    }
+
+    .kassiere-quick {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin: 4px 0;
+    }
+
+    .kassiere-quick button {
+      font-size: 1.1em;
+      font-weight: bold;
+      padding: 14px 2px;
+      background: #AFE1AF;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .kassiere-erhalten {
+      font-size: 2em;
+      font-weight: bold;
+      text-align: right;
+      border: 2px solid #333;
+      padding: 8px 10px;
+      background: #fffbeb;
+    }
+
+    .kassiere-rueck-row {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .kassiere-rueck {
+      font-size: 2.1em;
+      font-weight: bold;
+      text-align: right;
+      color: #2C7A4B;
+      padding: 4px 6px;
+      overflow-wrap: anywhere;
+    }
+
+    .kassiere-rueck.neg {
+      color: #c0392b;
+    }
+
+    .kassiere-stueck {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2px;
+      font-size: 1.2em;
+    }
+
+    .kassiere-stueck .entry {
+      display: flex;
+      gap: 8px;
+      padding: 2px 6px;
+    }
+
+    .kassiere-stueck .entry .n {
+      text-align: right;
+      font-weight: bold;
+    }
+
+    .kassiere-stueck .rest {
+      grid-column: 1 / -1;
+      font-style: italic;
+      color: #888;
+      padding: 2px 6px;
+    }
+
+    .kassiere-pad {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+
+    .kassiere-pad button {
+      font-size: 1.6em;
+      font-weight: bold;
+      padding: 14px 8px;
+      min-height: 56px;
+      border: 1px solid #ccc;
+      background: #f4f4f4;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .kassiere-footer .clear {
+      background: #FF5733;
+      color: white;
+    }
+
+    .kassiere-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .kassiere-footer button {
+      font-size: 1.25em;
+      font-weight: bold;
+      padding: 14px 6px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      flex: 1;
+      box-sizing: border-box;
+    }
+
+    .kassiere-footer .zurueck {
+      background: #95a5a6;
+      color: white;
+    }
+
+    .kassiere-footer .fertig {
+      background: #2C7A4B;
+      color: white;
+    }
+
+    #kassiere-open {
+      width: 100%;
+      padding: 12px;
+      font-size: 1.15em;
+      font-weight: bold;
+      background: #2C7A4B;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <form class="form-container" name="Rechner" action="" onsubmit="return false;">
+    <script type="text/javascript">
+      var artcnt = 0
+      for (const [artkey, artvalue] of Object.entries(config[event].locations[loc].articles)) {
+        var art = Object.assign({}, defaultArticles, config[event].articles)
+        var depoprice = 0
+        if (art[artvalue].depo == "nix") {
+          depoprice = 0
+        } else {
+          depoprice = config[event].depo[art[artvalue].depo].price
+        }
+
+
+        document.write(
+          '<div class="form-group">',
+          '<button type="button" name="B' + artcnt + '" value="' + artvalue + '" onclick="dazu(' + art[artvalue].price + ', this.name, \'' + art[artvalue].depo + '\',' + depoprice + ')">' + art[artvalue].name + '</button>' +
+          '<input type="text" name="A' + artcnt + '" readonly>' +
+          '<input type="text" name="S' + artcnt + '" readonly>' +
+          '</div>'
+        )
+        artcnt += 1;
+      }
+      for (const [depokey, depovalue] of Object.entries(config[event].depo)) {
+        document.write(
+          '<div class="form-group">',
+          '<button style="background:  #B2BEB5;" type="button" name="B' + artcnt + '" value="' + depovalue.name + '" id="' + depokey + '"">' + depovalue.name + '</button>' +
+          '<input type="text" name="A' + artcnt + '" readonly>' +
+          '<input type="text" name="S' + artcnt + '" readonly>' +
+          '</div>'
+        )
+        artcnt += 1;
+      }
+      for (const [depokey, depovalue] of Object.entries(config[event].depo)) {
+        document.write(
+          '<div class="form-group">',
+          '<button type="button" name="B' + artcnt + '" value="' + depovalue.name + ' ret" onclick="dazu(' + depovalue.price * -1 + ', this.name)">' + depovalue.name + ' zur</button>',
+          '<input type="text" name="A' + artcnt + '" readonly>' +
+          '<input type="text" name="S' + artcnt + '" readonly>' +
+          '<tr>'
+        )
+        artcnt += 1;
+      }
+    </script>
+
+    <div class="form-group">
+      <div style="display: flex; gap: 10px;">
+        <button style="background: #FF5733; flex: 1;" type="reset" value="L&ouml;schen">L&ouml;schen</button>
+        <button id="kassiere-open" style="flex: 1;" type="button" onclick="kassiereOeffnen()">Kassieren</button>
+      </div>
+      <input type="text" placeholder="Sum">
+      <input type="text" name="Summe" readonly>
+    </div>
+
+  </form>
+
+  <div id="kassiere-overlay" class="kassiere-overlay">
+    <div class="kassiere-box">
+      <div class="kassiere-left">
+        <div class="kassiere-total">Total: <span id="kassiere-total">0,00 €</span></div>
+
+        <div class="kassiere-quick">
+          <button type="button" onclick="kassiereSet('5')">5 €</button>
+          <button type="button" onclick="kassiereSet('10')">10 €</button>
+          <button type="button" onclick="kassiereSet('20')">20 €</button>
+          <button type="button" onclick="kassiereSet('50')">50 €</button>
+          <button type="button" onclick="kassiereSet('100')">100 €</button>
+        </div>
+
+        <div style="margin-top: 8px; font-size: 1.3em; font-weight: bold;">Erhalten:</div>
+        <div class="kassiere-erhalten" id="kassiere-erhalten">0,00 €</div>
+
+        <div style="margin-top: 8px; font-size: 1.3em; font-weight: bold;">R&uuml;ckgeld:</div>
+        <div class="kassiere-rueck-row">
+          <div class="kassiere-rueck" id="kassiere-rueck">&ndash;</div>
+          <div class="kassiere-stueck" id="kassiere-stueck"></div>
+        </div>
+      </div>
+
+      <div class="kassiere-right">
+        <div class="kassiere-pad">
+          <button type="button" onclick="padDigit('7')">7</button>
+          <button type="button" onclick="padDigit('8')">8</button>
+          <button type="button" onclick="padDigit('9')">9</button>
+          <button type="button" onclick="padDigit('4')">4</button>
+          <button type="button" onclick="padDigit('5')">5</button>
+          <button type="button" onclick="padDigit('6')">6</button>
+          <button type="button" onclick="padDigit('1')">1</button>
+          <button type="button" onclick="padDigit('2')">2</button>
+          <button type="button" onclick="padDigit('3')">3</button>
+          <button type="button" onclick="padDigit('0')">0</button>
+          <button type="button" onclick="padDigit(',')">,</button>
+          <button type="button" onclick="padBack()">&#9003;</button>
+        </div>
+      </div>
+
+      <div class="kassiere-footer">
+        <button type="button" class="clear" onclick="padClear()">L&ouml;schen</button>
+        <button type="button" class="zurueck" onclick="kassiereSchliessen()">Zur&uuml;ck</button>
+        <button type="button" class="fertig" onclick="kassiereFertig()">Fertig</button>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

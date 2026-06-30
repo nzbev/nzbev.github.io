@@ -20,9 +20,9 @@ body {
 }
 .headcontainer {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 15px;
-    max-width: 500px;
+    max-width: 640px;
     margin: auto;
 }
 .tile {
@@ -34,4 +34,19 @@ body {
 }
 h1, h2 {
     text-align: center;
+}
+
+/* Schmale Displays (iPhone): Menü umbrechen statt quetschen */
+@media (max-width: 520px) {
+    .headcontainer {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        max-width: 100%;
+    }
+    .container {
+        gap: 10px;
+    }
+    .tile {
+        padding: 14px 8px;
+    }
 }
