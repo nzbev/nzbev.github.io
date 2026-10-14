@@ -4,11 +4,11 @@
 config["konvent"] = {
   realname: "Konvent",
   articles: {
+    "most": { ...defaultArticles.most, pname: "Seemost Schorle", depo: "nix" },
     "bier": { ...defaultArticles.bier, vol: "0,50l", depo: "nix" },
     "bierAlkfrei": { ...defaultArticles.bierAlkfrei, pname: "Schimpf Alkoholfrei", depo: "nix" },
     "kristall": { name: "Kristallw.", price: 3.50, depo: "nix", vol: "0,50l", pname: "Farny Kristall" },
     "kristallAlkfrei": { name: "Kristall alkfrei", price: 3.50, depo: "nix", vol: "0,50l", pname: "Farny Kristall Alkoholfrei" },
-    "most": { ...defaultArticles.most, pname: "Seemost Schorle", depo: "nix" },
     "hefe": { name: "Hefeweizen", price: 3.50, depo: "nix", vol: "0,50l", pname: "Farny Hefenweizen" },
 
     // Tablet-Sammelbuttons (nicht in der Preisliste).
