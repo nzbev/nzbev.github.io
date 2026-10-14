@@ -38,7 +38,7 @@ config["konvent"] = {
         "leberkaes", "maultaschen",
       ],
       pricelist: [
-        "bier", "bierAlkfrei", "kristall", "kristallAlkfrei", "most", "hefe",
+        "bier", "bierAlkfrei", "kristall", "kristallAlkfrei", "hefe", "most",
         "leerzeile",
         "cola", "spezi", "aschorle", "wasser",
         "leerzeile",
