@@ -13,6 +13,7 @@
     "events/maibaum.js",
     "events/montfortfest.js",
     "events/jhv.js",
+    "events/konvent.js",
   ];
   for (var i = 0; i < files.length; i++) {
     document.write('<script type="text/javascript" src="' + files[i] + '"><\/script>');
