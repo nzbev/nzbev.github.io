@@ -12,16 +12,22 @@ nothing to install — push to `main` and GitHub Pages serves the files as-is.
 [ANLEITUNG-PREISE.md](ANLEITUNG-PREISE.md) (German) for the file format and workflow.
 Keep that guide in sync with any change to the CSV format.
 
+**Card payments** (optional, SumUp Solo) are set up per tablet — see
+[ANLEITUNG-SUMUP.md](ANLEITUNG-SUMUP.md) (German). Keep it in sync with `sumup.html` and the card flow.
+
 ## Layout
 
 - `index.html` — start page; tiles come from `vereine.csv` and link to
-  `v3/kasse.html?verein=<folder>`. Uses `v3/kasse.css`.
+  `v3/kasse.html?verein=<folder>`. Uses `v3/kasse.css`. Links to `sumup.html` and
+  `pruefen.html` sit in the lower right corner.
 - `vereine.csv` — list of clubs (`Ordner;Name`). Adding a club = a folder with
   `preise/` + one line here; no code, no symlinks.
 - `pruefen.html` + `v3/pruefen.js` — "Preis-Dateien prüfen": drop CSVs, see errors,
   a preview and a diff against the online version before uploading (client-side only).
 - `v3/` — the **shared app implementation** (all clubs):
-  - `kasse.html` / `kasse.js` / `kasse.css` — the register (event → stand → register → checkout).
+  - `kasse.html` / `kasse.js` / `kasse.css` — the register (event → stand → register → Cash / Karte).
+  - `sumup.js` — SumUp Cloud API client (`KasseSumup`), used by the register and `sumup.html`.
+  - `lib/` — vendored QR libraries with their licenses (see `lib/README.md`).
   - `papier.html` / `papier.js` / `papier.css` — printable price list.
   - `preise.js` — CSV loader/parser (`KassePreise`), shared by the pages, the service
     worker (`importScripts`) and the GitHub check.
@@ -29,8 +35,7 @@ Keep that guide in sync with any change to the CSV format.
 - Club folders (`nzb/`, `ffw/`, …) contain **only** `preise/` — all pages live in `v3/`.
 - `tools/pruefe-preise.js` + `.github/workflows/preise-pruefen.yml` — CI check of all CSVs.
 - `sw.js`, `pwa.js`, `manifest.webmanifest`, `icon.svg` — offline support (see below).
-- `test.html` — old prototype, not linked from anywhere.
-- `sumup.html` + `v3/sumup.js` — SumUp Solo card payments (see below).
+- `sumup.html` — "SumUp einrichten": per-tablet card payment setup (see below).
 
 **Which club:** `preise.js` takes it from `?verein=<folder>` and fetches data from
 `../<folder>/preise/`. `KassePreise.club` / `KassePreise.query` expose it; links between
@@ -85,8 +90,12 @@ Format details and rules for humans: [ANLEITUNG-PREISE.md](ANLEITUNG-PREISE.md).
   "↩ … zurück" button.
 - Open order kept in `localStorage` per club/event/stand; "Leeren" needs a second tap;
   "Fertig" can be undone from the toast for 6 s.
-- Checkout suggests likely notes and shows the change breakdown. Wake Lock keeps
+- Order footer: "Leeren" | "Karte" (only if SumUp is set up) | "Cash" ("Auszahlen" for a
+  negative total). Cash and Karte are one full-screen view (`payEl`) in two modes (`payMode`).
+- Cash suggests likely notes and shows the change breakdown. Wake Lock keeps
   the screen on where supported.
+- Phones in portrait (≤ 820 px high) get a compact pay layout; `.pay-body` scrolls
+  rather than overlapping the footer buttons.
 - After a successful background sync the page reloads the CSVs and re-renders
   (toast "Preise aktualisiert") — no manual reload needed.
 - Kept compatible with older Silk: no flex `gap`, `:has`, optional chaining, etc.
@@ -96,18 +105,22 @@ Format details and rules for humans: [ANLEITUNG-PREISE.md](ANLEITUNG-PREISE.md).
 - `v3/sumup.js` (`KasseSumup`): settings in localStorage `kasse:sumup` (`apiKey`, `merchant`,
   `reader`, optional affiliate), the running payment in `kasse:sumup:pending`.
   Calls `api.sumup.com` directly from the browser (CORS allowed). Nothing SumUp-related is in the repo.
-- `sumup.html` ("SumUp einrichten", linked from the start page): enter key, pair a Solo,
-  pick it, test payments with a request log. Per tablet. A stored key is never shown again
-  (only "…abcd"); an empty key field on save keeps it.
+- `sumup.html` ("SumUp einrichten", linked from the start page), per device. Sections:
+  status, QR scannen, Solo koppeln, Solo wählen (+ readable reader status), QR für Tablet
+  erstellen, Zugang von Hand (bottom). Feedback is a short toast, no request log.
+  A stored key is never shown again (only "…abcd"); an empty key field on save keeps it.
+  "Zugang löschen" removes settings and a pending payment.
 - Setup by QR: "QR für Tablet erstellen" (on a PC) takes a pasted key + merchant + Solo and shows a
   QR (`{"t":"kasse-sumup","v":1,"k","m","r","n"}`); it never stores or reads stored settings.
   The tablet scans it with "QR scannen" (camera via `getUserMedia`, decoded by `v3/lib/jsQR.js`).
   QR generation: `v3/lib/qrcode.js` (qrcode-generator 1.4.4, MIT); jsQR 1.4.0 (Apache-2.0).
   The libs are not in the SW cache (setup needs internet anyway).
 - Register (only when configured, otherwise unchanged): "Karte" next to "Cash" opens the card
-  view (same full-screen layout as Cash, `payMode`): tiles exact / next € / 5 / 10 / 20 € as tip
-  suggestions, or any amount ≥ total on the pad, then "Mit Karte zahlen".
+  view: tiles exact / next € (+1 € if already round) / 5 / 10 / 20 € as tip suggestions, or any
+  amount ≥ total on the pad, then "Mit Karte zahlen · x €". Amounts below the total are blocked.
   "Betrag" in the header: free amount, order untouched.
+- Checkout description sent to SumUp: `<CLUB> <event> – <stand>` or `<CLUB> Freier Betrag`.
+- The affiliate key is optional (payments worked without it); sent only if "mitsenden" is ticked.
 - Flow: POST checkout → poll the checkout every 2 s → `successful` (or `payment_status`
   successful, which arrives a few s earlier) closes the order. `failed`/`cancelled` keep it.
   "Abbrechen" = terminate. SumUp doesn't reliably expire checkouts, so after

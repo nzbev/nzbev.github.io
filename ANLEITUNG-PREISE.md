@@ -152,7 +152,7 @@ Veranstaltung. Exportiert wird immer nur das gerade geöffnete Blatt.
 
 **Vor dem Hochladen prüfen**
 
-Auf der Startseite unten auf **„Preis-Dateien prüfen“** tippen (oder direkt
+Auf der Startseite unten rechts auf **„Preis-Dateien prüfen“** tippen (oder direkt
 `https://nzbev.github.io/pruefen.html` öffnen), den Verein wählen und die exportierten
 CSV-Dateien hineinziehen. Die Seite zeigt:
 
