@@ -91,7 +91,8 @@ In der Kasse gibt es jetzt unten drei Knöpfe: **Leeren | Karte | Cash**.
      (weniger als die Summe geht nicht – dann steht „Zu wenig“ in Rot).
 3. **„Mit Karte zahlen · …“** tippen.
 4. Auf dem Tablet steht **„Bitte Karte an den Solo halten“**, der Solo zeigt den Betrag.
-5. Ist bezahlt: **„✓ Bezahlt“** – die Bestellung wird automatisch geleert, der nächste Kunde kann kommen.
+5. Ist bezahlt: **„✓ Bezahlt“** mit dem **Beleg-QR-Code** – die Bestellung ist schon geleert.
+   Will der Kunde einen Beleg, scannt er den Code. Dann **„OK – nächster Kunde“**.
 
 **„Cash“** ist das Kassieren mit Bargeld wie bisher (Rückgeld-Rechner).
 
@@ -124,7 +125,7 @@ nicht verändert. Praktisch für Dinge, die nicht auf der Preisliste stehen.
 
 Der Solo zeigt im Kassen-Betrieb keinen Beleg an. Wenn ein Kunde einen Beleg möchte:
 
-- Direkt nach der Zahlung: in der Meldung **„✓ Karte bezahlt …“** auf **„Beleg“** tippen.
+- Direkt nach der Zahlung: der QR-Code steht schon auf dem „✓ Bezahlt“-Bild (bis man „OK“ tippt).
 - Später: oben in der Kasse **„Belege“** → die Zahlung antippen (die letzten 30 Kartenzahlungen
   dieses Tablets).
 

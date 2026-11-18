@@ -713,23 +713,19 @@
     cardTimer = setTimeout(cardPoll, CARD_POLL_MS); // weiter fragen: kommt "bezahlt" noch, wird es übernommen
   }
 
+  // Bezahlt: Bestellung sofort leeren, Beleg-QR zeigen; das Bild bleibt bis "OK"
   function cardSuccess() {
     var p = cardP;
     SU.setPending(null);
-    showCard("ok");
     clearTimeout(cardTimer);
-    setTimeout(function () {
-      if (cardP !== p) return;
-      hideCard();
-      if (p.kind === "order") {
-        if (current && KEY + orderKey === p.orderFull) { order = {}; closePay(); paintOrder(); }
-        else { try { localStorage.removeItem(p.orderFull); } catch (e) { /* egal */ } }
-      } else closeFree();
-      var rec = saveCardReceipt(p);
-      showToast("✓ Karte bezahlt – " + eur(p.amount) +
-        (p.amount > p.total ? " (inkl. " + eur(p.amount - p.total) + " Trinkgeld)" : ""),
-        rec ? "Beleg" : "", function () { showReceipt(rec); });
-    }, 1300);
+    if (p.kind === "order") {
+      if (current && KEY + orderKey === p.orderFull) { order = {}; closePay(); paintOrder(); }
+      else { try { localStorage.removeItem(p.orderFull); } catch (e) { /* egal */ } }
+    } else closeFree();
+    p.rec = saveCardReceipt(p);
+    showCard("ok");
+    var box = cardEl;
+    if (p.rec) fillReceiptQr(box.querySelector(".rcpt-qr"), p.rec, function () { return cardEl === box; });
   }
   function cardFailed(state, reason) {
     SU.setPending(null);
@@ -772,6 +768,8 @@
     } else if (state === "ok") {
       cls = " ok";
       msg = "✓ Bezahlt";
+      sub = '<div class="rcpt-qr"><div class="card-sub">Beleg wird geladen …</div></div>';
+      btns = '<button class="btn btn-done" data-c="ok">OK – nächster Kunde</button>';
     } else { // fail, error
       cls = " bad";
       msg = "✗ " + esc(p.err || "Fehler");
@@ -796,7 +794,11 @@
     var b = ev.target.closest ? ev.target.closest("[data-c]") : null;
     if (!b || !cardP) return;
     var c = b.getAttribute("data-c");
-    if (c === "cancel") {
+    if (c === "ok") {
+      var a = cardP.amount, t = cardP.total;
+      hideCard();
+      showToast("✓ Karte bezahlt – " + eur(a) + (a > t ? " (inkl. " + eur(a - t) + " Trinkgeld)" : ""));
+    } else if (c === "cancel") {
       cardP.cancelAt = Date.now();
       SU.terminate(cardP).catch(function () {});
       showCard("cancelling");
@@ -878,22 +880,33 @@
       '<div class="card-btns"><button class="btn btn-back" data-rc="list">‹ Belege</button>' +
       '<button class="btn btn-done" data-rc="close">Fertig</button></div>');
     var box = rcptEl;
+    fillReceiptQr(box.querySelector(".rcpt-qr"), rec, function () { return rcptEl === box; });
+  }
+
+  // Transaktions-Code holen (gleich nach der Zahlung kennt SumUp ihn evtl. noch nicht -> ein paar
+  // Versuche) und den QR auf den SumUp-Beleg in el zeichnen. alive() = el noch sichtbar?
+  var RECEIPT_TRIES = 4, RECEIPT_WAIT_MS = 2500;
+  function fillReceiptQr(el, rec, alive, tries) {
+    tries = tries || 1;
     var need = rec.code ? Promise.resolve({ code: rec.code }) : rec.ctx ? SU.txDetails(rec.ctx) : Promise.reject(new Error("Keine Transaktion"));
     need.then(function (d) {
       if (!d.code) throw new Error("SumUp kennt die Zahlung noch nicht");
       if (!rec.code) { rec.code = d.code; SU.saveReceipt(rec); }
-      if (rcptEl !== box) return;
+      if (!alive()) return;
       var qr = qrcode(0, "M");
       qr.addData(SU.receiptUrl(rec.code));
       qr.make();
-      box.querySelector(".rcpt-qr").innerHTML = qr.createSvgTag(6, 4) +
-        '<div class="card-sub">Mit dem Handy scannen – SumUp-Beleg ' + esc(rec.code) + "</div>";
-    }, function (e) {
-      if (rcptEl !== box) return;
-      box.querySelector(".rcpt-qr").innerHTML = '<div class="card-msg rcpt-err">Beleg gerade nicht abrufbar</div>' +
+      el.innerHTML = qr.createSvgTag(6, 4) + '<div class="card-sub">Beleg: mit dem Handy scannen</div>';
+    }).catch(function (e) {
+      if (!alive()) return;
+      if (tries < RECEIPT_TRIES) { setTimeout(function () { if (alive()) fillReceiptQr(el, rec, alive, tries + 1); }, RECEIPT_WAIT_MS); return; }
+      el.innerHTML = '<div class="card-msg rcpt-err">Beleg gerade nicht abrufbar</div>' +
         '<div class="card-sub">' + esc(e.message || "") + "</div>" +
-        '<button class="btn btn-card rcpt-retry" data-rc="retry">Nochmal</button>';
-      box.querySelector("[data-rc=retry]").onclick = function () { showReceipt(rec); };
+        '<button class="btn btn-card rcpt-retry">Nochmal</button>';
+      el.querySelector(".rcpt-retry").onclick = function () {
+        el.innerHTML = '<div class="card-sub">Beleg wird geladen …</div>';
+        fillReceiptQr(el, rec, alive);
+      };
     });
   }
 

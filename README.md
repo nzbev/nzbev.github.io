@@ -127,8 +127,10 @@ Format details and rules for humans: [ANLEITUNG-PREISE.md](ANLEITUNG-PREISE.md).
   "Abbrechen" = terminate. SumUp doesn't reliably expire checkouts, so after
   `valid_until` + 20 s the cashier decides ("Am Solo bezahlt" / "Nicht bezahlt"); polling continues.
 - A reload resumes the pending payment.
-- Receipts: the Solo shows none in API mode. "Belege" (header) / "Beleg" (success toast) looks up
-  `transaction_code` via `GET /v2.1/merchants/{code}/transactions?client_transaction_id=…` (cached
+- Receipts: the Solo shows none in API mode. The "✓ Bezahlt" overlay shows the receipt QR and stays
+  until "OK – nächster Kunde" (the order is cleared at success already). The lookup is retried
+  4× / 2.5 s, since SumUp may not know the transaction right away. "Belege" (header) reopens
+  older ones. Both look up `transaction_code` via `GET /v2.1/merchants/{code}/transactions?client_transaction_id=…` (cached
   in the stored record) and shows a QR of SumUp's public receipt page
   `https://receipts-ng.sumup.com/v0.1/receipts/<transaction_code>?mid=<merchant>&format=html`
   (no login needed). QR via `v3/lib/qrcode.js` (in the SW cache). Item lines are not on it.
