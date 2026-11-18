@@ -20,10 +20,7 @@ const NET_BAD_MS = 30000;      // nach Timeout/Fehler so lange direkt aus dem Ca
 const SYNC_TIMEOUT_MS = 20000; // Sync: pro Datei
 
 const FALLBACK_CLUBS = ["nzb", "ffw", "nzt", "scb"]; // nur falls vereine.csv fehlt
-const CLUB_FILES = [
-  "kasse.html", "papier.html", // alte Adressen (Symlinks auf ../v3/), fehlen bei neuen Vereinen -> egal
-  "preise/veranstaltungen.csv",
-];
+const CLUB_FILES = ["preise/veranstaltungen.csv"]; // Seiten liegen alle in v3/
 const ROOT_FILES = [
   "./", "index.html", "vereine.csv", "pwa.js", "manifest.webmanifest", "icon.svg", "pruefen.html",
   "v3/kasse.html", "v3/papier.html", "v3/kasse.js", "v3/kasse.css", "v3/preise.js",

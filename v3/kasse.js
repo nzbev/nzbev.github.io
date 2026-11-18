@@ -1,7 +1,7 @@
 // Kasse v3 – eine Seite für Auswahl, Kasse und Kassieren.
 //
-// Wird über <verein>/kasse.html (Symlink auf v3/kasse.html) geöffnet. Die Preise
-// kommen aus <verein>/preise/*.csv (geladen von v3/preise.js, Aufbau siehe ANLEITUNG-PREISE.md).
+// Wird als v3/kasse.html?verein=<ordner> geöffnet (Link auf der Startseite). Die Preise
+// kommen aus <ordner>/preise/*.csv (geladen von v3/preise.js, Aufbau siehe ANLEITUNG-PREISE.md).
 // Navigation über den URL-Hash:  #            -> Veranstaltung wählen
 //                                #e=<event>   -> Stand / Preisliste wählen
 //                                #e=..&l=..   -> Kasse
@@ -10,10 +10,11 @@
   "use strict";
 
   var app = document.getElementById("app");
-  // Vereinsordner aus preise.js (Ordner der Seite oder ?verein=…); Speicher-Schlüssel bleiben gleich
+  // Vereinsordner aus ?verein=… (siehe preise.js); Speicher-Schlüssel "kasse3:NZB:…" wie bisher
   var club = String(KassePreise.club || "").toUpperCase();
   var clubName = club; // wird durch den Namen aus vereine.csv ersetzt
   var START_URL = "../index.html";
+  if (!club) { location.replace(START_URL); return; } // ohne Verein -> Startseite (Verein wählen)
   var KEY = "kasse3:" + club + ":";
 
   document.title = clubName + " Kasse";

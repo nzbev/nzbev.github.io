@@ -26,18 +26,15 @@ Keep that guide in sync with any change to the CSV format.
   - `preise.js` — CSV loader/parser (`KassePreise`), shared by the pages, the service
     worker (`importScripts`) and the GitHub check.
 - `<club>/preise/` — the club's data: `veranstaltungen.csv`, `<event>.csv`, `logo.png`.
-- `nzb/`, `ffw/`, `nzt/`, `scb/` also contain `kasse.html` / `papier.html` — **symlinks to
-  `../v3/…`** kept so old bookmarks/home-screen icons keep working. New clubs don't need them.
+- Club folders (`nzb/`, `ffw/`, …) contain **only** `preise/` — all pages live in `v3/`.
 - `tools/pruefe-preise.js` + `.github/workflows/preise-pruefen.yml` — CI check of all CSVs.
 - `sw.js`, `pwa.js`, `manifest.webmanifest`, `icon.svg` — offline support (see below).
 - `test.html` — old prototype, not linked from anywhere.
 
-**Which club:** `preise.js` takes it from `?verein=<folder>` (pages opened from `v3/`, data
-fetched from `../<folder>/preise/`) or else from the folder the page lives in (old
-symlinked addresses, data from `preise/`). `KassePreise.club` / `KassePreise.query`
-expose it; links between pages carry the `verein=` parameter along.
-
-**To change the app, edit the file in `v3/`.** Don't edit `nzb/kasse.html` etc. (symlinks).
+**Which club:** `preise.js` takes it from `?verein=<folder>` and fetches data from
+`../<folder>/preise/`. `KassePreise.club` / `KassePreise.query` expose it; links between
+pages carry the `verein=` parameter along. Without it, `kasse.html` / `papier.html`
+redirect to the start page. (The old `<club>/kasse.html` / `papier.html` symlinks were removed.)
 
 ## Data model (CSV)
 

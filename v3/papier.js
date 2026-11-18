@@ -3,13 +3,14 @@
 (function () {
   "use strict";
 
+  if (!KassePreise.club) { location.replace("../index.html"); return; } // ohne ?verein= -> Startseite
   var out = document.getElementById("out");
   var params = {};
   location.search.replace(/^\?/, "").split("&").forEach(function (p) {
     var kv = p.split("=");
     if (kv[0]) params[decodeURIComponent(kv[0])] = decodeURIComponent(kv[1] || "");
   });
-  document.getElementById("back").href = "kasse.html" + (KassePreise.query ? "?" + KassePreise.query : "") +
+  document.getElementById("back").href = "kasse.html?" + KassePreise.query +
     (params.e ? "#e=" + encodeURIComponent(params.e) : "");
 
   function esc(s) {
