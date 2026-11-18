@@ -104,9 +104,10 @@ Format details and rules for humans: [ANLEITUNG-PREISE.md](ANLEITUNG-PREISE.md).
   The tablet scans it with "QR scannen" (camera via `getUserMedia`, decoded by `v3/lib/jsQR.js`).
   QR generation: `v3/lib/qrcode.js` (qrcode-generator 1.4.4, MIT); jsQR 1.4.0 (Apache-2.0).
   The libs are not in the SW cache (setup needs internet anyway).
-- Register (only when configured, otherwise unchanged): "Karte" next to "Kassieren"
-  (exact total), "Mit Karte (inkl. Trinkgeld)" row in Kassieren (exact, next €, 5/10/20 €),
-  "Betrag" in the header (free amount, order untouched).
+- Register (only when configured, otherwise unchanged): "Karte" next to "Cash" opens the card
+  view (same full-screen layout as Cash, `payMode`): tiles exact / next € / 5 / 10 / 20 € as tip
+  suggestions, or any amount ≥ total on the pad, then "Mit Karte zahlen".
+  "Betrag" in the header: free amount, order untouched.
 - Flow: POST checkout → poll the checkout every 2 s → `successful` (or `payment_status`
   successful, which arrives a few s earlier) closes the order. `failed`/`cancelled` keep it.
   "Abbrechen" = terminate. SumUp doesn't reliably expire checkouts, so after
