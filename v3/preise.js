@@ -1,6 +1,6 @@
 // Liest die Preis-Dateien (CSV aus Excel) eines Vereins.
 //
-//   <verein>/preise/veranstaltungen.csv   Logo, TV-Hintergrund, Liste der Event-Dateien
+//   <verein>/preise/veranstaltungen.csv   Logo, Liste der Event-Dateien
 //   <verein>/preise/<event>.csv           Blöcke "Veranstaltung", "Pfand", "Kasse", "Preisliste"
 //
 // Aufbau der Dateien: siehe ANLEITUNG-PREISE.md. Excel-Exporte mit ";" oder ","
@@ -96,12 +96,12 @@ var KassePreise = (function () {
   // ---------- veranstaltungen.csv ----------
 
   function parseIndex(rows, errors) {
-    var settings = { logo: "", tvBackground: "" }, files = [], inFiles = false;
+    var settings = { logo: "" }, files = [], inFiles = false;
     rows.forEach(function (r) {
       if (empty(r)) return;
       var k = key(r.cells[0]);
       if (k === "logo") { settings.logo = r.cells[1] || ""; return; }
-      if (k === "tv-hintergrund" || k === "tv hintergrund") { settings.tvBackground = r.cells[1] || ""; return; }
+      if (k === "tv-hintergrund" || k === "tv hintergrund") return; // alt (TV gibt es nicht mehr)
       if (k === "datei") { inFiles = true; return; }
       if (!inFiles) {
         errors.push({ where: "veranstaltungen.csv, Zeile " + r.line, msg: "Unbekannter Eintrag „" + r.cells[0] + "“" });
@@ -119,11 +119,12 @@ var KassePreise = (function () {
   // ---------- <event>.csv ----------
 
   var KASSE_COLS = { kasse: "name", menge: "vol", preis: "price", pfand: "depo" };
-  var LISTE_COLS = { preisliste: "name", beschreibung: "desc", "zusatz tv": "extra", menge: "vol", preis: "price",
-                     "tv-folie": "tv", "tv folie": "tv", tv: "tv" };
+  var LISTE_COLS = { preisliste: "name", beschreibung: "desc", menge: "vol", preis: "price" };
+  // Spalten aus älteren Dateien (TV gibt es nicht mehr) – ignorieren, damit sie nicht als Stand gelten
+  var IGNORE_COLS = { "tv-folie": 1, "tv folie": 1, tv: 1, "zusatz tv": 1 };
 
   function parseEvent(file, rows, errors) {
-    var ev = { id: file.replace(/\.csv$/i, ""), file: file, name: "", deposits: {}, stands: [], tv: [] };
+    var ev = { id: file.replace(/\.csv$/i, ""), file: file, name: "", deposits: {}, stands: [] };
     var standIds = {}, standByName = {}, mode = null, cols = null;
     var kasseRows = [], listeRows = [];
     function err(r, msg) { errors.push({ where: file + ", Zeile " + r.line, msg: msg }); }
@@ -132,7 +133,7 @@ var KassePreise = (function () {
       var map = { stands: [] };
       r.cells.forEach(function (c, i) {
         var k = key(c);
-        if (!k) return;
+        if (!k || IGNORE_COLS[k]) return;
         if (known[k]) { map[known[k]] = i; return; }
         if (!standByName[k]) {
           var s = { id: slug(c, standIds), name: c, register: [], pricelist: [] };
@@ -192,8 +193,8 @@ var KassePreise = (function () {
       st.forEach(function (s) { s.register.push(item); });
     });
 
-    // Preisliste + TV
-    var tvByHeader = {}, tvIds = {}, allStands = ev.stands;
+    // Preisliste
+    var allStands = ev.stands;
     listeRows.forEach(function (x) {
       if (x.blank) { allStands.forEach(function (s) { s.pricelist.push(null); }); return; }
       cols = x.cols;
@@ -205,16 +206,8 @@ var KassePreise = (function () {
       }
       var price = money(get(r, "price"));
       if (isNaN(price)) return err(r, "„" + name + "“: Preis „" + get(r, "price") + "“ ist keine Zahl");
-      var item = { name: name, desc: get(r, "desc"), extra: get(r, "extra"), vol: get(r, "vol"), price: price };
+      var item = { name: name, desc: get(r, "desc"), vol: get(r, "vol"), price: price };
       st.forEach(function (s) { s.pricelist.push(item); });
-      var tv = get(r, "tv");
-      if (tv) {
-        if (!tvByHeader[key(tv)]) {
-          tvByHeader[key(tv)] = { id: slug(tv, tvIds), header: tv, items: [] };
-          ev.tv.push(tvByHeader[key(tv)]);
-        }
-        tvByHeader[key(tv)].items.push(item);
-      }
     });
     // Leerzeilen aufräumen: keine am Anfang/Ende, keine doppelten
     ev.stands.forEach(function (s) {

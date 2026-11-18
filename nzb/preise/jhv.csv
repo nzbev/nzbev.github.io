@@ -5,14 +5,14 @@ Bier / Weinsch;;2,50;;x;
 Radler / Most;;2,00;;x;
 Softdrink;;1,00;;x;
 ;;;;;
-Preisliste;Beschreibung;Menge;Preis;Ausschank;TV-Folie
-Leibinger Edel;;0,50l;2,50;x;BIER / MOST
-Leibinger Alkoholfrei;;0,33l;2,00;x;BIER / MOST
-Leibinger Seeradler;;0,33l;2,00;x;
-Seemost Schorle Rot;;0,33l;2,00;x;BIER / MOST
-Weinschorle;Weiss oder Rosé;0,275l;2,50;x;WEIN
-;;;;;
-Mecki Mix;;0,50l;1,00;x;SOFTDRINKS
-Krumbach Orangenlimo;;0,50l;1,00;x;SOFTDRINKS
-Krumbach Apfelschorle;;0,50l;1,00;x;SOFTDRINKS
-Krumbach Wasser;;0,50l;1,00;x;SOFTDRINKS
+Preisliste;Beschreibung;Menge;Preis;Ausschank
+Leibinger Edel;;0,50l;2,50;x
+Leibinger Alkoholfrei;;0,33l;2,00;x
+Leibinger Seeradler;;0,33l;2,00;x
+Seemost Schorle Rot;;0,33l;2,00;x
+Weinschorle;Weiss oder Rosé;0,275l;2,50;x
+;;;;
+Mecki Mix;;0,50l;1,00;x
+Krumbach Orangenlimo;;0,50l;1,00;x
+Krumbach Apfelschorle;;0,50l;1,00;x
+Krumbach Wasser;;0,50l;1,00;x

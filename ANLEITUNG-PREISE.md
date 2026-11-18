@@ -63,22 +63,19 @@ Ein Knopf darf ruhig für mehrere Sorten stehen (z. B. „Softdrink“ für alle
 Limos zum gleichen Preis). Auf der Papier-Preisliste stehen die Sorten dann einzeln
 – das regelt der nächste Block.
 
-### Block „Preisliste“ – Papier zum Ausdrucken und TV
+### Block „Preisliste“ – Papier zum Ausdrucken
 
-| Preisliste | Beschreibung | Menge | Preis | Kuchenstand | Ausschank | Bedienung | TV-Folie |
-|---|---|---|---|---|---|---|---|
-| Leibinger Edel | | 0,50l | 4,00 | | x | x | BIER / MOST |
-| Weinschorle | Weiss oder Rosé | 0,33l | 4,50 | | x | x | WEIN / SPRITZ |
-| | | | | | | | |
-| Pfand Glas | | | 2,00 | | x | x | |
+| Preisliste | Beschreibung | Menge | Preis | Kuchenstand | Ausschank | Bedienung |
+|---|---|---|---|---|---|---|
+| Leibinger Edel | | 0,50l | 4,00 | | x | x |
+| Weinschorle | Weiss oder Rosé | 0,33l | 4,50 | | x | x |
+| | | | | | | |
+| Pfand Glas | | | 2,00 | | x | x |
 
 - **Preisliste**: Name, wie er auf dem Papier steht.
 - **Beschreibung**: kleine Zeile darunter (optional).
-- **Zusatz TV** (optionale Spalte): zusätzliche Zeile nur auf dem TV.
 - **Preis**: darf leer sein (dann wird kein Preis gedruckt).
 - **Stände**: wie oben, `x` = steht auf der Preisliste dieses Stands.
-- **TV-Folie**: Überschrift der TV-Folie, auf der die Zeile erscheint. Alle Zeilen mit
-  der gleichen Überschrift bilden eine Folie. Leer = nicht im TV.
 - **Leere Zeile** = Abstand auf dem Papier (für alle Stände). Soll der Abstand nur bei
   manchen Ständen sein: Name leer lassen und nur bei diesen Ständen ein `x` setzen.
 
@@ -92,7 +89,6 @@ Groß-/Kleinschreibung der Überschriften ist egal.
 | A | B |
 |---|---|
 | Logo | https://…/logo.png |
-| TV-Hintergrund | https://…/hintergrund.jpg |
 | | |
 | **Datei** | **Anzeigen** |
 | kinderumzug.csv | ja |
@@ -101,7 +97,7 @@ Groß-/Kleinschreibung der Überschriften ist egal.
 
 - Nur Veranstaltungen, die hier stehen, erscheinen in der Kasse – in dieser Reihenfolge.
 - **Anzeigen = nein** blendet eine Veranstaltung aus, ohne die Datei zu löschen.
-- Logo erscheint auf der Papier-Preisliste, der Hintergrund auf dem TV (beides optional).
+- Das Logo erscheint auf der Papier-Preisliste (optional).
 
 ---
 
