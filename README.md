@@ -103,7 +103,8 @@ Format details and rules for humans: [ANLEITUNG-PREISE.md](ANLEITUNG-PREISE.md).
 ## Card payments (SumUp Solo, Cloud API)
 
 - `v3/sumup.js` (`KasseSumup`): settings in localStorage `kasse:sumup` (`apiKey`, `merchant`,
-  `reader`, optional affiliate), the running payment in `kasse:sumup:pending`.
+  `reader`, optional affiliate), the running payment in `kasse:sumup:pending`, the last 30 card
+  payments in `kasse:sumup:belege`.
   Calls `api.sumup.com` directly from the browser (CORS allowed). Nothing SumUp-related is in the repo.
 - `sumup.html` ("SumUp einrichten", linked from the start page), per device. Sections:
   status, QR scannen, Solo koppeln, Solo wählen (+ readable reader status), QR für Tablet
@@ -126,6 +127,11 @@ Format details and rules for humans: [ANLEITUNG-PREISE.md](ANLEITUNG-PREISE.md).
   "Abbrechen" = terminate. SumUp doesn't reliably expire checkouts, so after
   `valid_until` + 20 s the cashier decides ("Am Solo bezahlt" / "Nicht bezahlt"); polling continues.
 - A reload resumes the pending payment.
+- Receipts: the Solo shows none in API mode. "Belege" (header) / "Beleg" (success toast) looks up
+  `transaction_code` via `GET /v2.1/merchants/{code}/transactions?client_transaction_id=…` (cached
+  in the stored record) and shows a QR of SumUp's public receipt page
+  `https://receipts-ng.sumup.com/v0.1/receipts/<transaction_code>?mid=<merchant>&format=html`
+  (no login needed). QR via `v3/lib/qrcode.js` (in the SW cache). Item lines are not on it.
 - A paired Solo only accepts payments from the API (no manual entry on the device).
 - The API key has full account rights: one key per tablet, revoke in the SumUp dashboard if a tablet is lost.
 
