@@ -4,9 +4,8 @@
 //   <verein>/preise/veranstaltungen.csv   Logo, Liste der Event-Dateien
 //   <verein>/preise/<event>.csv           Blöcke "Veranstaltung", "Pfand", "Kasse", "Preisliste"
 //
-// Welcher Verein: Seite liegt im Vereinsordner (nzb/kasse.html) oder wird mit
-// ?verein=<ordner> aufgerufen (v3/kasse.html?verein=nzb) – Letzteres braucht keine
-// Dateien im Vereinsordner außer preise/.
+// Welcher Verein: kommt aus ?verein=<ordner> (v3/kasse.html?verein=nzb). Im
+// Vereinsordner liegt nur preise/ – keine Seiten.
 //
 // Aufbau der Dateien: siehe ANLEITUNG-PREISE.md. Excel-Exporte mit ";" oder ","
 // als Trennzeichen, Dezimalkomma oder -punkt, UTF-8 oder Windows-1252 werden erkannt.
@@ -24,9 +23,8 @@ var KassePreise = (function () {
     var m = /[?&]verein=([^&#]*)/.exec(loc.search);
     verein = m ? decodeURIComponent(m[1]).replace(/[^a-zA-Z0-9_-]/g, "") : "";
   }
-  // Ordner des Vereins: per ?verein=… oder der Ordner, in dem die Seite liegt
-  var CLUB = verein || (loc ? loc.pathname.split("/").slice(-2)[0] : "");
-  var BASE = verein ? "../" + verein + "/preise/" : "preise/";
+  var CLUB = verein;                               // "" = kein Verein angegeben
+  var BASE = "../" + verein + "/preise/";          // Seiten liegen in v3/
   var QUERY = verein ? "verein=" + encodeURIComponent(verein) : ""; // für Links zwischen den Seiten
 
   // ---------- CSV ----------
