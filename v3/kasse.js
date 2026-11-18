@@ -134,6 +134,7 @@
 
   function route() {
     closePay(true);
+    closeFree();
     if (!model) return renderLoading();
     if (!hasConfig()) return renderNoConfig();
     var h = parseHash();
@@ -268,8 +269,10 @@
         '<span class="t-price">' + eur(r.price) + "</span></button>";
     }).join("");
 
+    var card = cardOn();
     app.innerHTML =
-      header(back, m.ev.realname || m.e, m.loc.realname || m.l, syncHtml(true)) +
+      header(back, m.ev.realname || m.e, m.loc.realname || m.l,
+             (card ? '<button class="hbtn" data-act="free">Betrag</button>' : "") + syncHtml(true)) +
       '<div class="reg"><div class="reg-left">' +
         '<div class="tiles">' + tiles + "</div>" +
         (rets ? '<div class="rets" style="grid-template-columns:repeat(' + m.rets.length + ',1fr)">' + rets + "</div>" : "") +
@@ -277,7 +280,8 @@
       '<div class="order"><div class="lines"></div>' +
         '<div class="order-foot">' +
           '<div class="total"><span>Summe</span><b class="sum">0,00 €</b></div>' +
-          '<div class="foot-btns"><button class="btn btn-clear" data-act="clear">Leeren</button>' +
+          '<div class="foot-btns' + (card ? " three" : "") + '"><button class="btn btn-clear" data-act="clear">Leeren</button>' +
+          (card ? '<button class="btn btn-card" data-act="card">Karte</button>' : "") +
           '<button class="btn btn-pay" data-act="pay">Kassieren</button></div>' +
         "</div></div></div>";
 
@@ -367,6 +371,8 @@
     pay.disabled = ls.length === 0;
     pay.textContent = t < 0 ? "Auszahlen" : "Kassieren";
     app.querySelector("[data-act=clear]").disabled = ls.length === 0;
+    var cb = app.querySelector("[data-act=card]");
+    if (cb) cb.disabled = t <= 0;
     resetClear();
     save(orderKey, order);
   }
@@ -407,6 +413,39 @@
 
   on(app, "[data-act=pay]", "click", function () { openPay(); });
 
+  var KEYS = ["7", "8", "9", "4", "5", "6", "1", "2", "3", ",", "0", "⌫"];
+  function padHtml() {
+    return '<div class="pad">' + KEYS.map(function (k) {
+      return '<button data-k="' + k + '"' + (k === "⌫" ? ' class="back"' : "") + ">" + k + "</button>";
+    }).join("") + "</div>";
+  }
+  // Ziffernblock-Eingabe "12,5" -> neuer Text (max. 4 Stellen vor, 2 nach dem Komma)
+  function typeKey(s, k) {
+    if (k === "⌫") return s.slice(0, -1);
+    if (k === ",") return s.indexOf(",") < 0 ? (s || "0") + "," : s;
+    var p = s.split(",");
+    if (p.length === 2 && p[1].length >= 2) return s;
+    if (p.length === 1 && p[0].length >= 4) return s;
+    return s === "0" ? k : s + k;
+  }
+  function centsOf(s) {
+    if (s === "") return null;
+    var p = s.split(",");
+    return (parseInt(p[0] || "0", 10) || 0) * 100 + (p.length > 1 ? parseInt((p[1] + "00").slice(0, 2), 10) || 0 : 0);
+  }
+  function amountText(s) { return s === "" ? "–" : s + (s.indexOf(",") < 0 ? ",00" : "") + " €"; }
+
+  // Karte inkl. Trinkgeld: nächster ganzer Euro (bei glattem Betrag +1 €), nächster 5er, 10er, 20er (max. 3)
+  function tipOptions(t) {
+    var s = [];
+    [100, 500, 1000, 2000].forEach(function (step) {
+      var v = Math.ceil(t / step) * step;
+      if (v === t && step === 100) v += 100;
+      if (v > t && s.indexOf(v) < 0) s.push(v);
+    });
+    return s.slice(0, 3);
+  }
+
   function suggestions(t) {
     var s = [];
     [100, 500, 1000].forEach(function (step) { var v = Math.ceil(t / step) * step; if (v > t) s.push(v); });
@@ -423,7 +462,14 @@
     payEl.className = "pay" + (t < 0 ? " refund" : "");
     var quick = '<button class="qbtn exact" data-v="' + t + '">Passend</button>' +
       suggestions(t).map(function (v) { return '<button class="qbtn" data-v="' + v + '">' + eurShort(v) + "</button>"; }).join("");
-    var keys = ["7", "8", "9", "4", "5", "6", "1", "2", "3", ",", "0", "⌫"];
+    var cardq = "";
+    if (cardOn() && t > 0) {
+      cardq = '<div class="cardq"><div class="cardq-h">Mit Karte (inkl. Trinkgeld)</div><div class="quick four">' +
+        [t].concat(tipOptions(t)).map(function (v) {
+          return '<button class="qbtn cbtn" data-card="' + v + '">' + (v === t ? eur(v) : eurShort(v)) +
+            "<small>" + (v === t ? "genau" : "+" + eur(v - t) + " Trinkgeld") + "</small></button>";
+        }).join("") + "</div></div>";
+    }
     payEl.innerHTML =
       header('<button class="hbtn" data-act="pay-back">‹ Bestellung</button>',
              t < 0 ? "Auszahlen" : "Kassieren", current.loc.realname || current.l, "") +
@@ -432,11 +478,8 @@
         '<div class="stat given"><span>Gegeben</span><b class="given-v">–</b></div>' +
         '<div class="stat change"><span class="change-l">Rückgeld</span><b class="change-v"></b></div>' +
       "</div>" +
-      '<div class="pay-body"><div class="pay-left"><div class="quick">' + quick + "</div>" +
-        '<div class="coins"></div></div>' +
-        '<div class="pad">' + keys.map(function (k) {
-          return '<button data-k="' + k + '"' + (k === "⌫" ? ' class="back"' : "") + ">" + k + "</button>";
-        }).join("") + "</div>" +
+      '<div class="pay-body"><div class="pay-left"><div class="quick">' + quick + "</div>" + cardq +
+        '<div class="coins"></div></div>' + padHtml() +
       "</div>" +
       '<div class="pay-foot"><button class="btn btn-back" data-act="pay-back">Zurück</button>' +
         '<button class="btn btn-done" data-act="pay-done">✓ Fertig – nächster Kunde</button></div>';
@@ -457,17 +500,13 @@
     route();
   });
 
-  function givenCents() {
-    if (given === "") return null;
-    var p = given.split(",");
-    return (parseInt(p[0] || "0", 10) || 0) * 100 + (p.length > 1 ? parseInt((p[1] + "00").slice(0, 2), 10) || 0 : 0);
-  }
+  function givenCents() { return centsOf(given); }
 
   function paintPay() {
     if (!payEl) return;
     var t = total();
     var g = givenCents();
-    payEl.querySelector(".given-v").textContent = g === null ? "–" : given + (given.indexOf(",") < 0 ? ",00" : "") + " €";
+    payEl.querySelector(".given-v").textContent = amountText(given);
     var ch = payEl.querySelector(".stat.change");
     var lbl = payEl.querySelector(".change-l");
     var val = payEl.querySelector(".change-v");
@@ -521,7 +560,10 @@
     if (!payEl || !payEl.contains(ev.target)) return;
     var t = ev.target.closest ? ev.target.closest("button") : ev.target;
     if (!t) return;
-    if (t.hasAttribute("data-v")) {
+    if (t.hasAttribute("data-card")) {
+      startCard(Number(t.getAttribute("data-card")), "order");
+      return;
+    } else if (t.hasAttribute("data-v")) {
       var v = Number(t.getAttribute("data-v"));
       given = Math.floor(v / 100) + (v % 100 ? "," + ("0" + (v % 100)).slice(-2) : "");
       givenFresh = true;
@@ -529,14 +571,7 @@
       var k = t.getAttribute("data-k");
       if (givenFresh && k !== "⌫") given = "";
       givenFresh = false;
-      if (k === "⌫") given = given.slice(0, -1);
-      else if (k === ",") { if (given.indexOf(",") < 0) given = (given || "0") + ","; }
-      else {
-        var p = given.split(",");
-        if (p.length === 2 && p[1].length >= 2) return;
-        if (p.length === 1 && p[0].length >= 4) return;
-        given = given === "0" ? k : given + k;
-      }
+      given = typeKey(given, k);
     } else if (t.getAttribute("data-act") === "pay-back") {
       closePay();
       return;
@@ -572,6 +607,220 @@
     document.body.appendChild(el);
     toastTimer = setTimeout(hide, 6000);
   }
+
+  // ---------- Kartenzahlung (SumUp Solo, siehe sumup.js) ----------
+  //
+  // Nur sichtbar, wenn auf diesem Tablet SumUp eingerichtet ist (sumup.html).
+  // Die laufende Zahlung liegt im localStorage: nach Neuladen geht es mit "Bitte am Solo zahlen" weiter.
+
+  var SU = window.KasseSumup || null;
+  var CARD_POLL_MS = 2000;
+  var CARD_GRACE_MS = 20000;   // so lange nach valid_until noch warten, bevor gefragt wird
+  var cardEl = null, cardP = null, cardState = "", cardTimer = null;
+
+  function cardOn() { return !!(SU && SU.ready()); }
+
+  on(app, "[data-act=card]", "click", function () {
+    var t = total();
+    if (current && t > 0) startCard(t, "order");
+  });
+
+  function cardDesc(kind) {
+    if (kind !== "order" || !current) return club + " Freier Betrag";
+    return club + " " + (current.ev.realname || current.e) + " – " + (current.loc.realname || current.l);
+  }
+
+  function startCard(amount, kind) {
+    if (!cardOn() || cardP || !(amount > 0)) return;
+    cardP = { kind: kind, amount: amount, total: kind === "order" ? total() : amount,
+              orderFull: kind === "order" ? KEY + orderKey : "", desc: cardDesc(kind) };
+    showCard("send");
+    SU.start(amount, cardP.desc).then(function (r) {
+      if (!cardP) return;
+      cardP.id = r.id; cardP.reader = r.reader;
+      cardP.until = Date.now() + 60000;
+      SU.setPending(cardP);
+      showCard("wait");
+      cardTimer = setTimeout(cardPoll, CARD_POLL_MS);
+    }, function (e) {
+      if (!cardP) return;
+      cardP.err = e.message;
+      showCard("error");
+    });
+  }
+
+  function cardPoll() {
+    cardTimer = null;
+    if (!cardP || !cardP.id) return;
+    SU.status(cardP).then(function (s) {
+      if (!cardP) return;
+      if (s.validUntil) cardP.until = s.validUntil;
+      cardP.net = false;
+      if (s.state === "successful") return cardSuccess();
+      if (s.state === "failed" || s.state === "cancelled") return cardFailed(s.state, s.reason);
+      cardCheckTimeout();
+    }, function () {
+      if (!cardP) return;
+      cardP.net = true;
+      cardCheckTimeout();
+    });
+  }
+  function cardCheckTimeout() {
+    var late = Date.now() > cardP.until + CARD_GRACE_MS ||
+               (cardP.cancelAt && Date.now() > cardP.cancelAt + 15000);
+    if (late && cardState !== "timeout") showCard("timeout");
+    else paintCardNet();
+    cardTimer = setTimeout(cardPoll, CARD_POLL_MS); // weiter fragen: kommt "bezahlt" noch, wird es übernommen
+  }
+
+  function cardSuccess() {
+    var p = cardP;
+    SU.setPending(null);
+    showCard("ok");
+    clearTimeout(cardTimer);
+    setTimeout(function () {
+      if (cardP !== p) return;
+      hideCard();
+      if (p.kind === "order") {
+        if (current && KEY + orderKey === p.orderFull) { order = {}; closePay(); paintOrder(); }
+        else { try { localStorage.removeItem(p.orderFull); } catch (e) { /* egal */ } }
+      } else closeFree();
+      showToast("✓ Karte bezahlt – " + eur(p.amount) +
+        (p.amount > p.total ? " (inkl. " + eur(p.amount - p.total) + " Trinkgeld)" : ""));
+    }, 1300);
+  }
+  function cardFailed(state, reason) {
+    SU.setPending(null);
+    clearTimeout(cardTimer);
+    cardP.err = state === "cancelled" ? "Abgebrochen" : "Zahlung fehlgeschlagen";
+    cardP.reason = reason || "";
+    showCard("fail");
+  }
+
+  function hideCard() {
+    clearTimeout(cardTimer); cardTimer = null;
+    if (cardEl && cardEl.parentNode) cardEl.parentNode.removeChild(cardEl);
+    cardEl = null; cardP = null; cardState = "";
+  }
+
+  function showCard(state) {
+    cardState = state;
+    if (!cardEl) {
+      cardEl = document.createElement("div");
+      document.body.appendChild(cardEl);
+    }
+    var p = cardP;
+    var tip = p.amount > p.total ? '<div class="card-tip">davon ' + eur(p.amount - p.total) + " Trinkgeld</div>" : "";
+    var msg = "", sub = "", btns = "", cls = "";
+    if (state === "send") {
+      msg = "Sende an den Solo …";
+    } else if (state === "wait") {
+      msg = "Bitte Karte an den Solo halten";
+      sub = '<div class="card-net"></div>';
+      btns = '<button class="btn btn-back" data-c="cancel">Abbrechen</button>';
+    } else if (state === "cancelling") {
+      msg = "Breche am Solo ab …";
+      sub = '<div class="card-net"></div>';
+    } else if (state === "timeout") {
+      cls = " warn";
+      msg = "Keine Antwort vom Solo";
+      sub = '<div class="card-sub">Bitte am Solo nachsehen, ob bezahlt wurde.</div><div class="card-net"></div>';
+      btns = '<button class="btn btn-back" data-c="giveup">Nicht bezahlt</button>' +
+             '<button class="btn btn-done" data-c="manual">✓ Am Solo bezahlt</button>';
+    } else if (state === "ok") {
+      cls = " ok";
+      msg = "✓ Bezahlt";
+    } else { // fail, error
+      cls = " bad";
+      msg = "✗ " + esc(p.err || "Fehler");
+      sub = p.reason ? '<div class="card-sub">' + esc(p.reason) + "</div>" : "";
+      btns = '<button class="btn btn-back" data-c="close">Zurück</button>' +
+             '<button class="btn btn-card" data-c="retry">Nochmal</button>';
+    }
+    cardEl.className = "card-ov" + cls;
+    cardEl.innerHTML = '<div class="card-box"><div class="card-h">Kartenzahlung</div>' +
+      '<div class="card-amt">' + eur(p.amount) + "</div>" + tip +
+      '<div class="card-msg">' + msg + "</div>" + sub +
+      (btns ? '<div class="card-btns">' + btns + "</div>" : "") + "</div>";
+    paintCardNet();
+  }
+  function paintCardNet() {
+    var n = cardEl && cardEl.querySelector(".card-net");
+    if (n) n.textContent = cardP && cardP.net ? "Keine Verbindung zu SumUp – versuche weiter …" : "";
+  }
+
+  document.addEventListener("click", function (ev) {
+    if (!cardEl || !cardEl.contains(ev.target)) return;
+    var b = ev.target.closest ? ev.target.closest("[data-c]") : null;
+    if (!b || !cardP) return;
+    var c = b.getAttribute("data-c");
+    if (c === "cancel") {
+      cardP.cancelAt = Date.now();
+      SU.terminate(cardP).catch(function () {});
+      showCard("cancelling");
+    } else if (c === "giveup") {
+      SU.terminate(cardP).catch(function () {});
+      SU.setPending(null);
+      hideCard();
+    } else if (c === "manual") {
+      cardSuccess();
+    } else if (c === "close") {
+      hideCard();
+    } else if (c === "retry") {
+      var a = cardP.amount, k = cardP.kind;
+      hideCard();
+      startCard(a, k);
+    }
+  });
+
+  // Nach Neuladen: laufende Zahlung weiter verfolgen
+  function resumeCard() {
+    var p = SU && SU.pending();
+    if (!p || !p.id || cardP) return;
+    cardP = p;
+    showCard("wait");
+    cardPoll();
+  }
+
+  // ---------- Freier Betrag (nur Karte) ----------
+
+  var freeEl = null, freeStr = "";
+
+  on(app, "[data-act=free]", "click", function () { openFree(); });
+
+  function openFree() {
+    if (!cardOn() || freeEl) return;
+    freeStr = "";
+    freeEl = document.createElement("div");
+    freeEl.className = "pay free";
+    freeEl.innerHTML =
+      header('<button class="hbtn" data-f="close">‹ Zurück</button>', "Freier Betrag", "Kartenzahlung", "") +
+      '<div class="pay-body"><div class="pay-left"><div class="stat"><span>Betrag</span><b class="free-v">–</b></div>' +
+        '<div class="coins-none free-hint">Betrag eintippen, dann „Mit Karte zahlen“. Die offene Bestellung bleibt unverändert.</div></div>' +
+        padHtml() + "</div>" +
+      '<div class="pay-foot"><button class="btn btn-back" data-f="close">Abbrechen</button>' +
+        '<button class="btn btn-card" data-f="pay" disabled>Mit Karte zahlen</button></div>';
+    document.body.appendChild(freeEl);
+  }
+  function closeFree() {
+    if (freeEl && freeEl.parentNode) freeEl.parentNode.removeChild(freeEl);
+    freeEl = null;
+  }
+  document.addEventListener("click", function (ev) {
+    if (!freeEl || !freeEl.contains(ev.target)) return;
+    var b = ev.target.closest ? ev.target.closest("button") : null;
+    if (!b) return;
+    if (b.hasAttribute("data-k")) {
+      freeStr = typeKey(freeStr, b.getAttribute("data-k"));
+      var c = centsOf(freeStr);
+      freeEl.querySelector(".free-v").textContent = amountText(freeStr);
+      freeEl.querySelector("[data-f=pay]").disabled = !(c > 0);
+    } else if (b.getAttribute("data-f") === "close") {
+      closeFree();
+    } else if (b.getAttribute("data-f") === "pay") {
+      startCard(centsOf(freeStr), "free");
+    }
+  });
 
   // ---------- Bildschirm anlassen, solange die Kasse offen ist ----------
 
@@ -611,6 +860,7 @@
       history.replaceState(null, "", location.pathname + location.search + "#" + hashFor(last.e, last.l));
     }
     route();
+    resumeCard();
   });
 
   // Nach erfolgreichem Sync neue Preise sofort übernehmen (ohne Neuladen der Seite).
@@ -619,7 +869,7 @@
     KassePreise.load(true).then(function (m) {
       if (JSON.stringify(m) === JSON.stringify(model)) return;
       model = m;
-      if (!payEl) route();
+      if (!payEl && !freeEl && !cardEl) route();
       showToast("Preise aktualisiert");
     });
   });
