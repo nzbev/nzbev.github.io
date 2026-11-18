@@ -1,16 +1,33 @@
 // Liest die Preis-Dateien (CSV aus Excel) eines Vereins.
 //
+//   vereine.csv                           Liste der Vereine (Ordner;Name) – im Hauptordner
 //   <verein>/preise/veranstaltungen.csv   Logo, Liste der Event-Dateien
 //   <verein>/preise/<event>.csv           Blöcke "Veranstaltung", "Pfand", "Kasse", "Preisliste"
+//
+// Welcher Verein: Seite liegt im Vereinsordner (nzb/kasse.html) oder wird mit
+// ?verein=<ordner> aufgerufen (v3/kasse.html?verein=nzb) – Letzteres braucht keine
+// Dateien im Vereinsordner außer preise/.
 //
 // Aufbau der Dateien: siehe ANLEITUNG-PREISE.md. Excel-Exporte mit ";" oder ","
 // als Trennzeichen, Dezimalkomma oder -punkt, UTF-8 oder Windows-1252 werden erkannt.
 //
 // KassePreise.load() -> Promise<{settings, events, errors}>; Beträge in Cent.
+// Läuft auch ohne Browser (tools/pruefe-preise.js): dann nur die parse*-Funktionen nutzen.
 var KassePreise = (function () {
   "use strict";
 
-  var BASE = "preise/";
+  // ---------- Verein bestimmen ----------
+
+  var loc = typeof location !== "undefined" ? location : null;
+  var verein = "";
+  if (loc) {
+    var m = /[?&]verein=([^&#]*)/.exec(loc.search);
+    verein = m ? decodeURIComponent(m[1]).replace(/[^a-zA-Z0-9_-]/g, "") : "";
+  }
+  // Ordner des Vereins: per ?verein=… oder der Ordner, in dem die Seite liegt
+  var CLUB = verein || (loc ? loc.pathname.split("/").slice(-2)[0] : "");
+  var BASE = verein ? "../" + verein + "/preise/" : "preise/";
+  var QUERY = verein ? "verein=" + encodeURIComponent(verein) : ""; // für Links zwischen den Seiten
 
   // ---------- CSV ----------
 
@@ -95,8 +112,9 @@ var KassePreise = (function () {
 
   // ---------- veranstaltungen.csv ----------
 
-  function parseIndex(rows, errors) {
-    var settings = { logo: "" }, files = [], inFiles = false;
+  function parseIndex(rows, errors, file) {
+    file = file || "veranstaltungen.csv";
+    var settings = { logo: "" }, files = [], hidden = [], inFiles = false;
     rows.forEach(function (r) {
       if (empty(r)) return;
       var k = key(r.cells[0]);
@@ -104,16 +122,42 @@ var KassePreise = (function () {
       if (k === "tv-hintergrund" || k === "tv hintergrund") return; // alt (TV gibt es nicht mehr)
       if (k === "datei") { inFiles = true; return; }
       if (!inFiles) {
-        errors.push({ where: "veranstaltungen.csv, Zeile " + r.line, msg: "Unbekannter Eintrag „" + r.cells[0] + "“" });
+        errors.push({ file: file, line: r.line, where: file + ", Zeile " + r.line, msg: "Unbekannter Eintrag „" + r.cells[0] + "“" });
         return;
       }
       var show = key(r.cells[1]);
-      if (show === "nein" || show === "n" || show === "0" || show === "no") return;
       var f = r.cells[0];
       if (!/\.csv$/i.test(f)) f += ".csv";
-      files.push(f);
+      if (show === "nein" || show === "n" || show === "0" || show === "no") hidden.push(f); // ausgeblendet
+      else files.push(f);
     });
-    return { settings: settings, files: files };
+    return { settings: settings, files: files, hidden: hidden };
+  }
+
+  // ---------- vereine.csv ----------
+
+  // -> [{id: "nzb", name: "NZB"}]
+  function parseClubs(rows, errors, file) {
+    file = file || "vereine.csv";
+    var clubs = [], seen = {}, header = false;
+    rows.forEach(function (r) {
+      if (empty(r)) return;
+      if (key(r.cells[0]) === "ordner") { header = true; return; }
+      var id = r.cells[0], name = r.cells[1] || r.cells[0].toUpperCase();
+      if (!/^[a-zA-Z0-9_-]+$/.test(id)) {
+        errors.push({ file: file, line: r.line, where: file + ", Zeile " + r.line,
+                      msg: "Ordner „" + id + "“: nur Buchstaben, Zahlen, - und _ erlaubt" });
+        return;
+      }
+      if (seen[id.toLowerCase()]) {
+        errors.push({ file: file, line: r.line, where: file + ", Zeile " + r.line, msg: "Ordner „" + id + "“ steht doppelt drin" });
+        return;
+      }
+      seen[id.toLowerCase()] = true;
+      clubs.push({ id: id, name: name });
+    });
+    if (!header) errors.push({ file: file, where: file, msg: "Überschrift „Ordner;Name“ fehlt" });
+    return clubs;
   }
 
   // ---------- <event>.csv ----------
@@ -127,7 +171,7 @@ var KassePreise = (function () {
     var ev = { id: file.replace(/\.csv$/i, ""), file: file, name: "", deposits: {}, stands: [] };
     var standIds = {}, standByName = {}, mode = null, cols = null;
     var kasseRows = [], listeRows = [];
-    function err(r, msg) { errors.push({ where: file + ", Zeile " + r.line, msg: msg }); }
+    function err(r, msg) { errors.push({ file: file, line: r.line, where: file + ", Zeile " + r.line, msg: msg }); }
 
     function header(r, known) {
       var map = { stands: [] };
@@ -218,9 +262,9 @@ var KassePreise = (function () {
 
     if (!ev.name) {
       ev.name = ev.id;
-      errors.push({ where: file, msg: "Zeile „Veranstaltung;<Name>“ fehlt – Dateiname wird verwendet" });
+      errors.push({ file: file, where: file, msg: "Zeile „Veranstaltung;<Name>“ fehlt – Dateiname wird verwendet" });
     }
-    if (!ev.stands.length) errors.push({ where: file, msg: "Keine Stände gefunden (Spalten neben „Kasse“ / „Preisliste“)" });
+    if (!ev.stands.length) errors.push({ file: file, where: file, msg: "Keine Stände gefunden (Spalten neben „Kasse“ / „Preisliste“)" });
     return ev;
   }
 
@@ -234,20 +278,38 @@ var KassePreise = (function () {
       var idx = parseIndex(rows, errors);
       return Promise.all(idx.files.map(function (f) {
         return fetchCsv(f).then(function (rows) { return parseEvent(f, rows, errors); }, function (e) {
-          errors.push({ where: f, msg: e.message === "Failed to fetch" ? "Nicht offline gespeichert" : e.message });
+          errors.push({ file: f, where: f, msg: e.message === "Failed to fetch" ? "Nicht offline gespeichert" : e.message });
           return null;
         });
       })).then(function (events) {
         var used = {};
         events = events.filter(function (e) { return e && e.stands.length; });
         events.forEach(function (e) { e.id = slug(e.id, used); });
+        // Logo: Dateiname im preise-Ordner (offline verfügbar) oder volle Adresse
+        var logo = idx.settings.logo;
+        idx.settings.logoUrl = !logo ? "" : /^(https?:)?\/\//i.test(logo) || logo.charAt(0) === "/" ? logo : BASE + logo;
         return { settings: idx.settings, events: events, errors: errors };
       });
     }, function (e) {
-      errors.push({ where: "veranstaltungen.csv", msg: e.message === "Failed to fetch" ? "Nicht offline gespeichert" : e.message });
+      errors.push({ file: "veranstaltungen.csv", where: "veranstaltungen.csv",
+                    msg: e.message === "Failed to fetch" ? "Nicht offline gespeichert" : e.message });
       return { settings: {}, events: [], errors: errors };
     });
     return cached;
+  }
+
+  // Liste der Vereine (vereine.csv im Hauptordner). rootPath: Weg zum Hauptordner, Standard "../"
+  function loadClubs(rootPath) {
+    var errors = [];
+    return fetch((rootPath === undefined ? "../" : rootPath) + "vereine.csv", { cache: "no-cache" }).then(function (r) {
+      if (!r.ok) throw new Error("vereine.csv nicht gefunden (" + r.status + ")");
+      return r.arrayBuffer();
+    }).then(function (buf) {
+      return { clubs: parseClubs(parseCsv(decode(buf)), errors), errors: errors };
+    }, function (e) {
+      errors.push({ file: "vereine.csv", where: "vereine.csv", msg: e.message === "Failed to fetch" ? "Nicht offline gespeichert" : e.message });
+      return { clubs: [], errors: errors };
+    });
   }
 
   function eventById(model, id) {
@@ -259,6 +321,7 @@ var KassePreise = (function () {
     return null;
   }
 
-  return { load: load, parseCsv: parseCsv, parseIndex: parseIndex, parseEvent: parseEvent,
+  return { load: load, loadClubs: loadClubs, club: CLUB, query: QUERY,
+           decode: decode, parseCsv: parseCsv, parseIndex: parseIndex, parseEvent: parseEvent, parseClubs: parseClubs,
            money: money, eventById: eventById, find: find };
 })();

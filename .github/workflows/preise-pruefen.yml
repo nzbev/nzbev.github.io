@@ -1,0 +1,20 @@
+# Prüft bei jedem Hochladen alle Preis-Dateien (CSV) mit dem Parser der Kasse.
+# Fehler erscheinen als Anmerkung an der Zeile der Datei, der Commit bekommt ein rotes ✗.
+# Hinweis: GitHub Pages veröffentlicht trotzdem – der Check warnt, er blockiert nicht.
+name: Preise prüfen
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  pruefen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Preis-Dateien prüfen
+        run: node tools/pruefe-preise.js

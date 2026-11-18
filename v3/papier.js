@@ -9,14 +9,15 @@
     var kv = p.split("=");
     if (kv[0]) params[decodeURIComponent(kv[0])] = decodeURIComponent(kv[1] || "");
   });
-  document.getElementById("back").href = "kasse.html" + (params.e ? "#e=" + encodeURIComponent(params.e) : "");
+  document.getElementById("back").href = "kasse.html" + (KassePreise.query ? "?" + KassePreise.query : "") +
+    (params.e ? "#e=" + encodeURIComponent(params.e) : "");
 
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
     });
   }
-  function price(c) { return c ? (c / 100).toFixed(2) + "€" : ""; } // wie bisher: "3.50€"
+  function price(c) { return c ? (c / 100).toFixed(2).replace(".", ",") + "\u00a0€" : ""; } // "3,50 €"
 
   KassePreise.load().then(function (model) {
     var ev = KassePreise.eventById(model, params.e);
@@ -30,7 +31,7 @@
       return;
     }
     document.title = "Preise " + ev.name + " – " + st.name;
-    var logo = model.settings.logo;
+    var logo = model.settings.logoUrl;
     var html =
       '<table border="0" class="pricelist"><tr><td><h1>Preise</h1></td><td>' +
       (logo ? '<img height="100px" align="right" src="' + esc(logo) + '">' : "") + "</td></tr></table>" +

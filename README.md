@@ -14,21 +14,30 @@ Keep that guide in sync with any change to the CSV format.
 
 ## Layout
 
-- `index.html` — start page, one tile per club → `<club>/kasse.html`. Uses `v3/kasse.css`.
+- `index.html` — start page; tiles come from `vereine.csv` and link to
+  `v3/kasse.html?verein=<folder>`. Uses `v3/kasse.css`.
+- `vereine.csv` — list of clubs (`Ordner;Name`). Adding a club = a folder with
+  `preise/` + one line here; no code, no symlinks.
+- `pruefen.html` + `v3/pruefen.js` — "Preis-Dateien prüfen": drop CSVs, see errors,
+  a preview and a diff against the online version before uploading (client-side only).
 - `v3/` — the **shared app implementation** (all clubs):
   - `kasse.html` / `kasse.js` / `kasse.css` — the register (event → stand → register → checkout).
-  - `papier.html` / `papier.js` / `papier.css` — printable price list (look unchanged
-    from the old v2 page).
-  - `preise.js` — CSV loader/parser (`KassePreise.load()`), shared by all pages.
-- `nzb/`, `ffw/`, `nzt/`, `scb/` — one folder per club:
-  - `kasse.html`, `papier.html` — **symlinks to `../v3/…`** (git mode `120000`).
-    The pages reference `../v3/*.js|css` and fetch `preise/*.csv` relative to the club folder.
-  - `preise/veranstaltungen.csv` + `preise/<event>.csv` — the club's data (real files).
+  - `papier.html` / `papier.js` / `papier.css` — printable price list.
+  - `preise.js` — CSV loader/parser (`KassePreise`), shared by the pages, the service
+    worker (`importScripts`) and the GitHub check.
+- `<club>/preise/` — the club's data: `veranstaltungen.csv`, `<event>.csv`, `logo.png`.
+- `nzb/`, `ffw/`, `nzt/`, `scb/` also contain `kasse.html` / `papier.html` — **symlinks to
+  `../v3/…`** kept so old bookmarks/home-screen icons keep working. New clubs don't need them.
+- `tools/pruefe-preise.js` + `.github/workflows/preise-pruefen.yml` — CI check of all CSVs.
 - `sw.js`, `pwa.js`, `manifest.webmanifest`, `icon.svg` — offline support (see below).
 - `test.html` — old prototype, not linked from anywhere.
 
-**To change the app, edit the file in `v3/`** — every club picks it up via its symlinks.
-Don't edit `nzb/kasse.html` etc. directly (it's a symlink).
+**Which club:** `preise.js` takes it from `?verein=<folder>` (pages opened from `v3/`, data
+fetched from `../<folder>/preise/`) or else from the folder the page lives in (old
+symlinked addresses, data from `preise/`). `KassePreise.club` / `KassePreise.query`
+expose it; links between pages carry the `verein=` parameter along.
+
+**To change the app, edit the file in `v3/`.** Don't edit `nzb/kasse.html` etc. (symlinks).
 
 ## Data model (CSV)
 
@@ -37,7 +46,7 @@ Format details and rules for humans: [ANLEITUNG-PREISE.md](ANLEITUNG-PREISE.md).
 
 ```js
 {
-  settings: { logo },
+  settings: { logo, logoUrl },   // logo = cell as written; logoUrl resolved (file in preise/ or URL)
   events: [{
     id,            // file name without .csv (used in URLs: #e=<id>, ?e=<id>)
     file, name,
@@ -48,7 +57,7 @@ Format details and rules for humans: [ANLEITUNG-PREISE.md](ANLEITUNG-PREISE.md).
       pricelist: [{ name, desc, vol, price /* or null */ } | null /* blank line */],
     }],
   }],
-  errors: [{ where: "1-mai.csv, Zeile 10", msg: "…" }],   // shown in the UI
+  errors: [{ file: "1-mai.csv", line: 10, where: "1-mai.csv, Zeile 10", msg: "…" }],   // shown in the UI
 }
 ```
 
@@ -61,6 +70,8 @@ Format details and rules for humans: [ANLEITUNG-PREISE.md](ANLEITUNG-PREISE.md).
   one broken file never breaks other events or clubs.
 - Old TV columns (`TV-Folie`, `Zusatz TV`) and the `TV-Hintergrund` row are ignored
   if they show up in an old Excel copy (TV was removed); they are not stands.
+- `parseIndex` returns `files` (shown) and `hidden` ("Anzeigen: nein"); `parseClubs`
+  reads `vereine.csv`.
 - An event file is self-contained (no defaults/inheritance) — intentional, so a
   non-coder sees every price in one place.
 - Register buttons are identified by name in the saved open order
@@ -88,21 +99,30 @@ Format details and rules for humans: [ANLEITUNG-PREISE.md](ANLEITUNG-PREISE.md).
   Pages' 10-min HTTP cache) with fallback to the cache. After one timeout/failure it
   serves from cache immediately for 30 s.
 - A **sync** downloads all files of all clubs at once (all-or-nothing). It runs on
-  install and whenever `index.html` or a `kasse.html` is opened online. Event CSVs are
-  discovered from each `preise/veranstaltungen.csv` — new event files need no change
-  in `sw.js`.
+  install and whenever `index.html` or a `kasse.html` is opened online. Clubs come from
+  `vereine.csv`, event CSVs and local logos from each `preise/veranstaltungen.csv`
+  (parsed with `v3/preise.js` via `importScripts`) — new clubs/events need no change in `sw.js`.
 - `pwa.js` registers the worker; with `data-status="event"` it triggers the sync and
   emits `kasse-sync` events (`{text, level, ts}`) that the pages render as the
   "Stand: …" chip; `window.kasseSync()` re-syncs on tap.
-- **When adding a new club folder or a new page/asset**, add it to `CLUBS` /
-  `CLUB_FILES` / `ROOT_FILES` in `sw.js`. Bump `CACHE` only when old files must be
-  purged (it was bumped to `kasse-v2` when v2 was removed).
-- External URLs (the logo) are not cached offline.
+- **When adding a new page/asset**, add it to `ROOT_FILES` in `sw.js`. Bump `CACHE`
+  only when old files must be purged (currently `kasse-v3`, bumped when TV was removed).
+- Cache keys ignore the query string, so `v3/kasse.html?verein=x` is one entry for all clubs.
+- External logo URLs (`https://…`) are not cached offline — put the image in `preise/`.
+
+## CSV check (GitHub Actions)
+
+`.github/workflows/preise-pruefen.yml` runs `node tools/pruefe-preise.js` on every push/PR.
+It loads `v3/preise.js` and checks `vereine.csv`, every club's `veranstaltungen.csv`,
+all listed event files (hidden ones as warnings), local logos, and warns about CSVs
+that aren't listed. Problems are emitted as `::error file=…,line=…::` annotations and the
+run fails. It does **not** block GitHub Pages deployment — it flags, it doesn't gate.
+Locally without Node: `…/JavaScriptCore.framework/Versions/Current/Helpers/jsc tools/pruefe-preise.js -- .`
 
 ## Things to double-check before editing
 
-- No test suite. Useful checks: open each club's `kasse.html` and the stand screens
-  (the red error box lists any CSV problem), and print preview a `papier.html`.
+- No test suite for the UI. Run the CSV check (above); open each club's register and
+  stand screens (the red error box lists any CSV problem); print preview a `papier.html`.
 - Don't invent article names/prices/brand names — the CSVs double as real,
   printed menus.
 - Changes in `v3/` affect every club at once.
