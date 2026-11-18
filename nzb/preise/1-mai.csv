@@ -1,0 +1,39 @@
+﻿Veranstaltung        ; 1.Mai                 ;        ;        ;            ;          ;          ; 
+                     ;                       ;        ;        ;            ;          ;          ; 
+Pfand                ; Preis                 ;        ;        ;            ;          ;          ; 
+Flasche              ; 1,00                  ;        ;        ;            ;          ;          ; 
+Glas                 ; 2,00                  ;        ;        ;            ;          ;          ; 
+                     ;                       ;        ;        ;            ;          ;          ; 
+Kasse                ; Menge                 ; Preis  ; Pfand  ; Kuchenstand; Ausschank; Bedienung; 
+Bier/Most            ; 0,50l                 ; 4,00   ; Glas   ;            ; x        ; x        ; 
+Weinsch.             ; 0,33l                 ; 4,50   ; Flasche;            ; x        ; x        ; 
+Spritz               ; 0,25l                 ; 6,00   ; Glas   ;            ; x        ; x        ; 
+Spezi                ; 0,50l                 ; 3,00   ; Flasche;            ; x        ; x        ; 
+Softdrink            ; 0,50l                 ; 2,50   ; Flasche;            ; x        ; x        ; 
+Kaffee               ; 1 Tasse               ; 1,50   ;        ; x          ;          ; x        ; 
+Torte                ; 1 Stk                 ; 2,50   ;        ; x          ;          ; x        ; 
+Kuchen               ; 1 Stk                 ; 2,00   ;        ; x          ;          ; x        ; 
+Muffin               ; 1 Stk                 ; 1,00   ;        ; x          ;          ;          ; 
+Waffel               ; 1 Stk                 ; 1,00   ;        ; x          ;          ;          ; 
+                     ;                       ;        ;        ;            ;          ;          ; 
+Preisliste           ; Beschreibung          ; Menge  ; Preis  ; Kuchenstand; Ausschank; Bedienung; TV-Folie
+Leibinger Edel       ;                       ; 0,50l  ; 4,00   ;            ; x        ; x        ; BIER / MOST
+Leibinger Alkoholfrei;                       ; 0,50l  ; 4,00   ;            ; x        ; x        ; BIER / MOST
+Radler               ;                       ; 0,50l  ; 4,00   ;            ; x        ; x        ; 
+Seemost Rot          ; Schorle Süß oder Sauer; 0,50l  ; 4,00   ;            ; x        ; x        ; BIER / MOST
+Weinschorle          ; Weiss oder Rosé       ; 0,33l  ; 4,50   ;            ; x        ; x        ; WEIN / SPRITZ
+Aperol Spritz        ;                       ; 0,25l  ; 6,00   ;            ; x        ; x        ; WEIN / SPRITZ
+                     ;                       ;        ;        ;            ; x        ; x        ; 
+Meckatzer MeckiMix   ;                       ; 0,50l  ; 3,00   ;            ; x        ; x        ; SOFTDRINKS
+Krumbach Orangenlimo ;                       ; 0,50l  ; 2,50   ;            ; x        ; x        ; SOFTDRINKS
+Krumbach Apfelschorle;                       ; 0,50l  ; 2,50   ;            ; x        ; x        ; SOFTDRINKS
+Krumbach Wasser      ;                       ; 0,50l  ; 2,50   ;            ; x        ; x        ; SOFTDRINKS
+                     ;                       ;        ;        ;            ;          ; x        ; 
+Kaffee               ;                       ; 1 Tasse; 1,50   ; x          ;          ; x        ; 
+Torte                ;                       ; 1 Stk  ; 2,50   ; x          ;          ; x        ; 
+Kuchen               ;                       ; 1 Stk  ; 2,00   ; x          ;          ; x        ; 
+Muffin               ;                       ; 1 Stk  ; 1,00   ; x          ;          ; x        ; 
+Waffel               ;                       ; 1 Stk  ; 1,00   ; x          ;          ; x        ; 
+                     ;                       ;        ;        ;            ; x        ; x        ; 
+Pfand Glas           ;                       ;        ; 2,00   ;            ; x        ; x        ; 
+Pfand Flasche        ;                       ;        ; 1,00   ;            ; x        ; x        ; 

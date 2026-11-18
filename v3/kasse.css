@@ -152,6 +152,24 @@ button {
   color: var(--muted);
 }
 .pick-tile.last { background: var(--primary-soft); }
+a.pick-tile { display: block; color: inherit; text-decoration: none; }
+.pick-tile.alt { border-left-color: #6b7a89; font-size: 19px; min-height: 76px; }
+.pick-grid + h2 { margin-top: 26px; }
+
+.errs {
+  margin: 0 0 18px;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  background: var(--danger-soft);
+  color: var(--danger);
+  border: 2px solid var(--danger);
+  font-size: 16px;
+  -webkit-user-select: text;
+  user-select: text;
+}
+.errs ul { margin: 8px 0 0; padding-left: 20px; }
+.errs li { margin: 3px 0; color: var(--text); }
+.errs li span { font-weight: 700; }
 .pick-tile:active { transform: scale(.98); }
 .pick-empty {
   max-width: 560px;

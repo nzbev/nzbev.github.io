@@ -1,9 +1,9 @@
 // Kasse v3 – eine Seite für Auswahl, Kasse und Kassieren.
 //
-// Wird über <verein>/kasse.html (Symlink auf v3/kasse.html) geöffnet und nutzt
-// dort die data.js des Vereins (globales `config`, optional `defaultArticles`).
+// Wird über <verein>/kasse.html (Symlink auf v3/kasse.html) geöffnet. Die Preise
+// kommen aus <verein>/preise/*.csv (geladen von v3/preise.js, Aufbau siehe ANLEITUNG-PREISE.md).
 // Navigation über den URL-Hash:  #            -> Veranstaltung wählen
-//                                #e=<event>   -> Stand wählen
+//                                #e=<event>   -> Stand / Preisliste / TV wählen
 //                                #e=..&l=..   -> Kasse
 // Alle Beträge intern in Cent (keine Rundungsfehler).
 (function () {
@@ -29,7 +29,6 @@
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
     });
   }
-  function cents(p) { return Math.round(Number(p) * 100) || 0; }
   function eur(c, noSign) {
     var neg = c < 0; c = Math.abs(c);
     var s = Math.floor(c / 100) + "," + ("0" + (c % 100)).slice(-2) + " €";
@@ -99,31 +98,31 @@
   }
   on(document, "[data-act=sync]", "click", function () { if (window.kasseSync) window.kasseSync(); });
 
-  // ---------- Daten ----------
+  // ---------- Daten (aus preise/*.csv, siehe preise.js) ----------
 
-  function hasConfig() {
-    return typeof config === "object" && config && Object.keys(config).length > 0;
-  }
+  var model = null; // {settings, events, errors}; null = lädt noch
+
+  function hasConfig() { return !!(model && model.events.length); }
+  function eventOf(id) { return model ? KassePreise.eventById(model, id) : null; }
 
   function buildModel(e, l) {
-    var ev = config[e];
-    if (!ev || !ev.locations || !ev.locations[l]) return null;
-    var defs = typeof defaultArticles === "object" ? defaultArticles : {};
-    var arts = Object.assign({}, defs, ev.articles || {});
-    var depo = ev.depo || {};
-    var items = [];
-    (ev.locations[l].articles || []).forEach(function (k) {
-      var a = arts[k];
-      if (!a) { console.warn("Artikel fehlt:", k); return; }
-      var d = a.depo && a.depo !== "nix" && depo[a.depo] ? a.depo : null;
-      items.push({ id: "a:" + k, name: a.name, price: cents(a.price), depo: d,
-                   depoPrice: d ? cents(depo[d].price) : 0, vol: a.vol || "" });
+    var ev = eventOf(e);
+    var st = ev && KassePreise.find(ev.stands, l);
+    if (!st || !st.register.length) return null;
+    var seen = {};
+    var items = st.register.map(function (a) {
+      // ID über den Namen: eine offene Bestellung bleibt richtig, auch wenn in Excel Zeilen dazukommen
+      var id = "a:" + a.name;
+      seen[id] = (seen[id] || 0) + 1;
+      if (seen[id] > 1) id += "#" + seen[id];
+      return { id: id, name: a.name, price: a.price, depo: a.depo, depoPrice: a.depoPrice, vol: a.vol };
     });
-    var rets = Object.keys(depo).map(function (d) {
-      var base = String(depo[d].name).replace(/^Pfand\s*/i, "");
-      return { id: "r:" + d, depo: d, base: base, name: "Pfand " + base + " zurück", price: -cents(depo[d].price) };
+    var rets = Object.keys(ev.deposits).map(function (k) {
+      var d = ev.deposits[k];
+      return { id: "r:" + d.name, depo: d.name, base: d.name, name: d.label + " zurück", price: -d.price };
     });
-    return { e: e, l: l, ev: ev, loc: ev.locations[l], depo: depo, items: items, rets: rets };
+    return { e: e, l: l, event: ev, ev: { realname: ev.name }, loc: { realname: st.name },
+             depo: ev.deposits, items: items, rets: rets };
   }
 
   // ---------- Router ----------
@@ -132,16 +131,17 @@
 
   function route() {
     closePay(true);
+    if (!model) return renderLoading();
     if (!hasConfig()) return renderNoConfig();
     var h = parseHash();
-    var events = Object.keys(config);
+    var only = model.events.length === 1;
 
-    if (h.e && config[h.e] && h.l) {
+    if (h.e && eventOf(h.e) && h.l) {
       var m = buildModel(h.e, h.l);
       if (m) { save("last", { e: h.e, l: h.l }); return renderRegister(m); }
     }
-    if (h.e && config[h.e]) return renderLocations(h.e);
-    if (events.length === 1) return renderLocations(events[0], true);
+    if (h.e && eventOf(h.e)) return renderLocations(h.e, only);
+    if (only) return renderLocations(model.events[0].id, true);
     renderEvents();
   }
 
@@ -158,11 +158,29 @@
   on(document, "[data-act=start]", "click", function () { location.href = START_URL; });
   on(document, "[data-act=back]", "click", function (el) { go(el.getAttribute("data-to")); });
 
+  // Fehler aus den CSV-Dateien gut sichtbar anzeigen (file = nur Fehler dieser Datei + Übersicht)
+  function errorsHtml(file) {
+    var errs = (model && model.errors || []).filter(function (er) {
+      return !file || er.where.indexOf(file) === 0 || er.where.indexOf("veranstaltungen.csv") === 0;
+    });
+    if (!errs.length) return "";
+    return '<div class="errs"><b>⚠ Fehler in den Preis-Dateien</b><ul>' + errs.map(function (er) {
+      return "<li><span>" + esc(er.where) + ":</span> " + esc(er.msg) + "</li>";
+    }).join("") + "</ul></div>";
+  }
+
+  function renderLoading() {
+    app.innerHTML = header(navBtn("", null), club + " Kasse", "", syncHtml()) +
+      '<div class="pick"><div class="pick-empty">Lade Preise …</div></div>';
+    paintAllSync();
+  }
+
   function renderNoConfig() {
     releaseWakeLock();
-    app.innerHTML = header(navBtn("", null), "Kasse", "", "") +
-      '<div class="pick"><div class="pick-empty">Keine Preisliste gefunden.<br>' +
-      'Die Kasse bitte über die <a href="' + START_URL + '">Startseite</a> und dann den Verein öffnen.</div></div>';
+    app.innerHTML = header(navBtn("", null), club + " Kasse", "", syncHtml()) +
+      '<div class="pick">' + errorsHtml() + '<div class="pick-empty">Keine Preise gefunden.<br>' +
+      "Einmal mit Internet öffnen, damit die Preise aufs Tablet geladen werden.</div></div>";
+    paintAllSync();
   }
 
   function renderEvents() {
@@ -170,14 +188,12 @@
     current = null;
     var last = load("last", null);
     var html = header(navBtn("", null), club + " Kasse", "", syncHtml()) +
-      '<div class="pick"><h2>Veranstaltung wählen</h2><div class="pick-grid">';
-    Object.keys(config).forEach(function (e) {
-      var ev = config[e];
-      var locs = Object.keys(ev.locations || {});
-      if (!locs.length) return;
-      html += '<button class="pick-tile' + (last && last.e === e ? " last" : "") + '" data-e="' + esc(e) + '">' +
-        esc(ev.realname || e) + "<small>" + locs.length + (locs.length === 1 ? " Stand" : " Stände") +
-        (last && last.e === e ? " · zuletzt benutzt" : "") + "</small></button>";
+      '<div class="pick">' + errorsHtml() + '<h2>Veranstaltung wählen</h2><div class="pick-grid">';
+    model.events.forEach(function (ev) {
+      var isLast = last && last.e === ev.id;
+      html += '<button class="pick-tile' + (isLast ? " last" : "") + '" data-e="' + esc(ev.id) + '">' +
+        esc(ev.name) + "<small>" + ev.stands.length + (ev.stands.length === 1 ? " Stand" : " Stände") +
+        (isLast ? " · zuletzt benutzt" : "") + "</small></button>";
     });
     app.innerHTML = html + "</div></div>";
     paintAllSync();
@@ -186,25 +202,45 @@
   function renderLocations(e, only) {
     releaseWakeLock();
     current = null;
-    var ev = config[e];
-    var locs = Object.keys(ev.locations || {});
-    if (locs.length === 1) return go(hashFor(e, locs[0]), true);
+    var ev = eventOf(e);
     var last = load("last", null);
     var back = only ? navBtn("", null) : navBtn("Veranstaltung", "");
-    var html = header(back, ev.realname || e, "", syncHtml()) +
-      '<div class="pick"><h2>Stand wählen</h2><div class="pick-grid">';
-    locs.forEach(function (l) {
-      var isLast = last && last.e === e && last.l === l;
-      var n = (ev.locations[l].articles || []).length;
-      html += '<button class="pick-tile' + (isLast ? " last" : "") + '" data-e="' + esc(e) + '" data-l="' + esc(l) + '">' +
-        esc(ev.locations[l].realname || l) + "<small>" + n + " Artikel" + (isLast ? " · zuletzt benutzt" : "") +
-        "</small></button>";
-    });
-    app.innerHTML = html + "</div></div>";
+    var q = "?e=" + encodeURIComponent(ev.id);
+    var html = header(back, ev.name, "", syncHtml()) + '<div class="pick">' + errorsHtml(ev.file);
+
+    var kasse = ev.stands.filter(function (s) { return s.register.length; });
+    if (kasse.length) {
+      html += '<h2>Kasse – Stand wählen</h2><div class="pick-grid">';
+      kasse.forEach(function (s) {
+        var isLast = last && last.e === e && last.l === s.id;
+        html += '<button class="pick-tile' + (isLast ? " last" : "") + '" data-e="' + esc(e) + '" data-l="' + esc(s.id) + '">' +
+          esc(s.name) + "<small>" + s.register.length + " Knöpfe" + (isLast ? " · zuletzt benutzt" : "") +
+          "</small></button>";
+      });
+      html += "</div>";
+    }
+    var papier = ev.stands.filter(function (s) { return s.pricelist.length; });
+    if (papier.length) {
+      html += '<h2>Preisliste drucken</h2><div class="pick-grid">';
+      papier.forEach(function (s) {
+        html += '<a class="pick-tile alt" href="papier.html' + q + "&s=" + encodeURIComponent(s.id) + '">' + esc(s.name) +
+          "<small>Papier · " + s.pricelist.filter(Boolean).length + " Einträge</small></a>";
+      });
+      html += "</div>";
+    }
+    if (ev.tv.length) {
+      html += '<h2>TV-Folien</h2><div class="pick-grid">';
+      ev.tv.forEach(function (t) {
+        html += '<a class="pick-tile alt" href="tv.html' + q + "&t=" + encodeURIComponent(t.id) + '">' + esc(t.header) +
+          "<small>TV · " + t.items.length + " Einträge</small></a>";
+      });
+      html += "</div>";
+    }
+    app.innerHTML = html + "</div>";
     paintAllSync();
   }
 
-  on(app, ".pick-tile", "click", function (el) {
+  on(app, "button.pick-tile", "click", function (el) {
     go(hashFor(el.getAttribute("data-e"), el.getAttribute("data-l")));
   });
 
@@ -223,11 +259,7 @@
     orderKey = "order:" + m.e + ":" + m.l;
     order = load(orderKey, {});
 
-    var events = Object.keys(config);
-    var back;
-    if (Object.keys(m.ev.locations).length > 1) back = navBtn("Stand", hashFor(m.e));
-    else if (events.length > 1) back = navBtn("Veranstaltung", "");
-    else back = navBtn("", null); // nur ein Event mit einem Stand -> direkt zur Startseite
+    var back = navBtn(m.event.stands.length > 1 ? "Stand" : "\u00dcbersicht", hashFor(m.e));
 
     var tiles = m.items.map(function (it) {
       var sub = it.depo ? "+ " + eur(it.depoPrice) + " Pfand" : (it.vol || "");
@@ -298,10 +330,9 @@
       out.push({ id: it.id, qty: n, name: it.name, amt: n * it.price, kind: "art" });
       if (it.depo) dep[it.depo] = (dep[it.depo] || 0) + n;
     });
-    Object.keys(current.depo).forEach(function (d) {
-      if (!dep[d]) return;
-      var base = String(current.depo[d].name).replace(/^Pfand\s*/i, "");
-      out.push({ qty: dep[d], name: "Pfand " + base, amt: dep[d] * cents(current.depo[d].price), kind: "dep" });
+    Object.keys(current.depo).forEach(function (k) {
+      var d = current.depo[k];
+      if (dep[d.name]) out.push({ qty: dep[d.name], name: d.label, amt: dep[d.name] * d.price, kind: "dep" });
     });
     current.rets.forEach(function (r) {
       var n = order[r.id] || 0;
@@ -566,12 +597,25 @@
 
   // ---------- Start ----------
 
-  // Ohne Hash direkt zur zuletzt benutzten Kasse springen.
-  if (!location.hash && hasConfig()) {
+  route(); // zeigt "Lade Preise …"
+  KassePreise.load().then(function (m) {
+    model = m;
+    // Ohne Hash direkt zur zuletzt benutzten Kasse springen.
     var last = load("last", null);
-    if (last && config[last.e] && config[last.e].locations && config[last.e].locations[last.l]) {
+    if (!location.hash && last && buildModel(last.e, last.l)) {
       history.replaceState(null, "", location.pathname + location.search + "#" + hashFor(last.e, last.l));
     }
-  }
-  route();
+    route();
+  });
+
+  // Nach erfolgreichem Sync neue Preise sofort übernehmen (ohne Neuladen der Seite).
+  window.addEventListener("kasse-sync", function (e) {
+    if (!model || !e.detail || e.detail.level !== "ok") return;
+    KassePreise.load(true).then(function (m) {
+      if (JSON.stringify(m) === JSON.stringify(model)) return;
+      model = m;
+      if (!payEl) route();
+      showToast("Preise aktualisiert");
+    });
+  });
 })();

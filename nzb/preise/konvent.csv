@@ -1,0 +1,31 @@
+﻿Veranstaltung;Konvent;;;
+;;;;
+Kasse;Menge;Preis;Pfand;Verkauf
+Bier / Most;;3,50;;x
+Softdrink;;3,00;;x
+Wasser;0,50l;2,50;;x
+Kaffee;1 Tasse;2,50;;x
+Kuchen;1 Stk;2,50;;x
+Torte;1 Stk;3,00;;x
+Leberkäs;2 Scheiben;8,50;;x
+Maultaschen;2 Stk;7,00;;x
+;;;;
+Preisliste;Beschreibung;Menge;Preis;Verkauf
+Leibinger Edel;;0,50l;3,50;x
+Schimpf Alkoholfrei;;0,33l;3,50;x
+Farny Kristall;;0,50l;3,50;x
+Farny Kristall Alkoholfrei;;0,50l;3,50;x
+Farny Hefenweizen;;0,50l;3,50;x
+Seemost Schorle;;0,33l;3,50;x
+;;;;
+Cola / Fanta;;0,33l;3,00;x
+Mecki Mix Spezi;;0,50l;3,00;x
+Krumbach Apfelschorle;;0,50l;3,00;x
+Krumbach Wasser;;0,50l;2,50;x
+;;;;
+Kaffee;;1 Tasse;2,50;x
+Kuchen;;1 Stk;2,50;x
+Torte;;1 Stk;3,00;x
+;;;;
+Leberkäs & Kartoffelsalat;;2 Scheiben;8,50;x
+Maultaschen & Kartoffelsalat;;2 Stk;7,00;x

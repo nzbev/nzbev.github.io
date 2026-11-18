@@ -11,9 +11,7 @@
     <link rel="stylesheet" href="./v3/kasse.css">
     <script src="./pwa.js" data-status="event"></script>
     <style>
-        a.pick-tile { display: flex; align-items: center; color: inherit; text-decoration: none; font-size: 26px; }
-        .pick h2 + .pick-grid { margin-bottom: 26px; }
-        .pick-tile.new { border-left-color: #2b6cb0; }
+        a.pick-tile { display: flex; align-items: center; font-size: 26px; }
         /* Inhalt mittig: margin:auto im Flex-Container zentriert, schneidet aber
            auf kleinen Bildschirmen oben nichts ab (scrollt dann normal). */
         .pick { display: flex; flex-direction: column; }
@@ -32,17 +30,10 @@
         <div class="pick"><div class="center">
             <h2>Verein w&auml;hlen</h2>
             <div class="pick-grid">
-                <a class="pick-tile" href="./nzb/prices_tablet.html">NZB</a>
-                <a class="pick-tile" href="./ffw/prices_tablet.html">FFW</a>
-                <a class="pick-tile" href="./scb/prices_tablet.html">SCB</a>
-                <a class="pick-tile" href="./nzt/prices_tablet.html">NZT</a>
-            </div>
-            <h2>Neue Kasse (Test)</h2>
-            <div class="pick-grid">
-                <a class="pick-tile new" href="./nzb/kasse.html">NZB</a>
-                <a class="pick-tile new" href="./ffw/kasse.html">FFW</a>
-                <a class="pick-tile new" href="./scb/kasse.html">SCB</a>
-                <a class="pick-tile new" href="./nzt/kasse.html">NZT</a>
+                <a class="pick-tile" href="./nzb/kasse.html">NZB</a>
+                <a class="pick-tile" href="./ffw/kasse.html">FFW</a>
+                <a class="pick-tile" href="./scb/kasse.html">SCB</a>
+                <a class="pick-tile" href="./nzt/kasse.html">NZT</a>
             </div>
         </div></div>
     </div>
