@@ -1,53 +1,64 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="cache-control" content="no-cache" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="theme-color" content="#1d7a3a">
     <title>Kasse</title>
     <link rel="manifest" href="./manifest.webmanifest">
     <link rel="icon" href="./icon.svg">
-    <script src="./pwa.js" data-status></script>
+    <!-- Gleiches Aussehen wie die neue Kasse (v3) -->
+    <link rel="stylesheet" href="./v3/kasse.css">
+    <script src="./pwa.js" data-status="event"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f4f4f4;
-            flex-direction: column;
-        }
-        .container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            max-width: 500px;
-        }
-        .tile {
-            background: white;
-            padding: 20px;
-            text-align: center;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .tile:nth-child(5) {
-            grid-column: span 2;
-        }
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+        a.pick-tile { display: flex; align-items: center; color: inherit; text-decoration: none; font-size: 26px; }
+        .pick h2 + .pick-grid { margin-bottom: 26px; }
+        .pick-tile.new { border-left-color: #2b6cb0; }
+        /* Inhalt mittig: margin:auto im Flex-Container zentriert, schneidet aber
+           auf kleinen Bildschirmen oben nichts ab (scrollt dann normal). */
+        .pick { display: flex; flex-direction: column; }
+        .center { margin: auto; width: 100%; max-width: 900px; }
+        .center h2 { text-align: center; }
+        .center .pick-grid { grid-template-columns: repeat(4, 1fr); }
+        @media (max-width: 700px) { .center .pick-grid { grid-template-columns: repeat(2, 1fr); } }
     </style>
 </head>
 <body>
-    <h1>Kasse</h1>
-    <div class="container">
-        <div class="tile"><a href="./nzb/prices_tablet.html">NZB</a></div>
-        <div class="tile"><a href="./ffw/prices_tablet.html">FFW</a></div>
-        <div class="tile"><a href="./scb/prices_tablet.html">SCB</a></div>
-        <div class="tile"><a href="./nzt/prices_tablet.html">NZT</a></div>
+    <div id="app">
+        <div class="hdr">
+            <div class="hdr-title">Kasse</div>
+            <button class="sync" id="sync" type="button"></button>
+        </div>
+        <div class="pick"><div class="center">
+            <h2>Verein w&auml;hlen</h2>
+            <div class="pick-grid">
+                <a class="pick-tile" href="./nzb/prices_tablet.html">NZB</a>
+                <a class="pick-tile" href="./ffw/prices_tablet.html">FFW</a>
+                <a class="pick-tile" href="./scb/prices_tablet.html">SCB</a>
+                <a class="pick-tile" href="./nzt/prices_tablet.html">NZT</a>
+            </div>
+            <h2>Neue Kasse (Test)</h2>
+            <div class="pick-grid">
+                <a class="pick-tile new" href="./nzb/kasse.html">NZB</a>
+                <a class="pick-tile new" href="./ffw/kasse.html">FFW</a>
+                <a class="pick-tile new" href="./scb/kasse.html">SCB</a>
+                <a class="pick-tile new" href="./nzt/kasse.html">NZT</a>
+            </div>
+        </div></div>
     </div>
+    <script>
+        // Sync-Stand aus pwa.js in der Kopfzeile anzeigen; antippen = neu laden.
+        (function () {
+            var el = document.getElementById("sync");
+            function paint(s) {
+                if (!s) return;
+                el.className = "sync " + s.level;
+                el.textContent = s.text;
+            }
+            paint(window.kasseSyncState);
+            window.addEventListener("kasse-sync", function (e) { paint(e.detail); });
+            el.onclick = function () { if (window.kasseSync) window.kasseSync(); };
+        })();
+    </script>
 </body>
 </html>

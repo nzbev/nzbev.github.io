@@ -23,8 +23,12 @@ const CLUB_FILES = [
   "prices_iphone.html", "pricelist_iphone.html",
   "prices_paper.html", "pricelist_paper.html",
   "prices_tv.html", "pricelist_tv.html",
+  "kasse.html", // v3 (Symlink auf ../v3/kasse.html)
 ];
-const ROOT_FILES = ["./", "index.html", "pwa.js", "manifest.webmanifest", "icon.svg"];
+const ROOT_FILES = [
+  "./", "index.html", "pwa.js", "manifest.webmanifest", "icon.svg",
+  "v3/kasse.js", "v3/kasse.css",
+];
 
 const BASE = self.registration.scope; // z. B. https://nzbev.github.io/
 const META_KEY = BASE + "__kasse_sync__";

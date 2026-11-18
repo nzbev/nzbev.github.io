@@ -28,6 +28,26 @@ Only touch a club folder's own copy if you deliberately want that one club to
 diverge from the shared implementation (which would mean replacing its symlink
 with a real file first).
 
+## `v3/` – new register (test phase)
+
+`v3/kasse.html` + `kasse.js` + `kasse.css` is a redesigned cash register that
+replaces the tablet and iPhone views with one responsive page, built for 7"–8"
+Fire tablets (≈1024×552 CSS px landscape) but also working in portrait/phone.
+Paper and TV views stay in `v2`.
+
+- Each club folder has `kasse.html` → symlink to `../v3/kasse.html`. It loads the
+  club's own `data.js` (same config model as below — nothing to change there) and
+  `../v3/kasse.js` / `../v3/kasse.css`. Linked from `index.html` as "Neue Kasse (Test)".
+- Single page, routed by hash: no hash → last used stand (or event list),
+  `#e=<event>` → stands, `#e=<event>&l=<loc>` → register.
+- Deposits are derived from the articles' `depo` (shown as "auto" lines);
+  every `depo` entry gets a "↩ … zurück" return button. Amounts are handled in cents.
+- The open order is kept in `localStorage` per club/event/stand (survives a reload);
+  "Leeren" needs a second tap; "Fertig" can be undone from the toast for 6 s.
+- Checkout suggests likely notes (next 1/5/10 € plus 5/10/20/50/100 €) and shows the
+  change breakdown. The screen is kept on via the Wake Lock API where available.
+- Kept compatible with older Silk: no flex `gap`, `:has`, optional chaining, etc.
+
 ## Per-club folder
 
 Each club folder (`nzb/`, `ffw/`, `nzt/`, `scb/`) contains:

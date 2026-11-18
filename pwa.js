@@ -43,6 +43,11 @@
 
   if (!showStatus) return;
 
+  // data-status        -> schwebende Anzeige unten (v2)
+  // data-status="event" -> keine Anzeige; die Seite bekommt "kasse-sync"-Events
+  //                        ({text, level: busy|ok|warn|bad, ts}) und kann window.kasseSync() aufrufen (v3)
+  var floating = me.getAttribute("data-status") !== "event";
+  var COLORS = { busy: "#757575", ok: "#2e7d32", warn: "#ef6c00", bad: "#c62828" };
   var box;
   function fmt(ts) {
     var d = new Date(ts);
@@ -50,43 +55,59 @@
     return two(d.getDate()) + "." + two(d.getMonth() + 1) + "." + d.getFullYear() +
       " " + two(d.getHours()) + ":" + two(d.getMinutes());
   }
-  function show(text, color) {
-    box.textContent = text;
-    box.style.background = color;
+  var lastTs = null; // Zeitpunkt des letzten erfolgreichen Downloads
+  function show(text, level, ts) {
+    if (ts) lastTs = ts;
+    if (box) {
+      box.textContent = text;
+      box.style.background = COLORS[level];
+    }
+    window.kasseSyncState = { text: text, level: level, ts: lastTs };
+    var ev;
+    try { ev = new CustomEvent("kasse-sync", { detail: window.kasseSyncState }); }
+    catch (e) { ev = document.createEvent("CustomEvent"); ev.initCustomEvent("kasse-sync", false, false, window.kasseSyncState); }
+    window.dispatchEvent(ev);
   }
   function readMeta() {
     if (!window.caches) return Promise.resolve(null);
     return caches.match(metaKey).then(function (r) { return r ? r.json() : null; })
       .catch(function () { return null; });
   }
-  function showStored(prefix, color) {
+  function showStored(prefix, level) {
     return readMeta().then(function (meta) {
-      if (meta) show(prefix + "Stand: " + fmt(meta.lastSync), color);
-      else show(prefix + "Noch nicht offline gespeichert", "#c62828");
+      if (meta) show(prefix + "Stand: " + fmt(meta.lastSync), level, meta.lastSync);
+      else show(prefix + "Noch nicht offline gespeichert", "bad");
     });
   }
 
+  var syncing = false;
   function sync() {
-    show("Aktualisiere \u2026", "#757575");
+    if (syncing) return;
+    syncing = true;
+    show("Aktualisiere …", "busy");
     navigator.serviceWorker.ready.then(function (reg) {
       var ch = new MessageChannel();
       ch.port1.onmessage = function (e) {
-        if (e.data.ok) show("\u2713 Aktuell \u2013 Stand: " + fmt(e.data.meta.lastSync), "#2e7d32");
-        else showStored("Offline \u2013 ", "#ef6c00");
+        syncing = false;
+        if (e.data.ok) show("✓ Aktuell – Stand: " + fmt(e.data.meta.lastSync), "ok", e.data.meta.lastSync);
+        else showStored("Offline – ", "warn");
       };
       reg.active.postMessage("sync", [ch.port2]);
     });
   }
+  window.kasseSync = sync;
 
   document.addEventListener("DOMContentLoaded", function () {
-    box = document.createElement("div");
-    box.title = "Antippen zum Aktualisieren";
-    box.style.cssText =
-      "position:fixed;left:50%;bottom:8px;transform:translateX(-50%);z-index:9999;" +
-      "color:#fff;font:14px Arial,sans-serif;padding:6px 14px;border-radius:16px;" +
-      "box-shadow:0 2px 4px rgba(0,0,0,.2);cursor:pointer;white-space:nowrap";
-    box.onclick = sync;
-    document.body.appendChild(box);
-    showStored("", "#757575").then(sync);
+    if (floating) {
+      box = document.createElement("div");
+      box.title = "Antippen zum Aktualisieren";
+      box.style.cssText =
+        "position:fixed;left:50%;bottom:8px;transform:translateX(-50%);z-index:9999;" +
+        "color:#fff;font:14px Arial,sans-serif;padding:6px 14px;border-radius:16px;" +
+        "box-shadow:0 2px 4px rgba(0,0,0,.2);cursor:pointer;white-space:nowrap";
+      box.onclick = sync;
+      document.body.appendChild(box);
+    }
+    showStored("", "busy").then(sync);
   });
 })();
