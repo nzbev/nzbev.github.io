@@ -26,15 +26,35 @@
   .s-pending { color: #b45309; } .s-successful { color: #16a34a; } .s-failed, .s-cancelled, .s-error { color: #dc2626; }
   #log { font-family: ui-monospace, monospace; font-size: 12px; white-space: pre-wrap; word-break: break-all; max-height: 420px; overflow: auto; background: #111; color: #ddd; padding: 8px; border-radius: 6px; }
   a { color: #2563eb; }
+  #state { font-size: 18px; font-weight: 600; }
+  #state.on { color: #16a34a; } #state.off { color: #b45309; }
+  #scanBox { position: relative; max-width: 480px; margin-top: 10px; }
+  #scanBox video { width: 100%; border-radius: 8px; background: #000; }
+  #qr { margin-top: 12px; }
+  #qr svg { width: 100%; max-width: 360px; height: auto; display: block; background: #fff; }
+  select { width: 100%; padding: 10px; font-size: 16px; border-radius: 6px; border: 1px solid #bbb; background: #fff; }
+  .warn { color: #b45309; font-size: 14px; margin-top: 6px; }
 </style>
 </head>
 <body>
 <h1>SumUp Solo – Einrichten &amp; Test <span class="muted">(<a href="./index.html">Start</a>)</span></h1>
-<div class="card muted">Für die Kasse: Zugang speichern und einen Solo wählen. Dann erscheinen in der Kasse „Karte“ und „Betrag“. Nach „Zugang löschen“ sind sie wieder weg.</div>
+<div class="card">
+  <div id="state"></div>
+  <div class="muted">Ist SumUp eingerichtet, erscheinen in der Kasse „Karte“ und „Betrag“. Nach „Zugang löschen“ (unten) sind sie wieder weg.</div>
+</div>
 
 <div class="card">
-  <h2>1. Zugang</h2>
-  <div class="muted">Wird nur auf diesem Gerät gespeichert (localStorage), nie hochgeladen.</div>
+  <h2>Per QR einrichten</h2>
+  <div class="muted">Auf dem PC diese Seite öffnen, unten „QR für Tablet erstellen“. Dann hier scannen.</div>
+  <button id="scan">QR scannen</button>
+  <button id="scanStop" class="sec" hidden>Stopp</button>
+  <div id="scanMsg" class="muted"></div>
+  <div id="scanBox" hidden><video id="video" playsinline muted></video></div>
+</div>
+
+<div class="card">
+  <h2>1. Zugang (von Hand)</h2>
+  <div class="muted">Wird nur auf diesem Gerät gespeichert (localStorage), nie hochgeladen. Ein gespeicherter Key wird nicht mehr angezeigt; Feld leer lassen = behalten.</div>
   <label>API-Key (sup_sk_…)</label><input id="apiKey" type="password" autocomplete="off">
   <label>Merchant Code</label><input id="merchant" type="text" autocomplete="off">
   <label>Affiliate Key (optional)</label><input id="affKey" type="password" autocomplete="off">
@@ -73,12 +93,29 @@
 </div>
 
 <div class="card">
+  <h2>QR für Tablet erstellen</h2>
+  <div class="muted">Am PC: Key aus dem SumUp-Dashboard einfügen, Solo wählen, QR anzeigen, mit dem Tablet scannen.
+    Hier wird <b>nichts gespeichert</b> – nach Neuladen ist alles weg.</div>
+  <label>API-Key (sup_sk_…)</label><input id="qrKey" type="password" autocomplete="off">
+  <label>Merchant Code</label><input id="qrMerchant" type="text" autocomplete="off">
+  <button id="qrMe" class="sec">Merchant Code holen</button>
+  <button id="qrList" class="sec">Solos laden</button>
+  <label>Solo</label><select id="qrReader"><option value="">– erst „Solos laden“ –</option></select>
+  <button id="qrShow">QR anzeigen</button>
+  <button id="qrClear" class="bad">Leeren</button>
+  <div class="warn">Der QR enthält den API-Key: nur dem Tablet zeigen, danach „Leeren“.</div>
+  <div id="qr"></div>
+</div>
+
+<div class="card">
   <h2>Protokoll</h2>
   <button id="clear" class="sec">Leeren</button>
   <div id="log"></div>
 </div>
 
 <script src="./v3/sumup.js"></script>
+<script src="./v3/lib/qrcode.js"></script>
+<script src="./v3/lib/jsQR.js"></script>
 <script>
 (function () {
   "use strict";
@@ -89,16 +126,35 @@
   cfg = KasseSumup.config();
   var poll = null, current = null, t0 = 0;
 
-  ["apiKey", "merchant", "affKey", "affApp"].forEach(function (k) { $(k).value = cfg[k] || ""; });
-  $("useAff").checked = !!cfg.useAff;
+  var SECRET = ["apiKey", "affKey"]; // nie ins Feld zurückschreiben, nur "…abcd" anzeigen
 
+  function fillForm() {
+    ["merchant", "affApp"].forEach(function (k) { $(k).value = cfg[k] || ""; });
+    SECRET.forEach(function (k) { $(k).value = ""; $(k).placeholder = cfg[k] ? "gespeichert " + mask(cfg[k]) : ""; });
+    $("useAff").checked = !!cfg.useAff;
+  }
+  function mask(k) { return k ? "…" + String(k).slice(-4) : ""; }
+  function paintState() {
+    var el = $("state");
+    if (KasseSumup.ready()) {
+      el.className = "on";
+      el.textContent = "✓ Eingerichtet – Solo: " + (cfg.readerName || cfg.reader) + " · Key " + mask(cfg.apiKey);
+    } else {
+      el.className = "off";
+      el.textContent = cfg.apiKey ? "Key gespeichert (" + mask(cfg.apiKey) + "), aber noch kein Solo gewählt" : "Nicht eingerichtet";
+    }
+  }
   function store() {
     KasseSumup.saveConfig(cfg);
+    paintState();
   }
   function readForm() {
-    ["apiKey", "merchant", "affKey", "affApp"].forEach(function (k) { cfg[k] = $(k).value.trim(); });
+    ["merchant", "affApp"].forEach(function (k) { cfg[k] = $(k).value.trim(); });
+    SECRET.forEach(function (k) { var v = $(k).value.trim(); if (v) cfg[k] = v; }); // leer = behalten
     cfg.useAff = $("useAff").checked;
   }
+  fillForm();
+  paintState();
   function ts() { var d = new Date(); return d.toTimeString().slice(0, 8) + "." + ("00" + d.getMilliseconds()).slice(-3); }
   function log(s) { var l = $("log"); l.textContent = ts() + " " + s + "\n" + l.textContent; }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
@@ -123,10 +179,10 @@
   function needMerchant() { if (!cfg.merchant) { log("Merchant Code fehlt"); return false; } return true; }
   function needReader() { if (!cfg.reader) { log("Kein Solo gewählt"); return false; } return needMerchant(); }
 
-  $("save").onclick = function () { readForm(); store(); log("Gespeichert"); };
+  $("save").onclick = function () { readForm(); store(); fillForm(); log("Gespeichert"); };
   $("forget").onclick = function () {
     if (!confirm("Zugangsdaten auf diesem Gerät löschen?")) return;
-    cfg = {}; KasseSumup.saveConfig(null); KasseSumup.setPending(null); ["apiKey", "merchant", "affKey", "affApp"].forEach(function (k) { $(k).value = ""; });
+    cfg = {}; KasseSumup.saveConfig(null); KasseSumup.setPending(null); fillForm(); paintState();
     renderReaders([]); log("Zugang gelöscht");
   };
   $("me").onclick = function () {
@@ -142,7 +198,7 @@
     readForm(); if (!needMerchant()) return;
     call("POST", mpath("/readers"), { pairing_code: $("pairCode").value.trim(), name: $("pairName").value.trim() || "Solo" })
       .then(function (r) {
-        if (r.body && r.body.id) { cfg.reader = r.body.id; store(); log("Gekoppelt: " + r.body.id + " (" + r.body.status + ")"); loadReaders(); }
+        if (r.body && r.body.id) { cfg.reader = r.body.id; cfg.readerName = r.body.name || ""; store(); log("Gekoppelt: " + r.body.id + " (" + r.body.status + ")"); loadReaders(); }
       });
   };
 
@@ -151,7 +207,7 @@
       var dev = x.device || {};
       return '<div class="reader' + (x.id === cfg.reader ? " sel" : "") + '">' +
         "<b>" + esc(x.name) + "</b> " + esc(x.status) + '<div class="muted">' + esc(x.id) + " · " + esc(dev.model) + " " + esc(dev.identifier) + "</div>" +
-        '<button class="sec" data-sel="' + esc(x.id) + '">Wählen</button>' +
+        '<button class="sec" data-sel="' + esc(x.id) + '" data-name="' + esc(x.name) + '">Wählen</button>' +
         '<button class="bad" data-del="' + esc(x.id) + '">Entkoppeln</button></div>';
     }).join("") || '<div class="muted">Keine Solos.</div>';
   }
@@ -166,11 +222,11 @@
   $("list").onclick = loadReaders;
   $("readers").onclick = function (e) {
     var t = e.target;
-    if (t.getAttribute("data-sel")) { cfg.reader = t.getAttribute("data-sel"); store(); log("Gewählt: " + cfg.reader); loadReaders(); }
+    if (t.getAttribute("data-sel")) { cfg.reader = t.getAttribute("data-sel"); cfg.readerName = t.getAttribute("data-name") || ""; store(); log("Gewählt: " + cfg.reader); loadReaders(); }
     if (t.getAttribute("data-del")) {
       var id = t.getAttribute("data-del");
       if (!confirm("Solo " + id + " entkoppeln?")) return;
-      call("DELETE", mpath("/readers/" + id)).then(function () { if (cfg.reader === id) { cfg.reader = ""; store(); } loadReaders(); });
+      call("DELETE", mpath("/readers/" + id)).then(function () { if (cfg.reader === id) { cfg.reader = ""; cfg.readerName = ""; store(); } loadReaders(); });
     }
   };
   $("status").onclick = function () { readForm(); if (needReader()) call("GET", mpath("/readers/" + cfg.reader + "/status")); };
@@ -227,6 +283,102 @@
     call("POST", mpath("/readers/" + current.reader + "/terminate"));
   };
   $("clear").onclick = function () { $("log").textContent = ""; };
+
+  // ---------- QR scannen (Tablet) ----------
+  var QR_TYPE = "kasse-sumup";
+  var stream = null, scanTimer = null, canvas = document.createElement("canvas");
+  function scanMsg(t) { $("scanMsg").textContent = t; }
+
+  $("scan").onclick = function () {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { scanMsg("Kamera wird von diesem Browser nicht unterstützt."); return; }
+    scanMsg("Kamera wird gestartet …");
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false }).then(function (s) {
+      stream = s;
+      var v = $("video");
+      v.srcObject = s;
+      var p = v.play(); if (p && p.catch) p.catch(function () {});
+      $("scanBox").hidden = false; $("scanStop").hidden = false; $("scan").hidden = true;
+      scanMsg("QR-Code vom PC vor die Kamera halten …");
+      scanTimer = setTimeout(scanTick, 300);
+    }, function (e) { scanMsg("Kamera nicht verfügbar (" + ((e && e.name) || e) + "). Kamera-Erlaubnis für die Seite prüfen."); });
+  };
+  $("scanStop").onclick = function () { stopScan(); scanMsg(""); };
+
+  function stopScan() {
+    clearTimeout(scanTimer); scanTimer = null;
+    if (stream) stream.getTracks().forEach(function (t) { t.stop(); });
+    stream = null;
+    $("video").srcObject = null;
+    $("scanBox").hidden = true; $("scanStop").hidden = true; $("scan").hidden = false;
+  }
+  function scanTick() {
+    if (!stream) return;
+    var v = $("video");
+    if (v.readyState >= 2 && v.videoWidth) {
+      var sc = Math.min(1, 800 / Math.max(v.videoWidth, v.videoHeight));
+      canvas.width = Math.round(v.videoWidth * sc); canvas.height = Math.round(v.videoHeight * sc);
+      var ctx = canvas.getContext("2d");
+      ctx.drawImage(v, 0, 0, canvas.width, canvas.height);
+      var img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      var code = jsQR(img.data, img.width, img.height, { inversionAttempts: "dontInvert" });
+      if (code && code.data && applyQr(code.data)) { stopScan(); return; }
+    }
+    scanTimer = setTimeout(scanTick, 250);
+  }
+  // QR-Inhalt übernehmen -> true wenn gültig
+  function applyQr(text) {
+    var d = null;
+    try { d = JSON.parse(text); } catch (e) { d = null; }
+    if (!d || d.t !== QR_TYPE || !d.k || !d.m) { scanMsg("Das ist kein Kassen-QR – weiter scannen …"); return false; }
+    cfg.apiKey = d.k; cfg.merchant = d.m; cfg.reader = d.r || ""; cfg.readerName = d.n || "";
+    store(); fillForm();
+    scanMsg("✓ Eingerichtet" + (d.r ? " – Solo: " + (d.n || d.r) : " – bitte unten noch einen Solo wählen"));
+    log("Per QR eingerichtet (Key " + mask(d.k) + ", Solo " + (d.n || d.r || "–") + ")");
+    if (d.r) loadReaders();
+    return true;
+  }
+
+  // ---------- QR erstellen (PC) – nichts wird gespeichert ----------
+  function qrCfg() { return { apiKey: $("qrKey").value.trim(), merchant: $("qrMerchant").value.trim() }; }
+  function qrNeed(c, merchant) {
+    if (!c.apiKey) { log("QR: API-Key fehlt"); return false; }
+    if (merchant && !c.merchant) { log("QR: Merchant Code fehlt"); return false; }
+    return true;
+  }
+  $("qrMe").onclick = function () {
+    var c = qrCfg(); if (!qrNeed(c)) return;
+    KasseSumup.call("GET", "/v0.1/me", null, c).then(function (r) {
+      var mc = r.body && r.body.merchant_profile && r.body.merchant_profile.merchant_code;
+      if (mc) { $("qrMerchant").value = mc; log("QR: Merchant Code " + mc); }
+      else log("QR: Merchant Code nicht gefunden (" + r.status + ")");
+    }, function () { log("QR: Netzwerkfehler"); });
+  };
+  $("qrList").onclick = function () {
+    var c = qrCfg(); if (!qrNeed(c, true)) return;
+    KasseSumup.call("GET", KasseSumup.mpath(c, "/readers"), null, c).then(function (r) {
+      var b = r.body || {}, list = b.items || b.data || [];
+      if (r.status >= 300) { log("QR: Solos laden fehlgeschlagen (" + r.status + ")"); return; }
+      $("qrReader").innerHTML = '<option value="">– Solo wählen –</option>' + list.map(function (x) {
+        return '<option value="' + esc(x.id) + '" data-name="' + esc(x.name) + '">' + esc(x.name) + " (" + esc(x.status) + ")</option>";
+      }).join("");
+      log("QR: " + list.length + " Solo(s) geladen");
+    }, function () { log("QR: Netzwerkfehler"); });
+  };
+  $("qrShow").onclick = function () {
+    var c = qrCfg(); if (!qrNeed(c, true)) return;
+    var sel = $("qrReader"), opt = sel.options[sel.selectedIndex];
+    if (!sel.value) { log("QR: bitte einen Solo wählen"); return; }
+    var data = JSON.stringify({ t: QR_TYPE, v: 1, k: c.apiKey, m: c.merchant, r: sel.value, n: opt.getAttribute("data-name") || "" });
+    var qr = qrcode(0, "M");
+    qr.addData(data);
+    qr.make();
+    $("qr").innerHTML = qr.createSvgTag(6, 4) + '<div class="muted">Solo: ' + esc(opt.getAttribute("data-name") || sel.value) + "</div>";
+  };
+  $("qrClear").onclick = function () {
+    $("qrKey").value = ""; $("qrMerchant").value = "";
+    $("qrReader").innerHTML = '<option value="">– erst „Solos laden“ –</option>';
+    $("qr").innerHTML = "";
+  };
 
   if (cfg.apiKey && cfg.merchant) loadReaders();
 })();

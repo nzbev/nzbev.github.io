@@ -97,7 +97,13 @@ Format details and rules for humans: [ANLEITUNG-PREISE.md](ANLEITUNG-PREISE.md).
   `reader`, optional affiliate), the running payment in `kasse:sumup:pending`.
   Calls `api.sumup.com` directly from the browser (CORS allowed). Nothing SumUp-related is in the repo.
 - `sumup.html` ("SumUp einrichten", linked from the start page): enter key, pair a Solo,
-  pick it, test payments with a request log. Per tablet.
+  pick it, test payments with a request log. Per tablet. A stored key is never shown again
+  (only "…abcd"); an empty key field on save keeps it.
+- Setup by QR: "QR für Tablet erstellen" (on a PC) takes a pasted key + merchant + Solo and shows a
+  QR (`{"t":"kasse-sumup","v":1,"k","m","r","n"}`); it never stores or reads stored settings.
+  The tablet scans it with "QR scannen" (camera via `getUserMedia`, decoded by `v3/lib/jsQR.js`).
+  QR generation: `v3/lib/qrcode.js` (qrcode-generator 1.4.4, MIT); jsQR 1.4.0 (Apache-2.0).
+  The libs are not in the SW cache (setup needs internet anyway).
 - Register (only when configured, otherwise unchanged): "Karte" next to "Kassieren"
   (exact total), "Mit Karte (inkl. Trinkgeld)" row in Kassieren (exact, next €, 5/10/20 €),
   "Betrag" in the header (free amount, order untouched).
