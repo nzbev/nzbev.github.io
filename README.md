@@ -108,6 +108,37 @@ matters for files that share helpers like that.
    match the house defaults; only override the fields that differ.
 2. Add `"events/<newevent>.js",` to the `files` array in `nzb/data.js`.
 
+## Offline mode (service worker)
+
+Tablets run off-grid, so the site is an offline-capable web app:
+
+- `sw.js` (root) — service worker. Every request is **network-first** (3 s
+  timeout, bypassing GitHub Pages' 10-min HTTP cache) and falls back to the
+  cached copy. After one timeout/failure it serves from cache immediately for
+  30 s, so a hanging network doesn't add 3 s per file.
+- A **sync** downloads every file of every club in one go (all-or-nothing, so a
+  dropped connection never leaves a half-updated mix). It runs on install and
+  each time an overview page (`index.html`, `prices_*.html`) is opened online.
+  Extra scripts loaded by a `data.js` (e.g. `nzb/events/*.js`) are discovered by
+  scanning `data.js` for quoted `*.js` paths — new event files need no change in `sw.js`.
+- `pwa.js` registers the worker; with `data-status` it also shows the badge at
+  the bottom (green "Aktuell – Stand: …" / orange "Offline – Stand: …"; tap to re-sync).
+  With `data-home="bottom" | "top" | "top faint"` it adds a fixed "⌂ Start"
+  button linking to `index.html` (hidden when printing; `faint` = barely visible,
+  used on the TV slides). The `pricelist_*.html` pages use this; the `prices_*.html`
+  overview pages already have a "Start" tile in their menu.
+  Every `v2/*.html` page and `index.html` include it.
+- `manifest.webmanifest` + `icon.svg` allow "Add to Home Screen" as a fullscreen app.
+
+**When adding a new club folder or a new page/asset**, add it to `CLUBS` /
+`CLUB_FILES` / `ROOT_FILES` in `sw.js`, otherwise it is only cached once opened online.
+Changing the caching logic in `sw.js` is picked up automatically by the tablets
+next time they are online; bump `CACHE` only if the cache must be wiped.
+External URLs (e.g. `background_tv` images) are not cached.
+
+To get a tablet ready: open `https://nzbev.github.io/` once with internet and
+wait for the green badge. Before each event, open it online again and check the "Stand" date.
+
 ## Things to double-check before editing
 
 - There are no tests and no linter; verify changes by reasoning through the

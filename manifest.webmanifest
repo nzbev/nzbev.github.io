@@ -1,0 +1,13 @@
+{
+  "name": "Kasse",
+  "short_name": "Kasse",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f4f4f4",
+  "theme_color": "#f4f4f4",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
