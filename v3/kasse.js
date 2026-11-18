@@ -282,7 +282,7 @@
           '<div class="total"><span>Summe</span><b class="sum">0,00 €</b></div>' +
           '<div class="foot-btns' + (card ? " three" : "") + '"><button class="btn btn-clear" data-act="clear">Leeren</button>' +
           (card ? '<button class="btn btn-card" data-act="card">Karte</button>' : "") +
-          '<button class="btn btn-pay" data-act="pay">Kassieren</button></div>' +
+          '<button class="btn btn-pay" data-act="pay">Cash</button></div>' +
         "</div></div></div>";
 
     paintAllSync();
@@ -369,7 +369,7 @@
     app.querySelector(".sum").textContent = eur(t);
     var pay = app.querySelector("[data-act=pay]");
     pay.disabled = ls.length === 0;
-    pay.textContent = t < 0 ? "Auszahlen" : "Kassieren";
+    pay.textContent = t < 0 ? "Auszahlen" : "Cash";
     app.querySelector("[data-act=clear]").disabled = ls.length === 0;
     var cb = app.querySelector("[data-act=card]");
     if (cb) cb.disabled = t <= 0;
@@ -409,9 +409,10 @@
 
   // ---------- Kassieren ----------
 
-  var payEl = null, given = "", givenFresh = true;
+  // Ein Vollbild für beide Zahlarten: payMode "cash" (Rückgeld) oder "card" (Betrag inkl. Trinkgeld an den Solo)
+  var payEl = null, payMode = "cash", given = "", givenFresh = true;
 
-  on(app, "[data-act=pay]", "click", function () { openPay(); });
+  on(app, "[data-act=pay]", "click", function () { openPay("cash"); });
 
   var KEYS = ["7", "8", "9", "4", "5", "6", "1", "2", "3", ",", "0", "⌫"];
   function padHtml() {
@@ -454,38 +455,62 @@
     return s.slice(0, 5);
   }
 
-  function openPay() {
+  function openPay(mode) {
     if (!current || !lines().length) return;
     var t = total();
+    if (mode === "card" && !(t > 0 && cardOn())) return;
+    payMode = mode;
     given = ""; givenFresh = true;
     payEl = document.createElement("div");
+    if (mode === "card") {
+      openCardPay(t);
+    } else {
+      openCashPay(t);
+    }
+    document.body.appendChild(payEl);
+    paintPay();
+    history.pushState({ pay: 1 }, "", location.href); // Android-Zurück schließt nur dieses Bild
+  }
+
+  function openCardPay(t) {
+    given = Math.floor(t / 100) + (t % 100 ? "," + ("0" + (t % 100)).slice(-2) : ""); // vorgewählt: genauer Betrag
+    payEl.className = "pay cardview";
+    var tiles = [t].concat(tipOptions(t)).map(function (v) {
+      return '<button class="qbtn cbtn" data-v="' + v + '">' + (v === t ? eur(v) : eurShort(v)) +
+        "<small>" + (v === t ? "genau" : "+" + eur(v - t) + " Trinkgeld") + "</small></button>";
+    }).join("");
+    payEl.innerHTML =
+      header('<button class="hbtn" data-act="pay-back">‹ Bestellung</button>', "Karte", current.loc.realname || current.l, "") +
+      '<div class="pay-stats">' +
+        '<div class="stat"><span>Zu zahlen</span><b>' + eur(t) + "</b></div>" +
+        '<div class="stat"><span>Auf den Solo</span><b class="given-v">–</b></div>' +
+        '<div class="stat tip"><span class="tip-l">Trinkgeld</span><b class="tip-v">–</b></div>' +
+      "</div>" +
+      '<div class="pay-body"><div class="pay-left"><div class="quick two">' + tiles + "</div>" +
+        '<div class="coins-none card-hint">Betrag antippen – oder mit dem Ziffernblock einen anderen Betrag eintippen.</div></div>' +
+        padHtml() +
+      "</div>" +
+      '<div class="pay-foot"><button class="btn btn-back" data-act="pay-back">Zurück</button>' +
+        '<button class="btn btn-card" data-act="card-go">Mit Karte zahlen</button></div>';
+  }
+
+  function openCashPay(t) {
     payEl.className = "pay" + (t < 0 ? " refund" : "");
     var quick = '<button class="qbtn exact" data-v="' + t + '">Passend</button>' +
       suggestions(t).map(function (v) { return '<button class="qbtn" data-v="' + v + '">' + eurShort(v) + "</button>"; }).join("");
-    var cardq = "";
-    if (cardOn() && t > 0) {
-      cardq = '<div class="cardq"><div class="cardq-h">Mit Karte (inkl. Trinkgeld)</div><div class="quick four">' +
-        [t].concat(tipOptions(t)).map(function (v) {
-          return '<button class="qbtn cbtn" data-card="' + v + '">' + (v === t ? eur(v) : eurShort(v)) +
-            "<small>" + (v === t ? "genau" : "+" + eur(v - t) + " Trinkgeld") + "</small></button>";
-        }).join("") + "</div></div>";
-    }
     payEl.innerHTML =
       header('<button class="hbtn" data-act="pay-back">‹ Bestellung</button>',
-             t < 0 ? "Auszahlen" : "Kassieren", current.loc.realname || current.l, "") +
+             t < 0 ? "Auszahlen" : "Cash", current.loc.realname || current.l, "") +
       '<div class="pay-stats">' +
         '<div class="stat"><span>' + (t < 0 ? "Auszahlen" : "Zu zahlen") + "</span><b>" + eur(t, true) + "</b></div>" +
         '<div class="stat given"><span>Gegeben</span><b class="given-v">–</b></div>' +
         '<div class="stat change"><span class="change-l">Rückgeld</span><b class="change-v"></b></div>' +
       "</div>" +
-      '<div class="pay-body"><div class="pay-left"><div class="quick">' + quick + "</div>" + cardq +
+      '<div class="pay-body"><div class="pay-left"><div class="quick">' + quick + "</div>" +
         '<div class="coins"></div></div>' + padHtml() +
       "</div>" +
       '<div class="pay-foot"><button class="btn btn-back" data-act="pay-back">Zurück</button>' +
         '<button class="btn btn-done" data-act="pay-done">✓ Fertig – nächster Kunde</button></div>';
-    document.body.appendChild(payEl);
-    paintPay();
-    history.pushState({ pay: 1 }, "", location.href); // Android-Zurück schließt nur das Kassieren
   }
 
   function closePay(fromRoute) {
@@ -507,14 +532,15 @@
     var t = total();
     var g = givenCents();
     payEl.querySelector(".given-v").textContent = amountText(given);
-    var ch = payEl.querySelector(".stat.change");
-    var lbl = payEl.querySelector(".change-l");
-    var val = payEl.querySelector(".change-v");
-    var coins = payEl.querySelector(".coins");
     var qb = payEl.querySelectorAll(".qbtn");
     for (var i = 0; i < qb.length; i++) { // per Schnellwahl gewählten Betrag hervorheben
       qb[i].classList.toggle("sel", givenFresh && g !== null && Number(qb[i].getAttribute("data-v")) === g);
     }
+    if (payMode === "card") return paintCardPay(t, g);
+    var ch = payEl.querySelector(".stat.change");
+    var lbl = payEl.querySelector(".change-l");
+    var val = payEl.querySelector(".change-v");
+    var coins = payEl.querySelector(".coins");
 
     if (t < 0) {
       ch.className = "stat change";
@@ -544,6 +570,19 @@
     coins.innerHTML = r === 0 ? '<div class="coins-none">Passt genau – kein Rückgeld.</div>' : coinsHtml(r);
   }
 
+  function paintCardPay(t, g) {
+    var st = payEl.querySelector(".stat.tip");
+    var lbl = payEl.querySelector(".tip-l");
+    var val = payEl.querySelector(".tip-v");
+    var go = payEl.querySelector("[data-act=card-go]");
+    var ok = g !== null && g >= t;
+    st.className = "stat tip" + (g !== null && g < t ? " neg" : "");
+    lbl.textContent = g !== null && g < t ? "Zu wenig" : "Trinkgeld";
+    val.textContent = g === null ? "–" : g < t ? eur(t - g) : g > t ? eur(g - t) : "–";
+    go.disabled = !ok;
+    go.textContent = ok ? "Mit Karte zahlen · " + eur(g) : "Mit Karte zahlen";
+  }
+
   function coinsHtml(c) {
     var denoms = [[10000, "100 €"], [5000, "50 €"], [2000, "20 €"], [1000, "10 €"], [500, "5 €"],
                   [200, "2 €"], [100, "1 €"], [50, "50 ct"], [20, "20 ct"], [10, "10 ct"], [5, "5 ct"],
@@ -560,8 +599,9 @@
     if (!payEl || !payEl.contains(ev.target)) return;
     var t = ev.target.closest ? ev.target.closest("button") : ev.target;
     if (!t) return;
-    if (t.hasAttribute("data-card")) {
-      startCard(Number(t.getAttribute("data-card")), "order");
+    if (t.getAttribute("data-act") === "card-go") {
+      var g = givenCents();
+      if (g !== null && g >= total()) startCard(g, "order");
       return;
     } else if (t.hasAttribute("data-v")) {
       var v = Number(t.getAttribute("data-v"));
@@ -620,10 +660,7 @@
 
   function cardOn() { return !!(SU && SU.ready()); }
 
-  on(app, "[data-act=card]", "click", function () {
-    var t = total();
-    if (current && t > 0) startCard(t, "order");
-  });
+  on(app, "[data-act=card]", "click", function () { openPay("card"); });
 
   function cardDesc(kind) {
     if (kind !== "order" || !current) return club + " Freier Betrag";
