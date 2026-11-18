@@ -11,19 +11,19 @@
 // Neue Preis-Dateien (<verein>/preise/*.csv) müssen hier NICHT eingetragen
 // werden: der Sync liest die Liste aus jeder preise/veranstaltungen.csv aus.
 
-const CACHE = "kasse-v2"; // v2 -> alte Dateien (data.js, v2-Seiten) werden beim Update gelöscht
+const CACHE = "kasse-v3"; // erhöhen = alte Dateien (z. B. tv.html) werden beim Update gelöscht
 const NET_TIMEOUT_MS = 3000;   // Seitenaufruf: so lange aufs Netz warten, dann Cache
 const NET_BAD_MS = 30000;      // nach Timeout/Fehler so lange direkt aus dem Cache bedienen
 const SYNC_TIMEOUT_MS = 20000; // Sync: pro Datei
 
 const CLUBS = ["nzb", "ffw", "nzt", "scb"];
 const CLUB_FILES = [
-  "kasse.html", "papier.html", "tv.html", // Symlinks auf ../v3/
+  "kasse.html", "papier.html", // Symlinks auf ../v3/
   "preise/veranstaltungen.csv",
 ];
 const ROOT_FILES = [
   "./", "index.html", "pwa.js", "manifest.webmanifest", "icon.svg",
-  "v3/kasse.js", "v3/kasse.css", "v3/preise.js", "v3/listen.js", "v3/papier-tv.css",
+  "v3/kasse.js", "v3/kasse.css", "v3/preise.js", "v3/papier.js", "v3/papier.css",
 ];
 
 const BASE = self.registration.scope; // z. B. https://nzbev.github.io/

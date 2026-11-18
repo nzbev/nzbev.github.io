@@ -1,4 +1,4 @@
-/* Papier-Preisliste und TV-Folien (Aussehen unverändert aus v2 übernommen). */
+/* Papier-Preisliste (Aussehen unverändert aus v2 übernommen). */
 html,
 body {
     font-family: Helvetica;
@@ -46,57 +46,6 @@ body.pricelist
 {
   margin: 20mm 20mm 20mm 20mm;
 }
-body.pricelist_tv
-{
-    width: 1920px;
-    height: 1080px;
-    margin: 0mm 0mm 0mm 0mm;
-    background-size: contain; /* Resize the background image to cover the entire container */
-    background-repeat: no-repeat;
-}
-table.pricelist_tv {
-    width: 1300px;
-    height: 100px;
-    border: 5px;
-    position:fixed;
-    margin-left:100px; /* half of width */
-    margin-top:250px;  /* half of height */
-
-}
-h1.pricelist_tv {
-    border: 5px;
-    position:fixed;
-    margin-left:100px; 
-    margin-top:80px;
-    font-size: 100px;
-    color: rgb(137,50,79);
-
-}
-td.name_tv {
-    text-align: left;
-    font-family: Arial;
-    font-weight: bold;
-    font-size: 80px;
-    color: rgb(90,83,71);
-    width: 70%;
-    height: 120px;
-}
-td.vol_tv {
-    text-align: left;
-    font-family: Arial;
-    font-size: 50px;
-    color: rgb(90,83,71);
-    width: 10%;
-}
-td.price_tv {
-    text-align: right;
-    font-family: Arial;
-    font-weight: bold;
-    font-size: 100px;
-    width: 10%;
-    color: rgb(137,50,79);
-
-}
 /* ---- v3: Zurück-Knopf (nicht im Druck) + Fehlermeldungen ---- */
 a.back {
     position: fixed;
@@ -112,7 +61,6 @@ a.back {
     border: 1px solid #bbb;
     box-shadow: 0 2px 4px rgba(0, 0, 0, .15);
 }
-body.pricelist_tv a.back { opacity: .15; }
 @media print { a.back { display: none !important; } }
 .notfound { font: 20px Arial, sans-serif; margin: 80px 20px; }
 .notfound li { font-size: 16px; }

@@ -3,7 +3,7 @@
 // Wird über <verein>/kasse.html (Symlink auf v3/kasse.html) geöffnet. Die Preise
 // kommen aus <verein>/preise/*.csv (geladen von v3/preise.js, Aufbau siehe ANLEITUNG-PREISE.md).
 // Navigation über den URL-Hash:  #            -> Veranstaltung wählen
-//                                #e=<event>   -> Stand / Preisliste / TV wählen
+//                                #e=<event>   -> Stand / Preisliste wählen
 //                                #e=..&l=..   -> Kasse
 // Alle Beträge intern in Cent (keine Rundungsfehler).
 (function () {
@@ -225,14 +225,6 @@
       papier.forEach(function (s) {
         html += '<a class="pick-tile alt" href="papier.html' + q + "&s=" + encodeURIComponent(s.id) + '">' + esc(s.name) +
           "<small>Papier · " + s.pricelist.filter(Boolean).length + " Einträge</small></a>";
-      });
-      html += "</div>";
-    }
-    if (ev.tv.length) {
-      html += '<h2>TV-Folien</h2><div class="pick-grid">';
-      ev.tv.forEach(function (t) {
-        html += '<a class="pick-tile alt" href="tv.html' + q + "&t=" + encodeURIComponent(t.id) + '">' + esc(t.header) +
-          "<small>TV · " + t.items.length + " Einträge</small></a>";
       });
       html += "</div>";
     }
