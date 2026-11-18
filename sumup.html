@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>SumUp Test</title>
+<!-- SumUp Cloud API Testseite (Solo). Zugangsdaten nur im localStorage dieses Geräts. -->
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; padding: 12px; background: #f3f4f6; color: #111; font-size: 16px; }
+  h1 { font-size: 22px; margin: 4px 0 12px; }
+  h2 { font-size: 18px; margin: 0 0 8px; }
+  .card { background: #fff; border-radius: 10px; padding: 12px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+  label { display: block; margin: 6px 0 2px; font-size: 14px; color: #444; }
+  input[type=text], input[type=password], input[type=number] { width: 100%; box-sizing: border-box; padding: 10px; font-size: 16px; border: 1px solid #bbb; border-radius: 6px; }
+  button { padding: 10px 14px; font-size: 16px; border: 0; border-radius: 6px; background: #2563eb; color: #fff; margin: 8px 6px 0 0; }
+  button.sec { background: #6b7280; }
+  button.bad { background: #dc2626; }
+  button.ok { background: #16a34a; font-size: 20px; padding: 14px 22px; }
+  button:disabled { opacity: .5; }
+  .row { overflow: hidden; }
+  .reader { border: 1px solid #ddd; border-radius: 6px; padding: 8px; margin-top: 6px; }
+  .reader.sel { border-color: #2563eb; background: #eff6ff; }
+  .muted { color: #666; font-size: 14px; }
+  #payState { font-size: 22px; font-weight: bold; margin-top: 10px; }
+  .s-pending { color: #b45309; } .s-successful { color: #16a34a; } .s-failed, .s-cancelled, .s-error { color: #dc2626; }
+  #log { font-family: ui-monospace, monospace; font-size: 12px; white-space: pre-wrap; word-break: break-all; max-height: 420px; overflow: auto; background: #111; color: #ddd; padding: 8px; border-radius: 6px; }
+  a { color: #2563eb; }
+</style>
+</head>
+<body>
+<h1>SumUp Solo – Test <span class="muted">(<a href="./index.html">Start</a>)</span></h1>
+
+<div class="card">
+  <h2>1. Zugang</h2>
+  <div class="muted">Wird nur auf diesem Gerät gespeichert (localStorage), nie hochgeladen.</div>
+  <label>API-Key (sup_sk_…)</label><input id="apiKey" type="password" autocomplete="off">
+  <label>Merchant Code</label><input id="merchant" type="text" autocomplete="off">
+  <label>Affiliate Key (optional)</label><input id="affKey" type="password" autocomplete="off">
+  <label>Affiliate App-ID (optional, wie beim Key hinterlegt)</label><input id="affApp" type="text" autocomplete="off">
+  <div class="row">
+    <button id="save">Speichern</button>
+    <button id="me" class="sec">Merchant Code holen</button>
+    <button id="forget" class="bad">Zugang löschen</button>
+  </div>
+</div>
+
+<div class="card">
+  <h2>2. Solo koppeln</h2>
+  <div class="muted">Solo abmelden, dann Menü → Verbindungen → API → Verbinden. Code innerhalb von 5 Min. eingeben.</div>
+  <label>Kopplungs-Code</label><input id="pairCode" type="text" autocomplete="off">
+  <label>Name</label><input id="pairName" type="text" value="Solo 1">
+  <button id="pair">Koppeln</button>
+</div>
+
+<div class="card">
+  <h2>3. Solo wählen</h2>
+  <button id="list" class="sec">Liste laden</button>
+  <button id="status" class="sec">Status gewählter Solo</button>
+  <div id="readers"></div>
+</div>
+
+<div class="card">
+  <h2>4. Zahlung</h2>
+  <label>Betrag (€)</label><input id="amount" type="text" inputmode="decimal" value="4,50">
+  <label>Beschreibung</label><input id="desc" type="text" value="Test Kasse">
+  <label><input id="useAff" type="checkbox"> Affiliate Key mitsenden</label>
+  <button id="pay" class="ok">Karte</button>
+  <button id="cancel" class="bad" disabled>Abbrechen</button>
+  <div id="payState"></div>
+  <div id="payInfo" class="muted"></div>
+</div>
+
+<div class="card">
+  <h2>Protokoll</h2>
+  <button id="clear" class="sec">Leeren</button>
+  <div id="log"></div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var API = "https://api.sumup.com";
+  var KEY = "sumup:test";
+  var POLL_MS = 2000;
+  var $ = function (id) { return document.getElementById(id); };
+  var cfg = {};
+  try { cfg = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { cfg = {}; }
+  var poll = null, current = null, t0 = 0;
+
+  ["apiKey", "merchant", "affKey", "affApp"].forEach(function (k) { $(k).value = cfg[k] || ""; });
+  $("useAff").checked = !!cfg.useAff;
+
+  function store() {
+    try { localStorage.setItem(KEY, JSON.stringify(cfg)); } catch (e) { log("localStorage nicht verfügbar"); }
+  }
+  function readForm() {
+    ["apiKey", "merchant", "affKey", "affApp"].forEach(function (k) { cfg[k] = $(k).value.trim(); });
+    cfg.useAff = $("useAff").checked;
+  }
+  function ts() { var d = new Date(); return d.toTimeString().slice(0, 8) + "." + ("00" + d.getMilliseconds()).slice(-3); }
+  function log(s) { var l = $("log"); l.textContent = ts() + " " + s + "\n" + l.textContent; }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+
+  // fetch mit Protokoll; liefert {status, body}
+  function call(method, path, body) {
+    if (!cfg.apiKey) { log("Kein API-Key"); return Promise.reject(new Error("no key")); }
+    var opt = { method: method, headers: { "Authorization": "Bearer " + cfg.apiKey } };
+    if (body) { opt.headers["Content-Type"] = "application/json"; opt.body = JSON.stringify(body); }
+    var shown = body ? JSON.stringify(body).replace(/"key":"[^"]*"/, '"key":"***"') : "";
+    log("→ " + method + " " + path + (shown ? " " + shown : ""));
+    var start = Date.now();
+    return fetch(API + path, opt).then(function (r) {
+      return r.text().then(function (t) {
+        var j = null; try { j = t ? JSON.parse(t) : null; } catch (e) { j = t; }
+        log("← " + r.status + " (" + (Date.now() - start) + " ms) " + (t || "").slice(0, 1500));
+        return { status: r.status, body: j };
+      });
+    }, function (e) { log("✗ Netzwerkfehler: " + e); throw e; });
+  }
+  function mpath(rest) { return "/v0.1/merchants/" + encodeURIComponent(cfg.merchant) + rest; }
+  function needMerchant() { if (!cfg.merchant) { log("Merchant Code fehlt"); return false; } return true; }
+  function needReader() { if (!cfg.reader) { log("Kein Solo gewählt"); return false; } return needMerchant(); }
+
+  $("save").onclick = function () { readForm(); store(); log("Gespeichert"); };
+  $("forget").onclick = function () {
+    if (!confirm("Zugangsdaten auf diesem Gerät löschen?")) return;
+    cfg = {}; store(); ["apiKey", "merchant", "affKey", "affApp"].forEach(function (k) { $(k).value = ""; });
+    renderReaders([]); log("Zugang gelöscht");
+  };
+  $("me").onclick = function () {
+    readForm();
+    call("GET", "/v0.1/me").then(function (r) {
+      var mc = r.body && r.body.merchant_profile && r.body.merchant_profile.merchant_code;
+      if (mc) { cfg.merchant = mc; $("merchant").value = mc; store(); log("Merchant Code: " + mc); }
+      else log("Merchant Code nicht gefunden – bitte von Hand eintragen");
+    });
+  };
+
+  $("pair").onclick = function () {
+    readForm(); if (!needMerchant()) return;
+    call("POST", mpath("/readers"), { pairing_code: $("pairCode").value.trim(), name: $("pairName").value.trim() || "Solo" })
+      .then(function (r) {
+        if (r.body && r.body.id) { cfg.reader = r.body.id; store(); log("Gekoppelt: " + r.body.id + " (" + r.body.status + ")"); loadReaders(); }
+      });
+  };
+
+  function renderReaders(list) {
+    $("readers").innerHTML = list.map(function (x) {
+      var dev = x.device || {};
+      return '<div class="reader' + (x.id === cfg.reader ? " sel" : "") + '">' +
+        "<b>" + esc(x.name) + "</b> " + esc(x.status) + '<div class="muted">' + esc(x.id) + " · " + esc(dev.model) + " " + esc(dev.identifier) + "</div>" +
+        '<button class="sec" data-sel="' + esc(x.id) + '">Wählen</button>' +
+        '<button class="bad" data-del="' + esc(x.id) + '">Entkoppeln</button></div>';
+    }).join("") || '<div class="muted">Keine Solos.</div>';
+  }
+  function loadReaders() {
+    readForm(); if (!needMerchant()) return;
+    call("GET", mpath("/readers")).then(function (r) {
+      var b = r.body || {};
+      var list = Object.prototype.toString.call(b) === "[object Array]" ? b : (b.items || b.data || []);
+      renderReaders(list);
+    });
+  }
+  $("list").onclick = loadReaders;
+  $("readers").onclick = function (e) {
+    var t = e.target;
+    if (t.getAttribute("data-sel")) { cfg.reader = t.getAttribute("data-sel"); store(); log("Gewählt: " + cfg.reader); loadReaders(); }
+    if (t.getAttribute("data-del")) {
+      var id = t.getAttribute("data-del");
+      if (!confirm("Solo " + id + " entkoppeln?")) return;
+      call("DELETE", mpath("/readers/" + id)).then(function () { if (cfg.reader === id) { cfg.reader = ""; store(); } loadReaders(); });
+    }
+  };
+  $("status").onclick = function () { readForm(); if (needReader()) call("GET", mpath("/readers/" + cfg.reader + "/status")); };
+
+  function cents(s) {
+    var m = String(s).replace(/\s|€/g, "").replace(",", ".").match(/^(\d+)(?:\.(\d{1,2}))?$/);
+    return m ? parseInt(m[1], 10) * 100 + (m[2] ? parseInt((m[2] + "0").slice(0, 2), 10) : 0) : null;
+  }
+  function setState(cls, text, info) {
+    $("payState").className = "s-" + cls; $("payState").textContent = text;
+    if (info != null) $("payInfo").textContent = info;
+  }
+  function stopPoll() { if (poll) clearTimeout(poll); poll = null; $("cancel").disabled = true; $("pay").disabled = false; }
+  function secs() { return Math.round((Date.now() - t0) / 1000) + " s"; }
+
+  function pollOnce() {
+    call("GET", mpath("/readers/" + current.reader + "/checkout/" + current.id)).then(function (r) {
+      var d = (r.body && r.body.data) || {};
+      var st = d.status || "?";
+      if (st === "pending" || st === "?") {
+        setState("pending", "Bitte am Solo zahlen … (" + secs() + ")", d.payment_status ? "payment_status: " + d.payment_status : "");
+        poll = setTimeout(pollOnce, POLL_MS);
+        return;
+      }
+      setState(st, { successful: "✓ Bezahlt", failed: "✗ Fehlgeschlagen", cancelled: "✗ Abgebrochen" }[st] || st,
+        (d.payment_failure_reason ? "Grund: " + d.payment_failure_reason + " · " : "") + "nach " + secs() + " · " + (d.card_type || ""));
+      stopPoll();
+    }, function () { poll = setTimeout(pollOnce, POLL_MS); });
+  }
+
+  $("pay").onclick = function () {
+    readForm(); store(); if (!needReader()) return;
+    var c = cents($("amount").value);
+    if (!c) { setState("error", "Betrag ungültig", ""); return; }
+    var body = { total_amount: { currency: "EUR", minor_unit: 2, value: c }, description: $("desc").value.trim() || undefined };
+    if (cfg.useAff && cfg.affKey) body.affiliate = { app_id: cfg.affApp, key: cfg.affKey, foreign_transaction_id: "test-" + Date.now() };
+    $("pay").disabled = true; t0 = Date.now();
+    setState("pending", "Sende an Solo …", "");
+    call("POST", mpath("/readers/" + cfg.reader + "/checkout"), body).then(function (r) {
+      var d = r.body && r.body.data;
+      if (r.status >= 300 || !d || !d.checkout_id) {
+        var b = r.body || {};
+        setState("error", "Fehler " + r.status, (b.errors && JSON.stringify(b.errors)) || b.detail || b.message || JSON.stringify(b));
+        stopPoll(); return;
+      }
+      current = { reader: cfg.reader, id: d.checkout_id };
+      $("cancel").disabled = false;
+      setState("pending", "Bitte am Solo zahlen …", "checkout_id " + d.checkout_id);
+      poll = setTimeout(pollOnce, POLL_MS);
+    }, function () { setState("error", "Netzwerkfehler", ""); stopPoll(); });
+  };
+  $("cancel").onclick = function () {
+    if (!current) return;
+    call("POST", mpath("/readers/" + current.reader + "/terminate"));
+  };
+  $("clear").onclick = function () { $("log").textContent = ""; };
+
+  if (cfg.apiKey && cfg.merchant) loadReaders();
+})();
+</script>
+</body>
+</html>

@@ -30,6 +30,9 @@ Keep that guide in sync with any change to the CSV format.
 - `tools/pruefe-preise.js` + `.github/workflows/preise-pruefen.yml` — CI check of all CSVs.
 - `sw.js`, `pwa.js`, `manifest.webmanifest`, `icon.svg` — offline support (see below).
 - `test.html` — old prototype, not linked from anywhere.
+- `sumup.html` — standalone SumUp Solo Cloud API test page (pair, pay, poll, cancel).
+  Not linked, not cached by the SW. API key etc. only in the device's localStorage;
+  calls `api.sumup.com` directly (CORS allowed). Doesn't touch the register.
 
 **Which club:** `preise.js` takes it from `?verein=<folder>` and fetches data from
 `../<folder>/preise/`. `KassePreise.club` / `KassePreise.query` expose it; links between
