@@ -1,0 +1,10 @@
+﻿Veranstaltung;Bähnlesfest;;;
+;;;;
+Pfand;Preis;;;
+Glas;4,00;;;
+Flasche;2,00;;;
+;;;;
+Kasse;Menge;Preis;Pfand;Ausschank
+Bier/Most;;4,00;Glas;x
+Softdrink;;3,50;Flasche;x
+Wasser;;3,00;Flasche;x

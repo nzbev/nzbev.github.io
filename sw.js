@@ -8,32 +8,28 @@
 //    online) lädt ALLE Dateien aller Vereine neu, damit das Tablet auch Events/
 //    Ansichten offline hat, die vorher nie geöffnet wurden.
 //
-// Neue Event-Dateien (z. B. nzb/events/*.js) müssen hier NICHT eingetragen
-// werden: der Sync liest die Script-Liste aus jeder data.js automatisch aus.
+// Neue Preis-Dateien (<verein>/preise/*.csv) müssen hier NICHT eingetragen
+// werden: der Sync liest die Liste aus jeder preise/veranstaltungen.csv aus.
 
-const CACHE = "kasse-v1";
+const CACHE = "kasse-v2"; // v2 -> alte Dateien (data.js, v2-Seiten) werden beim Update gelöscht
 const NET_TIMEOUT_MS = 3000;   // Seitenaufruf: so lange aufs Netz warten, dann Cache
 const NET_BAD_MS = 30000;      // nach Timeout/Fehler so lange direkt aus dem Cache bedienen
 const SYNC_TIMEOUT_MS = 20000; // Sync: pro Datei
 
 const CLUBS = ["nzb", "ffw", "nzt", "scb"];
 const CLUB_FILES = [
-  "data.js", "calc.js", "kassiere.js", "style.css", "style_menu.css",
-  "prices_tablet.html", "pricelist_tablet.html",
-  "prices_iphone.html", "pricelist_iphone.html",
-  "prices_paper.html", "pricelist_paper.html",
-  "prices_tv.html", "pricelist_tv.html",
-  "kasse.html", // v3 (Symlink auf ../v3/kasse.html)
+  "kasse.html", "papier.html", "tv.html", // Symlinks auf ../v3/
+  "preise/veranstaltungen.csv",
 ];
 const ROOT_FILES = [
   "./", "index.html", "pwa.js", "manifest.webmanifest", "icon.svg",
-  "v3/kasse.js", "v3/kasse.css",
+  "v3/kasse.js", "v3/kasse.css", "v3/preise.js", "v3/listen.js", "v3/papier-tv.css",
 ];
 
 const BASE = self.registration.scope; // z. B. https://nzbev.github.io/
 const META_KEY = BASE + "__kasse_sync__";
 
-// Cache-Schlüssel ohne ?event=...&loc=... – eine pricelist_tablet.html deckt alle Events ab.
+// Cache-Schlüssel ohne ?e=...&s=... – eine papier.html deckt alle Events ab.
 function keyOf(url) {
   const u = new URL(url);
   return u.origin + u.pathname;
@@ -48,7 +44,7 @@ function fetchFresh(url, timeoutMs) {
 }
 
 // Lädt alle Dateien. Schreibt nur in den Cache, wenn ALLE erreichbar waren,
-// damit nie ein halb aktualisierter Stand (neue data.js, alte Rest-Dateien) entsteht.
+// damit nie ein halb aktualisierter Stand (neue und alte Preis-Dateien gemischt) entsteht.
 let syncRunning = null;
 function syncAll() {
   if (!syncRunning) syncRunning = doSync().finally(() => { syncRunning = null; });
@@ -72,16 +68,25 @@ async function doSync() {
 
   await Promise.all([...urls].map(grab));
 
-  // Zusätzliche Scripts, die data.js nachlädt (nzb/events/*.js) aus dem Quelltext auslesen.
+  // Event-Dateien aus jeder preise/veranstaltungen.csv auslesen (erste Spalte, *.csv).
+  // Auch mit "Anzeigen: nein" markierte Dateien werden geladen – schadet nicht.
   const extra = new Set();
   for (const club of CLUBS) {
-    const dataUrl = new URL(club + "/data.js", BASE).href;
-    const res = fetched.get(dataUrl);
+    const idxUrl = new URL(club + "/preise/veranstaltungen.csv", BASE).href;
+    const res = fetched.get(idxUrl);
     if (!res) continue;
-    const text = await res.clone().text();
-    for (const m of text.matchAll(/["']([\w\-\/.]+\.js)["']/g)) {
-      const u = new URL(m[1], dataUrl).href;
-      if (u.startsWith(BASE) && !urls.has(u)) extra.add(u);
+    const buf = await res.clone().arrayBuffer();
+    let text;
+    try { text = new TextDecoder("utf-8", { fatal: true }).decode(buf); }
+    catch (e) { text = new TextDecoder("windows-1252").decode(buf); } // Excel "CSV (Trennzeichen-getrennt)"
+    for (const line of text.split(/\r?\n/)) {
+      const m = line.replace(/^\uFEFF/, "").match(/^"?\s*([^";,\t]+?)\s*"?\s*(?:[;,\t]|$)/);
+      if (!m || /^(logo|tv-hintergrund|datei)$/i.test(m[1])) continue;
+      let f = m[1];
+      if (/^https?:/i.test(f)) continue;
+      if (!/\.csv$/i.test(f)) f += ".csv";
+      const u = new URL(club + "/preise/" + encodeURIComponent(f), BASE).href;
+      if (!urls.has(u)) extra.add(u);
     }
   }
   await Promise.all([...extra].map(grab));

@@ -1,0 +1,25 @@
+﻿Veranstaltung;Weiberball Tettnang;;;
+;;;;
+Pfand;Preis;;;
+Pfand;2,00;;;
+;;;;
+Kasse;Menge;Preis;Pfand;Ausschank
+Bier/Radler;0,33l;3,50;Pfand;x
+Alkfrei.;0,50l;3,00;Pfand;x
+Sekt Glas;0,10l;5,00;Pfand;x
+Sekt Flasche;0,75l;17,00;Pfand;x
+SAFT Flasche;1,00l;3,00;Pfand;x
+Longdrink;0,20l;4,50;Pfand;x
+Bachwasser;0,20l;4,00;Pfand;x
+Weinschorle;0,33l;4,50;Pfand;x
+;;;;
+Preisliste;Beschreibung;Menge;Preis;Ausschank
+Bier/Radler;;0,33l;3,50;x
+Alkoholfrei;;0,50l;3,00;x
+Glas Sekt;;0,10l;5,00;x
+Flasche Sekt;;0,75l;17,00;x
+Flasche O-Saft;;1,00l;3,00;x
+Longdrink;;0,20l;4,50;x
+Bachwasser;;0,20l;4,00;x
+Weinschorle;;0,33l;4,50;x
+Pfand;;;2,00;x

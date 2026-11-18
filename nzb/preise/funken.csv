@@ -1,0 +1,29 @@
+﻿Veranstaltung;Funken;;;;
+;;;;;
+Pfand;Preis;;;;
+Flasche;1,00;;;;
+;;;;;
+Kasse;Menge;Preis;Pfand;Getränke;Kuchenverkauf
+Kuchen;1 Stk;2,00;;;x
+Torte;1 Stk;2,50;;;x
+Muffin;1 Stk;1,50;;;x
+Bier/Most;0,33l;3,50;Flasche;x;
+Softdrink;0,50l;2,50;Flasche;x;
+Funkenring;1 Stk;3,50;;x;x
+;;;;;
+Preisliste;Beschreibung;Menge;Preis;Getränke;Kuchenverkauf
+Leibinger Edel;;0,33l;3,50;x;
+Leibinger Seeradler;;0,33l;3,50;x;
+Leibinger Alkoholfrei;;0,33l;3,50;x;
+Seemost Schorle Rot;;0,33l;3,50;x;
+;;;;x;
+Krumbach ColaMix;;0,50l;2,50;x;
+Krumbach Apfelschorle;;0,50l;2,50;x;
+Krumbach Orangenlimo;;0,50l;2,50;x;
+Krumbach Wasser;;0,50l;2,50;x;
+;;;;x;
+Pfand Flasche;;;1,00;x;
+Kuchen;;1 Stk;2,00;;x
+Torte;;1 Stk;2,50;;x
+Muffin;;1 Stk;1,50;;x
+Funkenring;;1 Stk;3,50;;x

@@ -1,0 +1,38 @@
+﻿Veranstaltung;Dorffasnet;;;;;;
+;;;;;;;
+Pfand;Preis;;;;;;
+Flasche;1,00;;;;;;
+Becher;2,00;;;;;;
+;;;;;;;
+Kasse;Menge;Preis;Pfand;Außenbar;Zelt;;
+Bier/Most;0,33l;3,50;Flasche;x;x;;
+Weinsch.;0,275l;4,50;Flasche;x;x;;
+Softdrink;0,50l;2,50;Flasche;x;x;;
+Kurzer;0,02l;1,50;;x;x;;
+Glühmost;0,20l;3,00;Becher;x;;;
+Punsch;0,20l;2,50;Becher;x;;;
+Longdrink;0,20l;4,50;Becher;;x;;
+Sekt;0,20l;4,00;Becher;;x;;
+Sektfla.;0,75l;14,00;Flasche;;x;;
+SAFTfla.;1,00l;5,00;Flasche;;x;;
+;;;;;;;
+Preisliste;Beschreibung;Zusatz TV;Menge;Preis;Außenbar;Zelt;TV-Folie
+Leibinger Edel;;;0,33l;3,50;x;x;BIER / MOST
+Leibinger Alkoholfrei;;;0,33l;3,50;x;x;BIER / MOST
+Seemost Schorle Rot;;;0,33l;3,50;x;x;BIER / MOST
+Weinschorle;Weiss oder Rosé;;0,275l;4,50;x;x;WEIN / SEKT
+;;;;;;;
+Krumbach ColaMix;;;0,50l;2,50;x;x;SOFTDRINKS
+Krumbach Apfelschorle;;;0,50l;2,50;x;x;SOFTDRINKS
+Krumbach Orangenlimo;;;0,50l;2,50;x;x;SOFTDRINKS
+Krumbach Wasser;;;0,50l;2,50;x;x;SOFTDRINKS
+;;;;;;x;
+Sekt;;;0,20l;4,00;;x;WEIN / SEKT
+Flasche Sekt;;;0,75l;14,00;;x;WEIN / SEKT
+Flasche Saft;;;1,00l;5,00;;x;WEIN / SEKT
+Longdrink;Gin, Wodka, Asbach oder Bacardi;Energy, Lemon, Kirsch, Orange, Maracuja, Cola;0,20l;4,50;;x;LONGDRINKS
+;;;;;x;;
+Ficken, Gletscher, Klopfer;;;0,02l;1,50;x;x;LONGDRINKS
+;;;;;;;
+Pfand Becher;;;;2,00;x;x;
+Pfand Flasche;;;;1,00;x;x;

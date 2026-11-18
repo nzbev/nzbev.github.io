@@ -1,0 +1,29 @@
+﻿Veranstaltung;Footpong;;;
+;;;;
+Pfand;Preis;;;
+Flasche;1,00;;;
+Glas;3,00;;;
+;;;;
+Kasse;Menge;Preis;Pfand;Ausschank
+Bier / Most ges.;;4,00;Glas;x
+Most Pur;;4,50;Glas;x
+Wasser;0,50l;3,00;Flasche;x
+Softdrink;;3,50;Flasche;x
+Peng;0,20l;4,50;Flasche;x
+Cocktail;;5,50;Flasche;x
+Kurzer;0,02l;1,50;;x
+;;;;
+Preisliste;Beschreibung;Menge;Preis;Ausschank
+Bier / Most ges.;;;4,00;x
+Seemost Schorle Rot;;0,50l;4,00;x
+Meckatzer Alkoholfrei;;0,33l;3,00;x
+;;;;
+Peng;;0,20l;4,50;x
+Klopfer;;0,02l;1,50;x
+;;;;
+Krumbach Wasser;;0,50l;3,00;x
+Krumbach ColaMix;;0,50l;3,50;x
+Krumbach ACE;;0,50l;3,50;x
+;;;;
+Pfand Flasche;;;1,00;x
+Pfand Glas;;;3,00;x

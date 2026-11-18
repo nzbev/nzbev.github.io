@@ -1,0 +1,31 @@
+﻿Veranstaltung;Kinderumzug;;;;
+;;;;;
+Pfand;Preis;;;;
+Flasche;1,00;;;;
+;;;;;
+Kasse;Menge;Preis;Pfand;Getränke;
+Softdrink;0,50l;2,50;Flasche;x;
+Glühmost;0,20l;3,00;;x;
+Punsch;0,20l;2,50;;x;
+Bier/Most;0,33l;3,50;Flasche;x;
+Kuchen;1 Stk;2,00;;x;
+Waffel;1 Stk;1,00;;x;
+;;;;;
+Preisliste;Beschreibung;Menge;Preis;Getränke;TV-Folie
+Krumbach ColaMix;;0,50l;2,50;x;
+Krumbach Apfelschorle;;0,50l;2,50;x;
+Krumbach Orangenlimo;;0,50l;2,50;x;
+Krumbach Wasser;;0,50l;2,50;x;
+;;;;;
+Glühmost;;0,20l;3,00;x;
+Fruchtpunsch;;0,20l;2,50;x;
+;;;;;
+Kuchen;;1 Stk;2,00;x;
+Waffel;;1 Stk;1,00;x;
+;;;;;
+Leibinger Edel;;0,33l;3,50;x;BIER / MOST
+Leibinger Alkoholfrei;;0,33l;3,50;x;BIER / MOST
+Leibinger Seeradler;;0,33l;3,50;x;
+Seemost Schorle Rot;;0,33l;3,50;x;BIER / MOST
+;;;;;
+Pfand Flasche;;;1,00;x;

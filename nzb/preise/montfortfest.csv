@@ -1,0 +1,29 @@
+﻿Veranstaltung;Montfortfest;;;
+;;;;
+Pfand;Preis;;;
+Glas;4,00;;;
+Flasche;1,00;;;
+;;;;
+Kasse;Menge;Preis;Pfand;Verkauf
+Bier/Most;;4,50;Glas;x
+Pils;0,33l;4,00;Flasche;x
+Softdrink;0,33l;3,50;Flasche;x
+Wasser;0,50l;3,00;Flasche;x
+;;;;
+Preisliste;Beschreibung;Menge;Preis;Verkauf
+Tettnanger Helles;;0,50l;4,50;x
+Tettnanger Hefeweizen;;0,50l;4,50;x
+Farny Kristallweizen;;0,50l;4,50;x
+Probst Most Apfel/Kirsch;Schorle Süß oder Sauer;0,50l;4,50;x
+;;;;
+Tettnanger kleines Helles;;0,33l;4,00;x
+Frany Kristall Alkoholfrei;;0,50l;4,50;x
+Schimpf Höpfl Alkoholfrei;;0,33l;4,00;x
+;;;;
+Coca Cola / Fanta;;0,33l;3,50;x
+Spezi;;0,50l;3,50;x
+Apfelschorle;;0,50l;3,50;x
+Wasser;;0,50l;3,00;x
+;;;;
+Pfand Glas;;;4,00;x
+Pfand Flasche;;;1,00;x
