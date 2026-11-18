@@ -437,6 +437,8 @@ a.pick-tile { display: block; color: inherit; text-decoration: none; }
   min-height: 0;
   display: flex;
   padding: 10px;
+  overflow-y: auto; /* passt es nicht, wird gescrollt statt unter die Knöpfe zu rutschen */
+  -webkit-overflow-scrolling: touch;
 }
 .pay-left {
   flex: 1 1 55%;
@@ -586,6 +588,27 @@ a.pick-tile { display: block; color: inherit; text-decoration: none; }
   .qbtn.cbtn { height: 70px; font-size: 24px; }
   .stat.tip { grid-column: 1 / 3; }
   .pad { width: auto; max-width: none; flex: 1 1 auto; }
+}
+/* Handy hochkant (z. B. iPhone mit Browserleisten): alles kompakter, drei Kästen in einer Reihe */
+@media (orientation: portrait) and (max-height: 820px) {
+  .pay-stats { grid-template-columns: 1fr 1fr 1fr; grid-gap: 8px; padding: 8px 8px 0; }
+  .stat.change, .stat.tip { grid-column: auto; }
+  .stat { padding: 6px 10px; }
+  .stat span { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .stat b, .stat.change b, .stat.tip b { font-size: 22px; }
+  .pay-body { padding: 8px; }
+  .pay-left { margin-bottom: 8px; }
+  .quick { grid-gap: 6px; }
+  .qbtn { height: 46px; font-size: 19px; }
+  .qbtn.cbtn { height: 60px; font-size: 21px; }
+  .qbtn.cbtn small { font-size: 12px; margin-top: 2px; }
+  .coins { max-height: 76px; margin-top: 8px; padding: 6px 10px; }
+  .coin { font-size: 16px; padding: 4px 10px; margin: 0 6px 6px 0; }
+  .cardview .card-hint { display: none; }
+  .pad { grid-gap: 6px; }
+  .pad button { min-height: 44px; font-size: 24px; }
+  .pay-foot { padding: 0 8px 8px; }
+  .pay.free .stat b { font-size: 32px; }
 }
 
 /* ---------- Toast ---------- */

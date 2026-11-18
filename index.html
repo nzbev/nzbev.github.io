@@ -19,7 +19,8 @@
         .center h2 { text-align: center; }
         .center .pick-grid { grid-template-columns: repeat(4, 1fr); }
         @media (max-width: 700px) { .center .pick-grid { grid-template-columns: repeat(2, 1fr); } }
-        .tools { margin-top: 28px; text-align: center; font-size: 16px; }
+        .pick { padding-bottom: 44px; } /* Platz für die Links unten rechts */
+        .tools { position: fixed; right: 14px; bottom: 10px; font-size: 15px; color: var(--muted); }
         .tools a { color: var(--muted); }
     </style>
 </head>
@@ -33,8 +34,8 @@
             <h2>Verein w&auml;hlen</h2>
             <!-- Kacheln kommen aus vereine.csv (Ordner;Name) -->
             <div class="pick-grid" id="clubs"></div>
-            <div class="tools"><a href="./pruefen.html">Preis-Dateien pr&uuml;fen</a> &middot; <a href="./sumup.html">SumUp einrichten</a></div>
         </div></div>
+        <div class="tools"><a href="./sumup.html">SumUp einrichten</a> &middot; <a href="./pruefen.html">Preis-Dateien pr&uuml;fen</a></div>
     </div>
     <script src="./v3/preise.js"></script>
     <script>
