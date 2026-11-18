@@ -8,6 +8,8 @@
   var CFG_KEY = "kasse:sumup";
   var PENDING_KEY = "kasse:sumup:pending";
   var OLD_KEY = "sumup:test"; // erste Version der Testseite
+  var RECEIPTS_KEY = "kasse:sumup:belege";
+  var MAX_RECEIPTS = 30;
 
   function get(k) {
     try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch (e) { return null; }
@@ -59,7 +61,7 @@
     return call("POST", mpath(c, "/readers/" + c.reader + "/checkout"), body, c).then(function (r) {
       var d = r.body && r.body.data;
       if (r.status >= 300 || !d || !d.checkout_id) throw new Error(errText(r));
-      return { id: d.checkout_id, reader: c.reader };
+      return { id: d.checkout_id, ctx: d.client_transaction_id || "", reader: c.reader };
     }, function () { throw new Error("Keine Internet-Verbindung"); });
   }
 
@@ -85,9 +87,38 @@
     return call("POST", mpath(c, "/readers/" + p.reader + "/terminate"), null, c);
   }
 
+  // Kartendaten zu einer Zahlung -> Promise {code, auth, type, last4, entry}
+  function txDetails(ctx) {
+    var c = config();
+    var path = "/v2.1/merchants/" + encodeURIComponent(c.merchant) + "/transactions?client_transaction_id=" + encodeURIComponent(ctx);
+    return call("GET", path, null, c).then(function (r) {
+      var b = r.body || {};
+      if (r.status === 404) throw new Error("SumUp hat die Zahlung noch nicht verbucht – gleich nochmal versuchen");
+      if (r.status >= 300) throw new Error(errText(r));
+      var card = b.card || {};
+      return { code: b.transaction_code || "", auth: b.auth_code || "", type: card.type || "",
+               last4: card.last_4_digits || "", entry: b.entry_mode || "" };
+    });
+  }
+
+  // Offizieller SumUp-Beleg (öffentlich, ohne Anmeldung)
+  function receiptUrl(code) {
+    return "https://receipts-ng.sumup.com/v0.1/receipts/" + encodeURIComponent(code) +
+      "?mid=" + encodeURIComponent(config().merchant) + "&format=html";
+  }
+
+  function receipts() { return get(RECEIPTS_KEY) || []; }
+  function saveReceipt(rec) { // neu oder aktualisieren (gleiche id)
+    var list = receipts().filter(function (x) { return x.id !== rec.id; });
+    list.unshift(rec);
+    put(RECEIPTS_KEY, list.slice(0, MAX_RECEIPTS));
+  }
+
   root.KasseSumup = {
     API: API, config: config, saveConfig: saveConfig, ready: ready, call: call, mpath: mpath,
     start: start, status: status, terminate: terminate,
+    txDetails: txDetails, receiptUrl: receiptUrl, receipts: receipts, saveReceipt: saveReceipt,
+    forget: function () { [CFG_KEY, PENDING_KEY, RECEIPTS_KEY].forEach(function (k) { put(k, null); }); },
     pending: function () { return get(PENDING_KEY); },
     setPending: function (p) { put(PENDING_KEY, p); },
   };

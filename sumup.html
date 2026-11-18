@@ -169,7 +169,7 @@
   $("save").onclick = function () { readForm(); store(); fillForm(); log("✓ Gespeichert"); };
   $("forget").onclick = function () {
     if (!confirm("Zugangsdaten auf diesem Gerät löschen?")) return;
-    cfg = {}; KasseSumup.saveConfig(null); KasseSumup.setPending(null); fillForm(); paintState();
+    cfg = {}; KasseSumup.forget(); fillForm(); paintState(); // inkl. laufender Zahlung und Belegen
     renderReaders([]); log("Zugang gelöscht");
   };
   $("me").onclick = function () {

@@ -24,7 +24,7 @@ const CLUB_FILES = ["preise/veranstaltungen.csv"]; // Seiten liegen alle in v3/
 const ROOT_FILES = [
   "./", "index.html", "vereine.csv", "pwa.js", "manifest.webmanifest", "icon.svg", "pruefen.html",
   "v3/kasse.html", "v3/papier.html", "v3/kasse.js", "v3/kasse.css", "v3/preise.js",
-  "v3/papier.js", "v3/papier.css", "v3/pruefen.js", "v3/sumup.js", "sumup.html",
+  "v3/papier.js", "v3/papier.css", "v3/pruefen.js", "v3/sumup.js", "sumup.html", "v3/lib/qrcode.js",
 ];
 
 const BASE = self.registration.scope; // z. B. https://nzbev.github.io/

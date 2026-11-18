@@ -120,10 +120,28 @@ nicht verändert. Praktisch für Dinge, die nicht auf der Preisliste stehen.
 
 ---
 
+## 5a. Beleg für den Kunden
+
+Der Solo zeigt im Kassen-Betrieb keinen Beleg an. Wenn ein Kunde einen Beleg möchte:
+
+- Direkt nach der Zahlung: in der Meldung **„✓ Karte bezahlt …“** auf **„Beleg“** tippen.
+- Später: oben in der Kasse **„Belege“** → die Zahlung antippen (die letzten 30 Kartenzahlungen
+  dieses Tablets).
+
+Das Tablet zeigt einen **QR-Code**. Der Kunde scannt ihn mit dem Handy und bekommt den
+**offiziellen SumUp-Beleg** (mit Kartendaten) im Browser – zum Speichern oder Ausdrucken.
+
+Steht da **„Beleg gerade nicht abrufbar“**: SumUp braucht nach der Zahlung manchmal ein paar
+Sekunden, oder das Tablet hat kein Internet → kurz warten, **„Nochmal“**.
+
+Die einzelnen Artikel stehen nicht auf dem SumUp-Beleg, nur Betrag, Zeit, Veranstaltung und Stand.
+
+---
+
 ## 6. SumUp auf einem Tablet ausschalten
 
-„SumUp einrichten“ → ganz unten **„Zugang löschen“**. Danach sind „Karte“ und „Betrag“
-in der Kasse wieder weg. (Der Solo bleibt dabei gekoppelt – siehe Abschnitt 7.)
+„SumUp einrichten“ → ganz unten **„Zugang löschen“**. Danach sind „Karte“, „Betrag“ und
+„Belege“ in der Kasse wieder weg (die Liste der Belege auf dem Tablet wird mit gelöscht). (Der Solo bleibt dabei gekoppelt – siehe Abschnitt 7.)
 
 ---
 

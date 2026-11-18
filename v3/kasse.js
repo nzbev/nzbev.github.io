@@ -135,6 +135,7 @@
   function route() {
     closePay(true);
     closeFree();
+    closeReceipt();
     if (!model) return renderLoading();
     if (!hasConfig()) return renderNoConfig();
     var h = parseHash();
@@ -272,7 +273,8 @@
     var card = cardOn();
     app.innerHTML =
       header(back, m.ev.realname || m.e, m.loc.realname || m.l,
-             (card ? '<button class="hbtn" data-act="free">Betrag</button>' : "") + syncHtml(true)) +
+             (card ? '<button class="hbtn" data-act="receipts">Belege</button><button class="hbtn" data-act="free">Betrag</button>' : "") +
+             syncHtml(true)) +
       '<div class="reg"><div class="reg-left">' +
         '<div class="tiles">' + tiles + "</div>" +
         (rets ? '<div class="rets" style="grid-template-columns:repeat(' + m.rets.length + ',1fr)">' + rets + "</div>" : "") +
@@ -670,11 +672,12 @@
   function startCard(amount, kind) {
     if (!cardOn() || cardP || !(amount > 0)) return;
     cardP = { kind: kind, amount: amount, total: kind === "order" ? total() : amount,
-              orderFull: kind === "order" ? KEY + orderKey : "", desc: cardDesc(kind) };
+              orderFull: kind === "order" ? KEY + orderKey : "", desc: cardDesc(kind),
+              rc: receiptBase(kind) };
     showCard("send");
     SU.start(amount, cardP.desc).then(function (r) {
       if (!cardP) return;
-      cardP.id = r.id; cardP.reader = r.reader;
+      cardP.id = r.id; cardP.ctx = r.ctx; cardP.reader = r.reader;
       cardP.until = Date.now() + 60000;
       SU.setPending(cardP);
       showCard("wait");
@@ -722,8 +725,10 @@
         if (current && KEY + orderKey === p.orderFull) { order = {}; closePay(); paintOrder(); }
         else { try { localStorage.removeItem(p.orderFull); } catch (e) { /* egal */ } }
       } else closeFree();
+      var rec = saveCardReceipt(p);
       showToast("✓ Karte bezahlt – " + eur(p.amount) +
-        (p.amount > p.total ? " (inkl. " + eur(p.amount - p.total) + " Trinkgeld)" : ""));
+        (p.amount > p.total ? " (inkl. " + eur(p.amount - p.total) + " Trinkgeld)" : ""),
+        rec ? "Beleg" : "", function () { showReceipt(rec); });
     }, 1300);
   }
   function cardFailed(state, reason) {
@@ -818,6 +823,88 @@
     showCard("wait");
     cardPoll();
   }
+
+  // ---------- Belege (QR auf den offiziellen SumUp-Beleg) ----------
+  //
+  // Jede Kartenzahlung wird auf dem Tablet gemerkt (letzte 30). Auf Wunsch: Transaktions-Code bei
+  // SumUp holen und den Link auf den SumUp-Beleg als QR zeigen – der Kunde öffnet ihn am Handy.
+
+  function receiptBase(kind) {
+    var rc = { ev: "", st: "" };
+    if (kind === "order" && current) {
+      rc.ev = current.ev.realname || current.e;
+      rc.st = current.loc.realname || current.l;
+    }
+    return rc;
+  }
+  function saveCardReceipt(p) {
+    if (!p.id || !p.rc) return null;
+    var rec = { id: p.id, ctx: p.ctx || "", ts: Date.now(), amount: p.amount, ev: p.rc.ev, st: p.rc.st };
+    SU.saveReceipt(rec);
+    return rec;
+  }
+
+  var rcptEl = null;
+  function closeReceipt() { if (rcptEl && rcptEl.parentNode) rcptEl.parentNode.removeChild(rcptEl); rcptEl = null; }
+  function rcptBox(html) {
+    closeReceipt();
+    rcptEl = document.createElement("div");
+    rcptEl.className = "card-ov rcpt";
+    rcptEl.innerHTML = '<div class="card-box">' + html + "</div>";
+    document.body.appendChild(rcptEl);
+  }
+  function timeOf(ts) {
+    var d = new Date(ts);
+    function two(n) { return (n < 10 ? "0" : "") + n; }
+    return two(d.getDate()) + "." + two(d.getMonth() + 1) + ". " + two(d.getHours()) + ":" + two(d.getMinutes());
+  }
+
+  on(app, "[data-act=receipts]", "click", function () { openReceipts(); });
+  function openReceipts() {
+    var list = SU ? SU.receipts() : [];
+    rcptBox('<div class="card-h">Belege – letzte Kartenzahlungen</div>' +
+      (list.length ? '<div class="rcpt-list">' + list.map(function (r, i) {
+        return '<button class="rcpt-item" data-r="' + i + '"><b>' + eur(r.amount) + "</b><span>" + esc(timeOf(r.ts)) +
+          " · " + esc(r.st || "Freier Betrag") + "</span></button>";
+      }).join("") + "</div>" : '<div class="card-sub">Noch keine Kartenzahlungen auf diesem Tablet.</div>') +
+      '<div class="card-btns"><button class="btn btn-back" data-rc="close">Schließen</button></div>');
+  }
+
+  function showReceipt(rec) {
+    if (!rec) return;
+    rcptBox('<div class="card-h">Beleg</div><div class="card-amt">' + eur(rec.amount) + "</div>" +
+      '<div class="card-sub">' + esc(timeOf(rec.ts)) + (rec.st ? " · " + esc(rec.st) : "") + "</div>" +
+      '<div class="rcpt-qr"><div class="card-msg">Lade Beleg …</div></div>' +
+      '<div class="card-btns"><button class="btn btn-back" data-rc="list">‹ Belege</button>' +
+      '<button class="btn btn-done" data-rc="close">Fertig</button></div>');
+    var box = rcptEl;
+    var need = rec.code ? Promise.resolve({ code: rec.code }) : rec.ctx ? SU.txDetails(rec.ctx) : Promise.reject(new Error("Keine Transaktion"));
+    need.then(function (d) {
+      if (!d.code) throw new Error("SumUp kennt die Zahlung noch nicht");
+      if (!rec.code) { rec.code = d.code; SU.saveReceipt(rec); }
+      if (rcptEl !== box) return;
+      var qr = qrcode(0, "M");
+      qr.addData(SU.receiptUrl(rec.code));
+      qr.make();
+      box.querySelector(".rcpt-qr").innerHTML = qr.createSvgTag(6, 4) +
+        '<div class="card-sub">Mit dem Handy scannen – SumUp-Beleg ' + esc(rec.code) + "</div>";
+    }, function (e) {
+      if (rcptEl !== box) return;
+      box.querySelector(".rcpt-qr").innerHTML = '<div class="card-msg rcpt-err">Beleg gerade nicht abrufbar</div>' +
+        '<div class="card-sub">' + esc(e.message || "") + "</div>" +
+        '<button class="btn btn-card rcpt-retry" data-rc="retry">Nochmal</button>';
+      box.querySelector("[data-rc=retry]").onclick = function () { showReceipt(rec); };
+    });
+  }
+
+  document.addEventListener("click", function (ev) {
+    if (!rcptEl || !rcptEl.contains(ev.target)) return;
+    var b = ev.target.closest ? ev.target.closest("button") : null;
+    if (!b) return;
+    if (b.getAttribute("data-rc") === "close") closeReceipt();
+    else if (b.getAttribute("data-rc") === "list") openReceipts();
+    else if (b.hasAttribute("data-r")) showReceipt(SU.receipts()[Number(b.getAttribute("data-r"))]);
+  });
 
   // ---------- Freier Betrag (nur Karte) ----------
 
