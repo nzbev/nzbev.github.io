@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1d7a3a">
+  <title>Preise prüfen</title>
+  <link rel="icon" href="./icon.svg">
+  <link rel="stylesheet" href="./v3/kasse.css">
+  <script src="./pwa.js"></script>
+  <style>
+    /* Seite scrollt normal (die Kasse ist sonst bildschirmfüllend) */
+    #app { position: static; min-height: 100%; }
+    html, body { height: auto; -webkit-user-select: text; user-select: text; }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 16px; }
+    .intro { color: var(--muted); font-size: 16px; line-height: 1.5; margin: 4px 0 16px; }
+    .bar { display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+    .bar label { font-weight: 600; margin-right: 10px; }
+    .bar select { font: inherit; font-size: 17px; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); }
+    .drop {
+      display: block; padding: 34px 16px; border: 3px dashed var(--line); border-radius: var(--radius);
+      background: var(--surface); text-align: center; font-size: 19px; color: var(--muted); cursor: pointer;
+    }
+    .drop.over { border-color: var(--primary); background: var(--primary-soft); color: var(--primary-dark); }
+    .drop b { color: var(--text); }
+    .drop input { display: none; }
+    .card { margin-top: 18px; padding: 14px 16px; border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }
+    .card h3 { margin: 0 0 8px; font-size: 20px; }
+    .ok { color: var(--primary-dark); font-weight: 700; }
+    .bad { color: var(--danger); font-weight: 700; }
+    .card .errs { margin: 10px 0; }
+    .stand { margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--line); }
+    .stand h4 { margin: 0 0 8px; font-size: 18px; }
+    .cols { display: flex; flex-wrap: wrap; }
+    .cols > div { flex: 1 1 320px; margin-right: 16px; }
+    .cols h5 { margin: 6px 0; font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+    table.pv { border-collapse: collapse; width: 100%; font-size: 15px; }
+    table.pv td { padding: 3px 6px; border-bottom: 1px solid #eef1f3; vertical-align: top; }
+    table.pv td.r { text-align: right; white-space: nowrap; }
+    table.pv tr.blank td { height: 14px; border: 0; }
+    .muted { color: var(--muted); }
+    .chg { margin: 10px 0 0; padding: 10px 14px; border-radius: 10px; background: #fff8e6; border: 1px solid #f0d58c; }
+    .chg ul { margin: 6px 0 0; padding-left: 20px; }
+    .chg li { margin: 2px 0; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="hdr">
+      <a class="hbtn" href="./index.html" style="display:inline-block;line-height:40px;text-decoration:none;color:inherit">&lsaquo; Start</a>
+      <div class="hdr-title">Preis-Dateien pr&uuml;fen</div>
+    </div>
+    <div class="wrap">
+      <p class="intro">
+        CSV-Dateien aus Excel hier hineinziehen, <b>bevor</b> sie auf GitHub hochgeladen werden.
+        Die Seite zeigt Fehler, eine Vorschau der Kasse und der Papier-Preisliste und – wenn
+        ein Verein gewählt ist – was sich gegenüber der Version im Internet ändert.
+        Die Dateien bleiben auf diesem Gerät, es wird nichts hochgeladen.
+      </p>
+      <div class="bar">
+        <label for="club">Verein (für den Vergleich):</label>
+        <select id="club"><option value="">– keiner –</option></select>
+      </div>
+      <label class="drop" id="drop">
+        <input type="file" id="files" accept=".csv,text/csv" multiple>
+        <b>CSV-Dateien hier ablegen</b><br>oder antippen zum Ausw&auml;hlen
+      </label>
+      <div id="out"></div>
+    </div>
+  </div>
+  <script src="./v3/preise.js"></script>
+  <script src="./v3/pruefen.js"></script>
+</body>
+</html>

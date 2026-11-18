@@ -19,6 +19,8 @@
         .center h2 { text-align: center; }
         .center .pick-grid { grid-template-columns: repeat(4, 1fr); }
         @media (max-width: 700px) { .center .pick-grid { grid-template-columns: repeat(2, 1fr); } }
+        .tools { margin-top: 28px; text-align: center; font-size: 16px; }
+        .tools a { color: var(--muted); }
     </style>
 </head>
 <body>
@@ -29,15 +31,32 @@
         </div>
         <div class="pick"><div class="center">
             <h2>Verein w&auml;hlen</h2>
-            <div class="pick-grid">
-                <a class="pick-tile" href="./nzb/kasse.html">NZB</a>
-                <a class="pick-tile" href="./ffw/kasse.html">FFW</a>
-                <a class="pick-tile" href="./scb/kasse.html">SCB</a>
-                <a class="pick-tile" href="./nzt/kasse.html">NZT</a>
-            </div>
+            <!-- Kacheln kommen aus vereine.csv (Ordner;Name) -->
+            <div class="pick-grid" id="clubs"></div>
+            <div class="tools"><a href="./pruefen.html">Preis-Dateien pr&uuml;fen</a></div>
         </div></div>
     </div>
+    <script src="./v3/preise.js"></script>
     <script>
+        // Vereine aus vereine.csv
+        KassePreise.loadClubs("./").then(function (res) {
+            var box = document.getElementById("clubs");
+            function esc(s) {
+                return String(s).replace(/[&<>"']/g, function (c) {
+                    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+                });
+            }
+            if (!res.clubs.length) {
+                box.outerHTML = '<div class="errs"><b>\u26a0 Keine Vereine gefunden</b><ul>' + res.errors.map(function (e) {
+                    return "<li><span>" + esc(e.where) + ":</span> " + esc(e.msg) + "</li>";
+                }).join("") + "</ul></div>";
+                return;
+            }
+            box.innerHTML = res.clubs.map(function (c) {
+                return '<a class="pick-tile" href="./v3/kasse.html?verein=' + encodeURIComponent(c.id) + '">' + esc(c.name) + "</a>";
+            }).join("");
+        });
+
         // Sync-Stand aus pwa.js in der Kopfzeile anzeigen; antippen = neu laden.
         (function () {
             var el = document.getElementById("sync");

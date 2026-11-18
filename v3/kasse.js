@@ -10,11 +10,13 @@
   "use strict";
 
   var app = document.getElementById("app");
-  var club = (location.pathname.split("/").slice(-2)[0] || "").toUpperCase();
+  // Vereinsordner aus preise.js (Ordner der Seite oder ?verein=…); Speicher-Schlüssel bleiben gleich
+  var club = String(KassePreise.club || "").toUpperCase();
+  var clubName = club; // wird durch den Namen aus vereine.csv ersetzt
   var START_URL = "../index.html";
   var KEY = "kasse3:" + club + ":";
 
-  document.title = club + " Kasse";
+  document.title = clubName + " Kasse";
 
   // ---------- Hilfsfunktionen ----------
 
@@ -170,14 +172,14 @@
   }
 
   function renderLoading() {
-    app.innerHTML = header(navBtn("", null), club + " Kasse", "", syncHtml()) +
+    app.innerHTML = header(navBtn("", null), clubName + " Kasse", "", syncHtml()) +
       '<div class="pick"><div class="pick-empty">Lade Preise …</div></div>';
     paintAllSync();
   }
 
   function renderNoConfig() {
     releaseWakeLock();
-    app.innerHTML = header(navBtn("", null), club + " Kasse", "", syncHtml()) +
+    app.innerHTML = header(navBtn("", null), clubName + " Kasse", "", syncHtml()) +
       '<div class="pick">' + errorsHtml() + '<div class="pick-empty">Keine Preise gefunden.<br>' +
       "Einmal mit Internet öffnen, damit die Preise aufs Tablet geladen werden.</div></div>";
     paintAllSync();
@@ -187,7 +189,7 @@
     releaseWakeLock();
     current = null;
     var last = load("last", null);
-    var html = header(navBtn("", null), club + " Kasse", "", syncHtml()) +
+    var html = header(navBtn("", null), clubName + " Kasse", "", syncHtml()) +
       '<div class="pick">' + errorsHtml() + '<h2>Veranstaltung wählen</h2><div class="pick-grid">';
     model.events.forEach(function (ev) {
       var isLast = last && last.e === ev.id;
@@ -205,7 +207,7 @@
     var ev = eventOf(e);
     var last = load("last", null);
     var back = only ? navBtn("", null) : navBtn("Veranstaltung", "");
-    var q = "?e=" + encodeURIComponent(ev.id);
+    var q = "?" + (KassePreise.query ? KassePreise.query + "&" : "") + "e=" + encodeURIComponent(ev.id);
     var html = header(back, ev.name, "", syncHtml()) + '<div class="pick">' + errorsHtml(ev.file);
 
     var kasse = ev.stands.filter(function (s) { return s.register.length; });
@@ -590,6 +592,16 @@
   // ---------- Start ----------
 
   route(); // zeigt "Lade Preise …"
+  // Anzeigename des Vereins aus vereine.csv (z. B. "Narrenzunft …"); ohne Datei bleibt der Ordnername
+  KassePreise.loadClubs().then(function (res) {
+    res.clubs.forEach(function (c) {
+      if (c.id.toUpperCase() === club && c.name !== clubName) {
+        clubName = c.name;
+        document.title = clubName + " Kasse";
+        if (!current) route();
+      }
+    });
+  });
   KassePreise.load().then(function (m) {
     model = m;
     // Ohne Hash direkt zur zuletzt benutzten Kasse springen.

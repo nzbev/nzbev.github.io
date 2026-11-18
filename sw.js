@@ -8,22 +8,26 @@
 //    online) lädt ALLE Dateien aller Vereine neu, damit das Tablet auch Events/
 //    Ansichten offline hat, die vorher nie geöffnet wurden.
 //
-// Neue Preis-Dateien (<verein>/preise/*.csv) müssen hier NICHT eingetragen
-// werden: der Sync liest die Liste aus jeder preise/veranstaltungen.csv aus.
+// Neue Vereine, Preis-Dateien und Logos müssen hier NICHT eingetragen werden:
+// der Sync liest vereine.csv und jede <verein>/preise/veranstaltungen.csv aus
+// (mit demselben Parser wie die Kasse, v3/preise.js).
+
+importScripts("v3/preise.js");
 
 const CACHE = "kasse-v3"; // erhöhen = alte Dateien (z. B. tv.html) werden beim Update gelöscht
 const NET_TIMEOUT_MS = 3000;   // Seitenaufruf: so lange aufs Netz warten, dann Cache
 const NET_BAD_MS = 30000;      // nach Timeout/Fehler so lange direkt aus dem Cache bedienen
 const SYNC_TIMEOUT_MS = 20000; // Sync: pro Datei
 
-const CLUBS = ["nzb", "ffw", "nzt", "scb"];
+const FALLBACK_CLUBS = ["nzb", "ffw", "nzt", "scb"]; // nur falls vereine.csv fehlt
 const CLUB_FILES = [
-  "kasse.html", "papier.html", // Symlinks auf ../v3/
+  "kasse.html", "papier.html", // alte Adressen (Symlinks auf ../v3/), fehlen bei neuen Vereinen -> egal
   "preise/veranstaltungen.csv",
 ];
 const ROOT_FILES = [
-  "./", "index.html", "pwa.js", "manifest.webmanifest", "icon.svg",
-  "v3/kasse.js", "v3/kasse.css", "v3/preise.js", "v3/papier.js", "v3/papier.css",
+  "./", "index.html", "vereine.csv", "pwa.js", "manifest.webmanifest", "icon.svg", "pruefen.html",
+  "v3/kasse.html", "v3/papier.html", "v3/kasse.js", "v3/kasse.css", "v3/preise.js",
+  "v3/papier.js", "v3/papier.css", "v3/pruefen.js",
 ];
 
 const BASE = self.registration.scope; // z. B. https://nzbev.github.io/
@@ -52,44 +56,43 @@ function syncAll() {
 }
 
 async function doSync() {
-  const urls = new Set(ROOT_FILES.map((f) => new URL(f, BASE).href));
-  for (const club of CLUBS)
-    for (const f of CLUB_FILES) urls.add(new URL(club + "/" + f, BASE).href);
-
   const fetched = new Map(); // url -> Response
   const missing = [];
+  const href = (path) => new URL(path, BASE).href;
 
   async function grab(url) {
+    if (fetched.has(url)) return;
     const res = await fetchFresh(url, SYNC_TIMEOUT_MS); // Netzfehler -> wirft -> Sync bricht ab
     if (res.ok) fetched.set(url, res);
     else missing.push(url); // z. B. 404: überspringen, nicht den ganzen Sync blockieren
-    return res;
+  }
+  async function csv(url) {
+    const res = fetched.get(url);
+    return res ? KassePreise.parseCsv(KassePreise.decode(await res.clone().arrayBuffer())) : null;
   }
 
-  await Promise.all([...urls].map(grab));
+  // 1) App-Dateien + vereine.csv
+  await Promise.all(ROOT_FILES.map((f) => grab(href(f))));
 
-  // Event-Dateien aus jeder preise/veranstaltungen.csv auslesen (erste Spalte, *.csv).
-  // Auch mit "Anzeigen: nein" markierte Dateien werden geladen – schadet nicht.
-  const extra = new Set();
-  for (const club of CLUBS) {
-    const idxUrl = new URL(club + "/preise/veranstaltungen.csv", BASE).href;
-    const res = fetched.get(idxUrl);
-    if (!res) continue;
-    const buf = await res.clone().arrayBuffer();
-    let text;
-    try { text = new TextDecoder("utf-8", { fatal: true }).decode(buf); }
-    catch (e) { text = new TextDecoder("windows-1252").decode(buf); } // Excel "CSV (Trennzeichen-getrennt)"
-    for (const line of text.split(/\r?\n/)) {
-      const m = line.replace(/^\uFEFF/, "").match(/^"?\s*([^";,\t]+?)\s*"?\s*(?:[;,\t]|$)/);
-      if (!m || /^(logo|tv-hintergrund|datei)$/i.test(m[1])) continue;
-      let f = m[1];
-      if (/^https?:/i.test(f)) continue;
-      if (!/\.csv$/i.test(f)) f += ".csv";
-      const u = new URL(club + "/preise/" + encodeURIComponent(f), BASE).href;
-      if (!urls.has(u)) extra.add(u);
+  // 2) Vereine -> deren feste Dateien + veranstaltungen.csv
+  const rows = await csv(href("vereine.csv"));
+  const listed = rows ? KassePreise.parseClubs(rows, []).map((c) => c.id) : [];
+  const clubs = listed.length ? listed : FALLBACK_CLUBS;
+  await Promise.all(clubs.flatMap((c) => CLUB_FILES.map((f) => grab(href(c + "/" + f)))));
+
+  // 3) Event-Dateien und Logo aus jeder veranstaltungen.csv
+  const extra = [];
+  for (const club of clubs) {
+    const idxRows = await csv(href(club + "/preise/veranstaltungen.csv"));
+    if (!idxRows) continue;
+    const idx = KassePreise.parseIndex(idxRows, []);
+    for (const f of idx.files) extra.push(href(club + "/preise/" + encodeURIComponent(f)));
+    const logo = idx.settings.logo;
+    if (logo && !/^(https?:)?\/\//i.test(logo)) { // externe Logos lassen sich nicht offline speichern
+      extra.push(logo.charAt(0) === "/" ? new URL(logo, BASE).href : href(club + "/preise/" + logo));
     }
   }
-  await Promise.all([...extra].map(grab));
+  await Promise.all(extra.map(grab));
 
   const cache = await caches.open(CACHE);
   await Promise.all([...fetched].map(([url, res]) => cache.put(keyOf(url), res)));

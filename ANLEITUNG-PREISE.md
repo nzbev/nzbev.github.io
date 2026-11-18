@@ -6,7 +6,9 @@ Programmieren muss man dafür nichts.
 Jeder Verein hat einen eigenen Ordner mit einem Unterordner `preise`:
 
 ```
+vereine.csv                      ← Liste aller Vereine (im Hauptordner)
 nzb/preise/veranstaltungen.csv   ← Liste aller Veranstaltungen + Logo
+nzb/preise/logo.png              ← Logo für die Papier-Preisliste
 nzb/preise/1-mai.csv             ← eine Datei pro Veranstaltung
 nzb/preise/funken.csv
 ...
@@ -88,7 +90,7 @@ Groß-/Kleinschreibung der Überschriften ist egal.
 
 | A | B |
 |---|---|
-| Logo | https://…/logo.png |
+| Logo | logo.png |
 | | |
 | **Datei** | **Anzeigen** |
 | kinderumzug.csv | ja |
@@ -97,7 +99,31 @@ Groß-/Kleinschreibung der Überschriften ist egal.
 
 - Nur Veranstaltungen, die hier stehen, erscheinen in der Kasse – in dieser Reihenfolge.
 - **Anzeigen = nein** blendet eine Veranstaltung aus, ohne die Datei zu löschen.
-- Das Logo erscheint auf der Papier-Preisliste (optional).
+- Das **Logo** erscheint auf der Papier-Preisliste (optional). Am besten die Bilddatei
+  (PNG oder JPG) mit in den `preise`-Ordner legen und hier nur den Dateinamen eintragen –
+  dann ist es auch ohne Internet da. Eine volle Adresse (`https://…`) geht auch,
+  funktioniert aber nur mit Internet.
+
+## 2a. Die Datei `vereine.csv` (im Hauptordner)
+
+| A | B |
+|---|---|
+| **Ordner** | **Name** |
+| nzb | NZB |
+| ffw | FFW |
+
+- **Ordner**: Name des Vereinsordners (nur Buchstaben, Zahlen, `-` und `_`).
+- **Name**: so steht der Verein auf der Startseite und in der Kasse.
+- Reihenfolge = Reihenfolge der Kacheln auf der Startseite.
+
+**Neuen Verein anlegen** (ohne Programmieren):
+
+1. Auf dem Computer einen Ordner mit dem neuen Namen anlegen (z. B. `musik`), darin
+   einen Ordner `preise` mit `veranstaltungen.csv`, mindestens einer Veranstaltungs-Datei
+   und optional `logo.png` (am einfachsten aus einem anderen Verein kopieren und anpassen).
+2. Auf github.com im Hauptordner *Add file → Upload files* und den **ganzen Ordner**
+   `musik` hineinziehen – GitHub übernimmt die Unterordner.
+3. `vereine.csv` um eine Zeile ergänzen (`musik;Musikverein`) und ebenfalls hochladen.
 
 ---
 
@@ -124,6 +150,20 @@ Veranstaltung. Exportiert wird immer nur das gerade geöffnete Blatt.
 2. Den Dateinamen in `veranstaltungen.csv` eintragen (Anzeigen: `ja`).
 3. Beide Dateien hochladen (siehe unten).
 
+**Vor dem Hochladen prüfen**
+
+Auf der Startseite unten auf **„Preis-Dateien prüfen“** tippen (oder direkt
+`https://nzbev.github.io/pruefen.html` öffnen), den Verein wählen und die exportierten
+CSV-Dateien hineinziehen. Die Seite zeigt:
+
+- Fehler mit Zeilennummer (genau wie später die Kasse),
+- eine Vorschau der Kassen-Knöpfe und der Papier-Preisliste je Stand,
+- **was sich gegenüber der Version im Internet ändert** (z. B. „Bier/Most 4,00 € → 4,50 €“)
+  – so fallen versehentliche Änderungen sofort auf,
+- bei `veranstaltungen.csv`: ob alle eingetragenen Dateien online vorhanden sind.
+
+Die Dateien bleiben dabei auf dem eigenen Gerät, es wird nichts hochgeladen.
+
 **Hochladen auf GitHub**
 
 1. Auf github.com ins Repository `nzbev/nzbev.github.io` gehen, in den Ordner
@@ -137,10 +177,17 @@ Veranstaltung. Exportiert wird immer nur das gerade geöffnete Blatt.
 
 ---
 
-## 4. Prüfen
+## 4. Prüfen nach dem Hochladen
 
-Nach dem Hochladen die Kasse im Browser öffnen und die Veranstaltung wählen.
-Ist etwas falsch, erscheint ein **roter Kasten** mit Datei und Zeilennummer, z. B.:
+**Automatische Prüfung auf GitHub:** Nach jedem Hochladen prüft GitHub alle Preis-Dateien.
+Ein paar Minuten später steht neben dem Commit ein grünes ✓ (alles gut) oder ein
+rotes ✗. Beim roten ✗ draufklicken → *Details*: dort steht jeder Fehler mit Datei und
+Zeile. Achtung: Die Änderung ist trotzdem schon online – den Fehler also gleich beheben.
+Die Prüfung meldet auch Dateien, die hochgeladen, aber nicht in `veranstaltungen.csv`
+eingetragen sind, und fehlende Logos.
+
+**In der Kasse:** Ist etwas falsch, erscheint beim Auswählen der Veranstaltung ein
+**roter Kasten** mit Datei und Zeilennummer, z. B.:
 
 > 1-mai.csv, Zeile 10: „Spritz“: Preis „6,0o“ ist keine Zahl
 
@@ -154,4 +201,7 @@ alles andere funktioniert weiter.
 | bei keinem Stand angekreuzt | In keiner Stand-Spalte steht ein `x` |
 | Kasse: Name fehlt / Preisliste: Name fehlt | Preis eingetragen, aber kein Name |
 | Zeile gehört zu keinem Block | Über der Zeile fehlt die Überschrift „Kasse“, „Preisliste“ oder „Pfand;Preis“ |
-| Datei nicht gefunden | Dateiname in `veranstaltungen.csv` stimmt nicht mit der hochgeladenen Datei überein |
+| Datei nicht gefunden / ist eingetragen, die Datei fehlt aber | Dateiname in `veranstaltungen.csv` stimmt nicht mit der hochgeladenen Datei überein |
+| Logo „…“ liegt nicht im Ordner | Logo-Datei nicht hochgeladen oder Name falsch geschrieben |
+| Nicht in veranstaltungen.csv eingetragen | Datei hochgeladen, aber nicht in die Liste eingetragen – erscheint nicht in der Kasse |
+| Ordner „…“ / …/veranstaltungen.csv fehlt | In `vereine.csv` steht ein Verein, dessen Ordner es (noch) nicht gibt |
