@@ -30,9 +30,7 @@ Keep that guide in sync with any change to the CSV format.
 - `tools/pruefe-preise.js` + `.github/workflows/preise-pruefen.yml` — CI check of all CSVs.
 - `sw.js`, `pwa.js`, `manifest.webmanifest`, `icon.svg` — offline support (see below).
 - `test.html` — old prototype, not linked from anywhere.
-- `sumup.html` — standalone SumUp Solo Cloud API test page (pair, pay, poll, cancel).
-  Not linked, not cached by the SW. API key etc. only in the device's localStorage;
-  calls `api.sumup.com` directly (CORS allowed). Doesn't touch the register.
+- `sumup.html` + `v3/sumup.js` — SumUp Solo card payments (see below).
 
 **Which club:** `preise.js` takes it from `?verein=<folder>` and fetches data from
 `../<folder>/preise/`. `KassePreise.club` / `KassePreise.query` expose it; links between
@@ -92,6 +90,24 @@ Format details and rules for humans: [ANLEITUNG-PREISE.md](ANLEITUNG-PREISE.md).
 - After a successful background sync the page reloads the CSVs and re-renders
   (toast "Preise aktualisiert") — no manual reload needed.
 - Kept compatible with older Silk: no flex `gap`, `:has`, optional chaining, etc.
+
+## Card payments (SumUp Solo, Cloud API)
+
+- `v3/sumup.js` (`KasseSumup`): settings in localStorage `kasse:sumup` (`apiKey`, `merchant`,
+  `reader`, optional affiliate), the running payment in `kasse:sumup:pending`.
+  Calls `api.sumup.com` directly from the browser (CORS allowed). Nothing SumUp-related is in the repo.
+- `sumup.html` ("SumUp einrichten", linked from the start page): enter key, pair a Solo,
+  pick it, test payments with a request log. Per tablet.
+- Register (only when configured, otherwise unchanged): "Karte" next to "Kassieren"
+  (exact total), "Mit Karte (inkl. Trinkgeld)" row in Kassieren (exact, next €, 5/10/20 €),
+  "Betrag" in the header (free amount, order untouched).
+- Flow: POST checkout → poll the checkout every 2 s → `successful` (or `payment_status`
+  successful, which arrives a few s earlier) closes the order. `failed`/`cancelled` keep it.
+  "Abbrechen" = terminate. SumUp doesn't reliably expire checkouts, so after
+  `valid_until` + 20 s the cashier decides ("Am Solo bezahlt" / "Nicht bezahlt"); polling continues.
+- A reload resumes the pending payment.
+- A paired Solo only accepts payments from the API (no manual entry on the device).
+- The API key has full account rights: one key per tablet, revoke in the SumUp dashboard if a tablet is lost.
 
 ## Offline mode (service worker)
 

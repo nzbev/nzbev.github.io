@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>SumUp Test</title>
-<!-- SumUp Cloud API Testseite (Solo). Zugangsdaten nur im localStorage dieses Geräts. -->
+<title>SumUp einrichten</title>
+<!-- SumUp Solo einrichten + testen. Zugangsdaten nur im localStorage dieses Geräts (v3/sumup.js). -->
 <style>
   body { font-family: system-ui, sans-serif; margin: 0; padding: 12px; background: #f3f4f6; color: #111; font-size: 16px; }
   h1 { font-size: 22px; margin: 4px 0 12px; }
@@ -29,7 +29,8 @@
 </style>
 </head>
 <body>
-<h1>SumUp Solo – Test <span class="muted">(<a href="./index.html">Start</a>)</span></h1>
+<h1>SumUp Solo – Einrichten &amp; Test <span class="muted">(<a href="./index.html">Start</a>)</span></h1>
+<div class="card muted">Für die Kasse: Zugang speichern und einen Solo wählen. Dann erscheinen in der Kasse „Karte“ und „Betrag“. Nach „Zugang löschen“ sind sie wieder weg.</div>
 
 <div class="card">
   <h2>1. Zugang</h2>
@@ -77,22 +78,22 @@
   <div id="log"></div>
 </div>
 
+<script src="./v3/sumup.js"></script>
 <script>
 (function () {
   "use strict";
   var API = "https://api.sumup.com";
-  var KEY = "sumup:test";
   var POLL_MS = 2000;
   var $ = function (id) { return document.getElementById(id); };
   var cfg = {};
-  try { cfg = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { cfg = {}; }
+  cfg = KasseSumup.config();
   var poll = null, current = null, t0 = 0;
 
   ["apiKey", "merchant", "affKey", "affApp"].forEach(function (k) { $(k).value = cfg[k] || ""; });
   $("useAff").checked = !!cfg.useAff;
 
   function store() {
-    try { localStorage.setItem(KEY, JSON.stringify(cfg)); } catch (e) { log("localStorage nicht verfügbar"); }
+    KasseSumup.saveConfig(cfg);
   }
   function readForm() {
     ["apiKey", "merchant", "affKey", "affApp"].forEach(function (k) { cfg[k] = $(k).value.trim(); });
@@ -125,7 +126,7 @@
   $("save").onclick = function () { readForm(); store(); log("Gespeichert"); };
   $("forget").onclick = function () {
     if (!confirm("Zugangsdaten auf diesem Gerät löschen?")) return;
-    cfg = {}; store(); ["apiKey", "merchant", "affKey", "affApp"].forEach(function (k) { $(k).value = ""; });
+    cfg = {}; KasseSumup.saveConfig(null); KasseSumup.setPending(null); ["apiKey", "merchant", "affKey", "affApp"].forEach(function (k) { $(k).value = ""; });
     renderReaders([]); log("Zugang gelöscht");
   };
   $("me").onclick = function () {
