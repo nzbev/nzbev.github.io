@@ -1,0 +1,15 @@
+﻿Veranstaltung;Sprungbändelausgabe;;;
+;;;;
+Kasse;Menge;Preis;Pfand;Ausgabe
+Sprungbändel;1 Stk;5,00;;x
+Bus Erw.;;12,00;;x
+Bus Kind;;5,00;;x
+Pin;1 Stk;2,50;;x
+;;;;
+Preisliste;Beschreibung;Menge;Preis;Ausgabe
+Sprungbändel;;1 Stk;5,00;x
+;;;;
+Busfahrt Erwachsene;;;12,00;x
+Busfahrt Kinder;;;5,00;x
+;;;;
+Pin;;1 Stk;2,50;x
